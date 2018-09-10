@@ -12,6 +12,7 @@ using UnityEngine.Rendering;
 namespace Unity1Week
 {
     [UpdateAfter(typeof(Unity.Rendering.MeshInstanceRendererSystem))]
+    [UpdateAfter(typeof(TakenokoEnemyHitCheckSystem))]
     sealed class BombRenderSystem : ComponentSystem
     {
         private readonly Material material;
@@ -22,6 +23,7 @@ namespace Unity1Week
         private readonly Bounds bounds = new Bounds(new Vector3(50, 0, 50), new Vector3(1000, 1000, 1000));
         private readonly List<Matrix4x4>[] matrixList = new List<Matrix4x4>[8];
         private ComponentGroup g;
+        [Inject] EndFrameBarrier barrier;
 
         public BombRenderSystem(Camera mainCamera, Material bombMaterial, Sprite[] boms, int seconds)
         {
@@ -48,7 +50,7 @@ namespace Unity1Week
             var pos2ds = g.GetComponentDataArray<Position2D>();
             var entities = g.GetEntityArray();
             var currentTime = Time.time;
-            var buf = PostUpdateCommands;
+            var buf = barrier.CreateCommandBuffer();
             for (int consumed = 0, length = starts.Length; consumed < length;)
             {
                 var chunkStart = starts.GetChunkArray(consumed, length - consumed);

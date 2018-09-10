@@ -2036,7 +2036,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7ce878f943554f4b8cd893e90e7248e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CoolTime: 3
+  CoolTime: 0.1
   playerSprite: {fileID: 21300000, guid: ed6e828e81e0c3348b954468719c7091, type: 3}
   playerMaterial: {fileID: 2100000, guid: 8f21d86978253e24db1191dbcd6aad97, type: 2}
   map:

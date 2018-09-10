@@ -30,6 +30,7 @@ namespace Unity1Week
         private readonly float rangeSquared;
         private readonly NativeMultiHashMap<int, DecidePositionHashCodeSystem.Tuple> enemyHashCodes;
         private readonly Action playSoundEffect;
+        [Inject] EndFrameBarrier barrier;
 
         protected override void OnCreateManager(int capacity)
         {
@@ -47,7 +48,7 @@ namespace Unity1Week
             manager.AddMatchingArchetypes(qTakenoko, fTakenoko);
             var PositionTypeRO = manager.GetArchetypeChunkComponentType<Position>(true);
             var EntityType = manager.GetArchetypeChunkEntityType();
-            var buf = PostUpdateCommands;
+            var buf = barrier.CreateCommandBuffer();
             using (var takenokoChunks = manager.CreateArchetypeChunkArray(fTakenoko, Allocator.Temp))
             {
                 for (int i = 0; i < takenokoChunks.Length; ++i)
@@ -82,43 +83,43 @@ namespace Unity1Week
                 }
             }
         }
-        private unsafe void BurstTakenoko(LifeTime time, ref EntityCommandBuffer buf, ref NativeArray<Entity> entities, int j, float2 item)
+        private unsafe void BurstTakenoko(LifeTime time, ref EntityCommandBuffer manager, ref NativeArray<Entity> entities, int j, float2 item)
         {
-            buf.DestroyEntity(entities[j]);
-            buf.CreateEntity(archetype);
-            buf.SetComponent(time);
-            buf.SetComponent(new Position2D { Value = item });
+            manager.DestroyEntity(entities[j]);
+            manager.CreateEntity(archetype);
+            manager.SetComponent(time);
+            manager.SetComponent(new Position2D { Value = item });
             playSoundEffect();
-            buf.CreateEntity(temperatureArchetype);
-            buf.SetComponent(new ChipRenderSystem.Tag
+            manager.CreateEntity(temperatureArchetype);
+            manager.SetComponent(new ChipRenderSystem.Tag
             {
                 X = (int)item.x,
                 Y = (int)item.y,
                 TemperatureDelta = 5000f,
             });
-            buf.CreateEntity(temperatureArchetype);
-            buf.SetComponent(new ChipRenderSystem.Tag
+            manager.CreateEntity(temperatureArchetype);
+            manager.SetComponent(new ChipRenderSystem.Tag
             {
                 X = (int)item.x - 1,
                 Y = (int)item.y,
                 TemperatureDelta = 8000f,
             });
-            buf.CreateEntity(temperatureArchetype);
-            buf.SetComponent(new ChipRenderSystem.Tag
+            manager.CreateEntity(temperatureArchetype);
+            manager.SetComponent(new ChipRenderSystem.Tag
             {
                 X = (int)item.x + 1,
                 Y = (int)item.y,
                 TemperatureDelta = 4500f,
             });
-            buf.CreateEntity(temperatureArchetype);
-            buf.SetComponent(new ChipRenderSystem.Tag
+            manager.CreateEntity(temperatureArchetype);
+            manager.SetComponent(new ChipRenderSystem.Tag
             {
                 X = (int)item.x,
                 Y = (int)item.y - 1,
                 TemperatureDelta = 4500f,
             });
-            buf.CreateEntity(temperatureArchetype);
-            buf.SetComponent(new ChipRenderSystem.Tag
+            manager.CreateEntity(temperatureArchetype);
+            manager.SetComponent(new ChipRenderSystem.Tag
             {
                 X = (int)item.x,
                 Y = (int)item.y + 1,

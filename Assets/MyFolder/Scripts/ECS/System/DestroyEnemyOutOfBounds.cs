@@ -20,6 +20,7 @@ namespace Unity1Week
             All = new[] { ComponentType.Create<Position>() },
         };
         private readonly NativeList<EntityArchetype> f = new NativeList<EntityArchetype>(1024, Allocator.Persistent);
+        private readonly NativeList<Entity> toDestroy = new NativeList<Entity>(1024, Allocator.Persistent);
 
         public DestroyEnemyOutOfBoundsSystem(uint2 range)
         {
@@ -29,14 +30,15 @@ namespace Unity1Week
         protected override void OnDestroyManager()
         {
             f.Dispose();
+            toDestroy.Dispose();
         }
         protected override void OnUpdate()
         {
             var manager = EntityManager;
-            var buf = PostUpdateCommands;
             manager.AddMatchingArchetypes(q, f);
             var positionTypeRO = manager.GetArchetypeChunkComponentType<Position>(true);
             var entityType = manager.GetArchetypeChunkEntityType();
+            toDestroy.Clear();
             using (var chunks = manager.CreateArchetypeChunkArray(f, Allocator.Temp))
             {
                 for (int i = 0; i < chunks.Length; i++)
@@ -47,10 +49,11 @@ namespace Unity1Week
                     {
                         var pos = positions[j].Value;
                         if (pos.x < 0 || pos.z < 0 || pos.x >= range.x || pos.z >= range.y)
-                            buf.DestroyEntity(entities[j]);
+                            toDestroy.Add(entities[j]);
                     }
                 }
             }
+            manager.DestroyEntity(toDestroy);
         }
     }
 }

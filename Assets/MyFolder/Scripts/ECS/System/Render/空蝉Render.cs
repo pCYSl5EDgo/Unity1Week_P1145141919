@@ -22,6 +22,7 @@ namespace Unity1Week
         private readonly Matrix4x4[] matrices = new Matrix4x4[1023];
         private readonly Bounds bounds = new Bounds(new Vector3(50, 0, 50), new Vector3(1000, 1000, 1000));
         private ComponentGroup g;
+        [Inject] EndFrameBarrier barrier;
 
         public 空蝉RenderSystem(Camera mainCamera, Material material, Sprite sprite, float seconds)
         {
@@ -43,7 +44,7 @@ namespace Unity1Week
             var pos3ds = g.GetComponentDataArray<Position>();
             var entities = g.GetEntityArray();
             var currentTime = Time.timeSinceLevelLoad;
-            var buf = PostUpdateCommands;
+            var buf = barrier.CreateCommandBuffer();
             for (int consumed = 0, length = starts.Length; consumed < length;)
             {
                 var chunkStart = starts.GetChunkArray(consumed, length - consumed);

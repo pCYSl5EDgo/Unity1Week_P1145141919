@@ -67,6 +67,7 @@ namespace Unity1Week
             var enemyHashCodes = world.CreateManager<DecidePositionHashCodeSystem>(range).EnemyHashCodes;
             var chips = InitializePlane(range.x, range.y);
             InitializePlayer(range, 100, InitialTemperature, ThermalDeathPoint);
+            world.CreateManager(typeof(EndFrameBarrier));
             world.CreateManager(typeof(EndFrameTransformSystem));
             world.CreateManager(typeof(MoveSystem));
             world.CreateManager(typeof(MoveEnemySystem), player);
