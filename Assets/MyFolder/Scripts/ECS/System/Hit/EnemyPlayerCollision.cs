@@ -6,6 +6,7 @@ using Unity.Transforms;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UniRx;
 
 namespace Unity1Week
 {
@@ -16,12 +17,14 @@ namespace Unity1Week
         private readonly NativeMultiHashMap<int, DecidePositionHashCodeSystem.Tuple> enemyHashCodes;
         private readonly Entity player;
         private readonly float radiusSquared;
+        private readonly ReactiveProperty<uint> killScore;
 
-        public EnemyPlayerCollisionSystem(Entity player, NativeMultiHashMap<int, DecidePositionHashCodeSystem.Tuple> enemyHashCodes, float radius)
+        public EnemyPlayerCollisionSystem(Entity player, NativeMultiHashMap<int, DecidePositionHashCodeSystem.Tuple> enemyHashCodes, float radius, ReactiveProperty<uint> killScore)
         {
             this.enemyHashCodes = enemyHashCodes;
             this.player = player;
             this.radiusSquared = radius * radius;
+            this.killScore = killScore;
         }
 
         protected override void OnUpdate()
@@ -34,10 +37,11 @@ namespace Unity1Week
             var settings = manager.GetComponentData<PlayerSettings>(player);
             var diffX = item.Position.x - pos.x;
             var diffY = item.Position.y - pos.z;
+            var damage = killScore.Value * deltaTime;
             if (diffX * diffX + diffY * diffY <= radiusSquared)
             {
-                settings.Life -= deltaTime * 10;
-                settings.Temperature += deltaTime * 10;
+                settings.Life -= damage;
+                settings.Temperature += damage;
             }
             while (enemyHashCodes.TryGetNextValue(out item, ref it))
             {
@@ -45,8 +49,8 @@ namespace Unity1Week
                 diffY = item.Position.y - pos.z;
                 if (diffX * diffX + diffY * diffY <= radiusSquared)
                 {
-                    settings.Life -= deltaTime * 10;
-                    settings.Temperature += deltaTime * 10;
+                    settings.Life -= damage;
+                    settings.Temperature += damage;
                 }
             }
             manager.SetComponentData(player, settings);

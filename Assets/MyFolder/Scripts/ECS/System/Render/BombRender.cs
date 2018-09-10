@@ -49,6 +49,7 @@ namespace Unity1Week
             var entities = g.GetEntityArray();
             var currentTime = Time.time;
             var buf = PostUpdateCommands;
+            var manager = EntityManager;
             for (int consumed = 0, length = starts.Length; consumed < length;)
             {
                 var chunkStart = starts.GetChunkArray(consumed, length - consumed);
@@ -58,7 +59,7 @@ namespace Unity1Week
                 {
                     var startTime = chunkStart[i].Value;
                     if (startTime + seconds <= currentTime) // そのEffectが発動から2秒以上経過している場合
-                        buf.DestroyEntity(chunkEntities[i]);
+                        manager.DestroyEntity(chunkEntities[i]);
                     else
                     {
                         var pos = chunkPos2ds[i].Value;

@@ -19,6 +19,7 @@ namespace Unity1Week
         private ComponentGroup g;
         private EntityArchetype deadMan;
         private readonly (int, int)[] diff;
+        private readonly HashSet<Entity> toDestroy = new HashSet<Entity>();
 
         public BombHitCheckSystem(Entity player, float radius, NativeMultiHashMap<int, DecidePositionHashCodeSystem.Tuple> enemyHashCodes)
         {
@@ -55,6 +56,7 @@ namespace Unity1Week
             var buf = PostUpdateCommands;
             var playerPos = manager.GetComponentData<Position>(player).Value;
             var deltaTime = Time.deltaTime;
+            toDestroy.Clear();
             for (int consumed = 0, length = positions.Length; consumed < length;)
             {
                 var posChunk = positions.GetChunkArray(consumed, length - consumed);
@@ -78,13 +80,15 @@ namespace Unity1Week
                     {
                         if (!enemyHashCodes.TryGetFirstValue(((diff[j].Item1 + x) << 16) | (diff[j].Item2 + y), out var item, out var it))
                             continue;
-                        buf.DestroyEntity(item.Entity);
+                        toDestroy.Add(item.Entity);
                         while (enemyHashCodes.TryGetNextValue(out item, ref it))
-                            buf.DestroyEntity(item.Entity);
+                            toDestroy.Add(item.Entity);
                         manager.CreateEntity(deadMan);
                         break;
                     }
                 }
+                foreach (var item in toDestroy)
+                    manager.DestroyEntity(item);
                 consumed += posChunk.Length;
             }
         }

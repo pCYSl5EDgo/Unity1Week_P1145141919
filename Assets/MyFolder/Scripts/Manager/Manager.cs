@@ -82,11 +82,10 @@ namespace Unity1Week
             world.CreateManager(typeof(BombHitCheckSystem), player, 4, enemyHashCodes);
             world.CreateManager(typeof(ChipRenderSystem), mainCamera, range, chips, chipTemperatures, map, unlit);
             (this.RainSystem = world.CreateManager<RainSystem>(range, rainCoolTimeSpan, rainCoolPower, rainCoolFrequency)).Enabled = false;
-            (this.EnemyPlayerCollisionSystem = world.CreateManager<EnemyPlayerCollisionSystem>(player, enemyHashCodes, 0.16f)).Enabled = false;
+            deathCounter = InitializeSpawnEnemy(enemyMesh, world, range, LeaderCount).DeathCount;
+            (this.EnemyPlayerCollisionSystem = world.CreateManager<EnemyPlayerCollisionSystem>(player, enemyHashCodes, 0.16f, deathCounter)).Enabled = false;
             world.CreateManager(typeof(PlayerTemperatureSystem), player, range, chips, heatDamageRatio, coolRatio);
             world.CreateManager(typeof(空蝉RenderSystem), mainCamera, playerMaterial, playerSprite, 15);
-            var spawnEnemySystem = InitializeSpawnEnemy(enemyMesh, world, range, LeaderCount);
-            deathCounter = spawnEnemySystem.DeathCount;
             world.CreateManager<MeshInstanceRendererSystem>().ActiveCamera = mainCamera;
             ScriptBehaviourUpdateOrder.UpdatePlayerLoop(world);
         }
