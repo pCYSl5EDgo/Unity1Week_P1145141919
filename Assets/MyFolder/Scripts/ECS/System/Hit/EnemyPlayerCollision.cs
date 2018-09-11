@@ -37,7 +37,7 @@ namespace Unity1Week
             var settings = manager.GetComponentData<PlayerSettings>(player);
             var diffX = item.Position.x - pos.x;
             var diffY = item.Position.y - pos.z;
-            var damage = killScore.Value * deltaTime;
+            var damage = (float)Math.Sqrt(killScore.Value * deltaTime);
             if (diffX * diffX + diffY * diffY <= radiusSquared)
             {
                 settings.Life -= damage;

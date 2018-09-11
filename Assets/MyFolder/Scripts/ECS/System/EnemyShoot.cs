@@ -13,29 +13,26 @@ namespace Unity1Week
     sealed class ShootSystem : ComponentSystem
     {
         private readonly Entity player;
-        private readonly MeshInstanceRenderer bullet;
+        private readonly float moveSpeed;
 
-        public ShootSystem(Entity player, MeshInstanceRenderer bullet)
+        public ShootSystem(Entity player, float moveSpeed)
         {
             this.player = player;
-            this.bullet = bullet;
+            this.moveSpeed = moveSpeed;
         }
-
         private readonly EntityArchetypeQuery q = new EntityArchetypeQuery
         {
             None = Array.Empty<ComponentType>(),
             Any = Array.Empty<ComponentType>(),
-            All = new[] { ComponentType.Create<Enemy>(), ComponentType.Create<Position>(), ComponentType.Create<SkillElement>() }
+            All = new[] { ComponentType.Create<Boss>(), ComponentType.Create<Position>(), ComponentType.Create<SkillElement>() }
         };
         private readonly NativeList<EntityArchetype> f = new NativeList<EntityArchetype>(1024, Allocator.Persistent);
 
         private EntityArchetype archetype;
-        private ComponentGroup srcGroup;
 
         protected override void OnCreateManager(int capacity)
         {
-            archetype = EntityManager.CreateArchetype(ComponentType.Create<Position>(), ComponentType.Create<Heading2D>(), ComponentType.Create<MoveSpeed>(), ComponentType.Create<MeshInstanceRenderer>(), ComponentType.Create<LifeTime>(), ComponentType.Create<EnemyBulletTag>());
-            srcGroup = GetComponentGroup(ComponentType.ReadOnly<Position>(), ComponentType.ReadOnly<MeshInstanceRenderer>(), ComponentType.ReadOnly<EnemyBulletTag>());
+            archetype = EntityManager.CreateArchetype(ComponentType.Create<Position>(), ComponentType.Create<Heading2D>(), ComponentType.Create<MoveSpeed>(), ComponentType.Create<SnowBulletTag>());
         }
 
         protected override void OnDestroyManager()
@@ -45,13 +42,8 @@ namespace Unity1Week
 
         protected override unsafe void OnUpdate()
         {
-            Entity src;
-            {
-                var entities = srcGroup.GetEntityArray();
-                if (entities.Length != 0)
-                    src = entities[0];
-            }
             var manager = EntityManager;
+            var buf = PostUpdateCommands;
             uint playerX, playerY;
             {
                 var value = manager.GetComponentData<Position>(player).Value;
@@ -61,6 +53,7 @@ namespace Unity1Week
             manager.AddMatchingArchetypes(q, f);
             var posTypeRO = manager.GetArchetypeChunkComponentType<Position>(true);
             var skillElementRW = manager.GetArchetypeChunkBufferType<SkillElement>(false);
+            var component = new MoveSpeed(moveSpeed);
             using (var chunks = manager.CreateArchetypeChunkArray(f, Allocator.Temp))
             {
                 for (int i = 0; i < chunks.Length; i++)
@@ -70,13 +63,16 @@ namespace Unity1Week
                     var skills = chunks[i].GetBufferAccessor(skillElementRW);
                     for (int j = 0; j < positions.Length; ++j, ++positionPtr)
                     {
-                        var _ = skills[j];
-                        for (int k = 0; k < _.Length; k++)
-                        {
-                            if (_[k].Value != 2) continue;
-                            if (!_[k].IsActivateble) break;
-
-                        }
+                        var _ = skills[j][0];
+                        if (!_.IsActivateble) continue;
+                        _.SinceLastTime = 0;
+                        buf.CreateEntity(archetype);
+                        buf.SetComponent(*positionPtr);
+                        var diffX = playerX - positionPtr->Value.x;
+                        var diffY = playerY - positionPtr->Value.z;
+                        var length = 1 / Math.Sqrt(diffX * diffX + diffY * diffY);
+                        buf.SetComponent(new Heading2D(new float2((float)(diffX * length), (float)(diffY * length))));
+                        buf.SetComponent(component);
                     }
                 }
             }

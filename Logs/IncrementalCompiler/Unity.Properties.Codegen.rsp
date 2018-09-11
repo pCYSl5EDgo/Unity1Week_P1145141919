@@ -292,6 +292,7 @@
 -d:ENABLE_BURST_AOT
 -d:UNITY_TEAM_LICENSE
 -d:UNITY_DISABLE_AUTOMATIC_SYSTEM_BOOTSTRAP
+-d:CSHARP_7_OR_LATER
 -i:C:/Users/I/AppData/Local/Unity/cache/packages/staging-packages.unity.com/com.unity.properties@0.3.2-preview/Unity.Properties.Codegen/CSharp/CodeWriter.cs
 -i:C:/Users/I/AppData/Local/Unity/cache/packages/staging-packages.unity.com/com.unity.properties@0.3.2-preview/Unity.Properties.Codegen/CSharp/CSharpSchemaBuilder.cs
 -i:C:/Users/I/AppData/Local/Unity/cache/packages/staging-packages.unity.com/com.unity.properties@0.3.2-preview/Unity.Properties.Codegen/ISchemaBuilder.cs

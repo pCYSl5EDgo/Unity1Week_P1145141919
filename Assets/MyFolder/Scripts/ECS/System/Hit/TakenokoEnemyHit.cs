@@ -13,115 +13,106 @@ namespace Unity1Week
     [UpdateBefore(typeof(BombRenderSystem))]
     sealed class TakenokoEnemyHitCheckSystem : ComponentSystem
     {
-        public TakenokoEnemyHitCheckSystem(float range, NativeMultiHashMap<int, DecidePositionHashCodeSystem.Tuple> enemyHashCodes, Action playSoundEffect)
+        public TakenokoEnemyHitCheckSystem(float radius, NativeMultiHashMap<int, DecidePositionHashCodeSystem.Tuple> enemyHashCodes, NativeMultiHashMap<int, DecidePositionHashCodeSystem.Tuple> playerBulletHashCodes, HashSet<int> allPositionHashCodes, Action playSoundEffect)
         {
-            this.rangeSquared = range * range;
+            this.radiusSquared = radius * radius;
             this.enemyHashCodes = enemyHashCodes;
+            this.playerBulletHashCodes = playerBulletHashCodes;
             this.playSoundEffect = playSoundEffect;
+            this.allPositionHashCodes = allPositionHashCodes;
         }
-        private readonly EntityArchetypeQuery qTakenoko = new EntityArchetypeQuery
-        {
-            None = Array.Empty<ComponentType>(),
-            Any = Array.Empty<ComponentType>(),
-            All = new[] { ComponentType.Create<Position>(), ComponentType.Create<PlayerShootSystem.TakenokoBullet>() },
-        };
         private EntityArchetype archetype, temperatureArchetype;
-        private readonly NativeList<EntityArchetype> fTakenoko = new NativeList<EntityArchetype>(Allocator.Persistent);
-        private readonly float rangeSquared;
+        private readonly float radiusSquared;
         private readonly NativeMultiHashMap<int, DecidePositionHashCodeSystem.Tuple> enemyHashCodes;
+        private readonly NativeMultiHashMap<int, DecidePositionHashCodeSystem.Tuple> playerBulletHashCodes;
         private readonly Action playSoundEffect;
+        private readonly HashSet<int> allPositionHashCodes;
+        private readonly HashSet<DecidePositionHashCodeSystem.Tuple> toDestroyTuples = new HashSet<DecidePositionHashCodeSystem.Tuple>();
 
         protected override void OnCreateManager(int capacity)
         {
             archetype = EntityManager.CreateArchetype(ComponentType.Create<Position2D>(), ComponentType.Create<BombEffect>(), ComponentType.Create<LifeTime>());
             temperatureArchetype = EntityManager.CreateArchetype(ComponentType.Create<ChipRenderSystem.Tag>());
         }
-        protected override void OnDestroyManager()
-        {
-            fTakenoko.Dispose();
-        }
         protected override unsafe void OnUpdate()
         {
             var manager = EntityManager;
             var time = new LifeTime { Value = Time.time };
-            manager.AddMatchingArchetypes(qTakenoko, fTakenoko);
-            var PositionTypeRO = manager.GetArchetypeChunkComponentType<Position>(true);
-            var EntityType = manager.GetArchetypeChunkEntityType();
             var buf = PostUpdateCommands;
-            using (var takenokoChunks = manager.CreateArchetypeChunkArray(fTakenoko, Allocator.Temp))
+            toDestroyTuples.Clear();
+            foreach (var key in allPositionHashCodes)
             {
-                for (int i = 0; i < takenokoChunks.Length; ++i)
+                if (!playerBulletHashCodes.TryGetFirstValue(key, out var playerBulletItem, out var playerBulletIt) || !enemyHashCodes.TryGetFirstValue(key, out var enemyItem, out var enemyIt))
+                    continue;
+                var diffX = enemyItem.Position.x - playerBulletItem.Position.x;
+                var diffY = enemyItem.Position.y - playerBulletItem.Position.y;
+                if (diffX * diffX + diffY * diffY <= radiusSquared)
+                    toDestroyTuples.Add(playerBulletItem);
+                while (enemyHashCodes.TryGetNextValue(out enemyItem, ref enemyIt))
                 {
-                    var positionArray = takenokoChunks[i].GetNativeArray(PositionTypeRO);
-                    var posPtr = (Position*)positionArray.GetUnsafeReadOnlyPtr();
-                    var entities = takenokoChunks[i].GetNativeArray(EntityType);
-                    for (int j = 0; j < positionArray.Length; ++j, ++posPtr)
+                    diffX = enemyItem.Position.x - playerBulletItem.Position.x;
+                    diffY = enemyItem.Position.y - playerBulletItem.Position.y;
+                    if (diffX * diffX + diffY * diffY <= radiusSquared)
+                        toDestroyTuples.Add(playerBulletItem);
+                }
+                while (playerBulletHashCodes.TryGetNextValue(out playerBulletItem, ref playerBulletIt))
+                {
+                    diffX = enemyItem.Position.x - playerBulletItem.Position.x;
+                    diffY = enemyItem.Position.y - playerBulletItem.Position.y;
+                    if (diffX * diffX + diffY * diffY <= radiusSquared)
+                        toDestroyTuples.Add(playerBulletItem);
+                    while (enemyHashCodes.TryGetNextValue(out enemyItem, ref enemyIt))
                     {
-                        if (!enemyHashCodes.TryGetFirstValue(((ushort)posPtr->Value.x << 16) | (ushort)posPtr->Value.z, out var item, out var iterator))
-                            continue;
-                        var pos = new float2(item.Position.x, item.Position.y);
-                        var x = pos.x - posPtr->Value.x;
-                        var y = pos.y - posPtr->Value.z;
-                        if (x * x + y * y <= rangeSquared)
-                        {
-                            BurstTakenoko(time, ref buf, ref entities, j, pos);
-                            continue;
-                        }
-                        while (enemyHashCodes.TryGetNextValue(out item, ref iterator))
-                        {
-                            pos = new float2(item.Position.x, item.Position.y);
-                            x = pos.x - posPtr->Value.x;
-                            y = pos.y - posPtr->Value.z;
-                            if (x * x + y * y <= rangeSquared)
-                            {
-                                BurstTakenoko(time, ref buf, ref entities, j, pos);
-                                break;
-                            }
-                        }
+                        diffX = enemyItem.Position.x - playerBulletItem.Position.x;
+                        diffY = enemyItem.Position.y - playerBulletItem.Position.y;
+                        if (diffX * diffX + diffY * diffY <= radiusSquared)
+                            toDestroyTuples.Add(playerBulletItem);
                     }
                 }
             }
+            foreach (var toDestroy in toDestroyTuples)
+                BurstTakenoko(time, ref buf, toDestroy);
         }
-        private unsafe void BurstTakenoko(LifeTime time, ref EntityCommandBuffer buf, ref NativeArray<Entity> entities, int j, float2 item)
+        private unsafe void BurstTakenoko(in LifeTime time, ref EntityCommandBuffer buf, in DecidePositionHashCodeSystem.Tuple tuple)
         {
-            buf.DestroyEntity(entities[j]);
+            buf.DestroyEntity(tuple.Entity);
             buf.CreateEntity(archetype);
             buf.SetComponent(time);
-            buf.SetComponent(new Position2D { Value = item });
+            buf.SetComponent(new Position2D { Value = tuple.Position });
             playSoundEffect();
             buf.CreateEntity(temperatureArchetype);
             buf.SetComponent(new ChipRenderSystem.Tag
             {
-                X = (int)item.x,
-                Y = (int)item.y,
+                X = (int)tuple.Position.x,
+                Y = (int)tuple.Position.y,
                 TemperatureDelta = 5000f,
             });
             buf.CreateEntity(temperatureArchetype);
             buf.SetComponent(new ChipRenderSystem.Tag
             {
-                X = (int)item.x - 1,
-                Y = (int)item.y,
-                TemperatureDelta = 8000f,
-            });
-            buf.CreateEntity(temperatureArchetype);
-            buf.SetComponent(new ChipRenderSystem.Tag
-            {
-                X = (int)item.x + 1,
-                Y = (int)item.y,
+                X = (int)tuple.Position.x - 1,
+                Y = (int)tuple.Position.y,
                 TemperatureDelta = 4500f,
             });
             buf.CreateEntity(temperatureArchetype);
             buf.SetComponent(new ChipRenderSystem.Tag
             {
-                X = (int)item.x,
-                Y = (int)item.y - 1,
+                X = (int)tuple.Position.x + 1,
+                Y = (int)tuple.Position.y,
                 TemperatureDelta = 4500f,
             });
             buf.CreateEntity(temperatureArchetype);
             buf.SetComponent(new ChipRenderSystem.Tag
             {
-                X = (int)item.x,
-                Y = (int)item.y + 1,
+                X = (int)tuple.Position.x,
+                Y = (int)tuple.Position.y - 1,
+                TemperatureDelta = 4500f,
+            });
+            buf.CreateEntity(temperatureArchetype);
+            buf.SetComponent(new ChipRenderSystem.Tag
+            {
+                X = (int)tuple.Position.x,
+                Y = (int)tuple.Position.y + 1,
                 TemperatureDelta = 4500f,
             });
         }

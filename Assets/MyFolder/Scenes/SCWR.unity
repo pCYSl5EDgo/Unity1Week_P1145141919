@@ -2039,25 +2039,9 @@ MonoBehaviour:
   CoolTime: 0.1
   playerSprite: {fileID: 21300000, guid: ed6e828e81e0c3348b954468719c7091, type: 3}
   playerMaterial: {fileID: 2100000, guid: 8f21d86978253e24db1191dbcd6aad97, type: 2}
-  map:
-  - {fileID: 2800000, guid: dc3f4ea29ea136148956b42429d2d616, type: 3}
-  - {fileID: 2800000, guid: ef2c6a5d920fd9345963d71dbd4ddb1f, type: 3}
-  - {fileID: 2800000, guid: 283964bea33df1748aa529bfb9405f34, type: 3}
-  - {fileID: 2800000, guid: 1bdefd7eb4cd1a54e9e6a3417d3dc1a4, type: 3}
-  - {fileID: 2800000, guid: cd0d82b88f8434b489945567bb4cc014, type: 3}
-  - {fileID: 2800000, guid: f9587af1c9da6a242aed193bd31891b0, type: 3}
-  chipTemperatures:
-  - 32
-  - 100
-  - 2000
-  - 5000
-  - 10000
-  - 15000
+  mapTable: {fileID: 11400000, guid: 95b3f5381198b6846bb59dbb55f2bac3, type: 2}
   unlit: {fileID: 2100000, guid: 01b9b150470910148b1b60978b6fbd25, type: 2}
-  enemySprite: {fileID: 21300000, guid: 2b63f0f62724b5b49a46dde97bf60cca, type: 3}
-  bossMaterial: {fileID: 2100000, guid: e7f664847eaa7094da97530a828acfef, type: 2}
-  leaderMaterial: {fileID: 2100000, guid: 9243a1ab62f1bb544a0ab5712642226d, type: 2}
-  subordinateMaterial: {fileID: 2100000, guid: c69d68d7bb3c34649819322ef2a5de09, type: 2}
+  enemyDisplay: {fileID: 11400000, guid: 46cfa6ae3ddcfa94eb23924c1fb8f31e, type: 2}
   bombMaterial: {fileID: 2100000, guid: 3815a3867dc94424abf54fad07078dae, type: 2}
   bombSprites:
   - {fileID: 21300000, guid: a191c1a237e9b9d49887a071fefecb3c, type: 3}
@@ -2068,21 +2052,13 @@ MonoBehaviour:
   - {fileID: 21300010, guid: a191c1a237e9b9d49887a071fefecb3c, type: 3}
   - {fileID: 21300012, guid: a191c1a237e9b9d49887a071fefecb3c, type: 3}
   - {fileID: 21300014, guid: a191c1a237e9b9d49887a071fefecb3c, type: 3}
-  playerSpeeds:
-  - 1
-  - 20
-  - 10
-  - 8
-  - 7
-  - 5
-  enemySpeeds:
-  - 10
-  - 2
-  - 0.5
-  - 0.4
-  - 0.7
-  - 5
+  playerSpeeds: {fileID: 11400000, guid: 7f7c84cae0d23fb4780f112b8cb7c5f0, type: 2}
+  enemySpeeds: {fileID: 11400000, guid: 6f50d6670d6f08e42a5c31d8b14ce042, type: 2}
   playerBulletSprite: {fileID: 21300000, guid: 8da00bb67aa8f36488c734b2978571c4, type: 3}
+  playerBulletMaterial: {fileID: 2100000, guid: ddbce9a4794439f4c8dd72e2ca76ea58,
+    type: 2}
+  snowSprite: {fileID: 21300000, guid: 74977eb6b0b9d9c4abcd265902507303, type: 3}
+  snowMaterial: {fileID: 2100000, guid: bda2a0fdbd5c5cd4a96a116c29717b54, type: 2}
   BgmSource: {fileID: 1698338219}
   BgmClips:
   - {fileID: 8300000, guid: 4cde6bc2dc7229b40990aff8132cbbdc, type: 3}
@@ -2097,10 +2073,12 @@ MonoBehaviour:
   rainCoolFrequency: 0.1
   nextStageCount: 64000000e80300001027000050c30000
   "\u6B66\u5668\u6B04": {fileID: 882133032}
-  gameOverPrefab: {fileID: 1284260447523830, guid: 17a5a67bc7e91174b9dbf13d5ef6dbda,
+  stage4EnemySpeed: {fileID: 11400000, guid: 0bfc3346cfa646e48a8fb01728fb7f5b, type: 2}
+  respawnDisplay: {fileID: 1498458810679054, guid: 4695ce1766badc642b8828f46ffebdbf,
     type: 2}
-  gameClearPrefab: {fileID: 1000413020469602, guid: 95bacadfae3c6104fa47a9d7e3d6742b,
-    type: 2}
+  weaponNames:
+  - "\u30C9\u30A6\u30EA\u30EB\u30F4\u30A7\u30EB\u30D5\u30A1\u30FC"
+  - "\u73FE\u8EAB\u98A8\u8239"
   takenokoBulletShoot: {fileID: 8300000, guid: 60c050250d89cec499d69760cd53e4e7, type: 3}
   takenokoBulletBurst: {fileID: 8300000, guid: be87f536c189217448cef59e97d96440, type: 3}
   sources:
@@ -2109,9 +2087,10 @@ MonoBehaviour:
   - {fileID: 1698338225}
   - {fileID: 1698338224}
   - {fileID: 1698338223}
-  weaponNames:
-  - "\u30C9\u30A6\u30EA\u30EB\u30F4\u30A7\u30EB\u30D5\u30A1\u30FC"
-  - "\u73FE\u8EAB\u98A8\u8239"
+  gameOverPrefab: {fileID: 1284260447523830, guid: 17a5a67bc7e91174b9dbf13d5ef6dbda,
+    type: 2}
+  gameClearPrefab: {fileID: 1538500192339580, guid: 95bacadfae3c6104fa47a9d7e3d6742b,
+    type: 2}
 --- !u!82 &1698338219
 AudioSource:
   m_ObjectHideFlags: 0

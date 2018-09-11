@@ -1,9 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
-
 
 [RequireComponent(typeof(Slider))]
 public sealed class 難易度 : MonoBehaviour
@@ -17,6 +13,11 @@ public sealed class 難易度 : MonoBehaviour
         slider = GetComponent<Slider>();
         cached = slider.value;
         text = _難易度.GetComponent<TMPro.TMP_Text>();
+        text.text = "難易度:" + Unity1Week.Manager.LeaderCount.ToString() + "個";
+        if (Unity1Week.Manager.LeaderCount == 200)
+            cached = slider.value = 0;
+        else
+            cached = slider.value = (Unity1Week.Manager.LeaderCount - 200) / 9800f;
     }
     void Update()
     {

@@ -7,7 +7,8 @@ namespace Unity1Week
     {
         [SerializeField] uint[] nextStageCount;
         [SerializeField] GameObject 武器欄;
-        IntReactiveProperty stageSubject = new IntReactiveProperty(0);
+        [SerializeField] ScriptableObjects.Speed stage4EnemySpeed;
+        IntReactiveProperty stageReactiveProperty = new IntReactiveProperty(0);
 
         private void InitializeStageWatch()
         {
@@ -16,11 +17,11 @@ namespace Unity1Week
                 for (int i = nextStageCount.Length - 1; i >= 0; --i)
                 {
                     if (count < nextStageCount[i]) continue;
-                    stageSubject.Value = i + 1;
+                    stageReactiveProperty.Value = i + 1;
                     return;
                 }
             });
-            stageSubject.Subscribe(stage =>
+            stageReactiveProperty.Subscribe(stage =>
             {
                 switch (stage)
                 {
@@ -39,11 +40,7 @@ namespace Unity1Week
                         武器名 = 武器欄.transform.Find(nameof(武器名)).GetComponent<TMPro.TMP_Text>();
                         break;
                     case 4:
-                        enemySpeeds[0] = 20;
-                        enemySpeeds[1] = 10;
-                        enemySpeeds[2] = 5;
-                        enemySpeeds[3] = 4;
-                        enemySpeeds[4] = 7;
+                        System.Buffer.BlockCopy(stage4EnemySpeed.Speeds, 0, enemySpeeds.Speeds, 0, enemySpeeds.Speeds.Length);
                         break;
                     case 5:
                         break;
@@ -53,7 +50,7 @@ namespace Unity1Week
         }
         private void InitializeBGM()
         {
-            stageSubject.Subscribe((stage) =>
+            stageReactiveProperty.Subscribe((stage) =>
             {
                 if (stage >= BgmClips.Length) return;
                 BgmSource.Stop();

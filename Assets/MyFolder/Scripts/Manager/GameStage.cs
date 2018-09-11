@@ -42,6 +42,19 @@ namespace Unity1Week
                 var killScore = deathCounter.Value;
                 var vertPanel = over.transform.Find("Vertical Panel");
                 vertPanel.Find("Horizontal Panel").Find("結果").GetComponent<TMPro.TMP_Text>().text = killScore.ToString();
+                var 文章 = vertPanel.Find("文章").GetComponent<TMPro.TMP_Text>();
+                if (killScore < 100)
+                    文章.text = $"お前ここは初めてか？\n力抜けよ";
+                else if (killScore < 1000)
+                    文章.text = $"あ　ほ　く　さ";
+                else if (killScore < 10000)
+                    文章.text = $"まぁ多少はね？\nじゃ、またやって、どうぞ";
+                else if (killScore < 50000)
+                    文章.text = $"やりますねぇ！\nま、ミスするのも多少はね？";
+                else if (killScore < 100000)
+                    文章.text = $"おっ、大丈夫か大丈夫か？\n緊張すっと力でないからね";
+                else if (killScore < 114514)
+                    文章.text = $"ファッ！？\nはぇ～～、すっごい";
                 vertPanel.Find("Tweet").GetComponent<UI.TweetButton>().KillScore = killScore;
             });
         }

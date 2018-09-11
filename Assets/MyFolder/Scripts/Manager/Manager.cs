@@ -11,18 +11,17 @@ namespace Unity1Week
     [RequireComponent(typeof(Camera))]
     sealed partial class Manager : MonoBehaviour
     {
-        [SerializeField] Texture2D[] map;
-        [SerializeField] float[] chipTemperatures;
+        [SerializeField] ScriptableObjects.Map mapTable;
         [SerializeField] Material unlit;
-        [SerializeField] Sprite enemySprite;
-        [SerializeField] Material bossMaterial;
-        [SerializeField] Material leaderMaterial;
-        [SerializeField] Material subordinateMaterial;
+        [SerializeField] ScriptableObjects.EnemyDisplay enemyDisplay;
         [SerializeField] Material bombMaterial;
         [SerializeField] Sprite[] bombSprites;
-        [SerializeField] float[] playerSpeeds;
-        [SerializeField] float[] enemySpeeds;
+        [SerializeField] ScriptableObjects.Speed playerSpeeds;
+        [SerializeField] ScriptableObjects.Speed enemySpeeds;
         [SerializeField] Sprite playerBulletSprite;
+        [SerializeField] Material playerBulletMaterial;
+        [SerializeField] Sprite snowSprite;
+        [SerializeField] Material snowMaterial;
         [SerializeField] AudioSource BgmSource;
         [SerializeField] AudioClip[] BgmClips;
         [SerializeField] float heatDamageRatio;
@@ -31,14 +30,16 @@ namespace Unity1Week
         [SerializeField] float rainCoolTimeSpan;
         [SerializeField] float rainCoolFrequency;
 
-        public static uint LeaderCount = 1000u;
+        public static uint LeaderCount = 10000u;
 
         void Start()
         {
             mainCamera = GetComponent<Camera>();
             UICamera = GameObject.Find("UI Camera").GetComponent<Camera>();
             sourceInfos = new(float, float, AudioClip)[sources.Length];
+#if UNITY_EDITOR
             Validate();
+#endif
             InitializeWorld();
             InitializeUGUI();
             InitializeBGM();
@@ -46,43 +47,50 @@ namespace Unity1Week
             InitializeStageWatch();
             InitializeGameOverUI();
         }
-
+#if UNITY_EDITOR
         private void Validate()
         {
-#if UNITY_EDITOR
-            if (map.Length != enemySpeeds.Length || enemySpeeds.Length != playerSpeeds.Length) throw new ArgumentException();
-#endif
+            if (mapTable.map.Length != enemySpeeds.Speeds.Length || enemySpeeds.Speeds.Length != playerSpeeds.Speeds.Length) throw new ArgumentException();
         }
+#endif
 
         const float ThermalDeathPoint = 842f;
         private const float InitialTemperature = 97.7f;
 
         private void InitializeWorld()
         {
-            var enemyMesh = RotateSprite(enemySprite);
+            var enemyMesh = RotateSprite(enemyDisplay.enemySprite);
             var world = World.Active = new World("default");
             world.SetDefaultCapacity(1 << 18);
             manager = world.CreateManager<EntityManager>();
             var range = new Unity.Mathematics.uint2(100u, 100u);
-            var enemyHashCodes = world.CreateManager<DecidePositionHashCodeSystem>(range).EnemyHashCodes;
+            var decidePositionHashCodeSystem = world.CreateManager<DecidePositionHashCodeSystem>(range);
+            var enemyHashCodes = decidePositionHashCodeSystem.EnemyHashCodes;
+            var snowHashCodes = decidePositionHashCodeSystem.SnowBulletCodes;
+            var playerBulletHashCodes = decidePositionHashCodeSystem.PlayerBulletCodes;
+            var allPositionHashCodes = decidePositionHashCodeSystem.AllPositionHashCodeSet;
             var chips = InitializePlane(range.x, range.y);
             InitializePlayer(range, 100, InitialTemperature, ThermalDeathPoint);
             world.CreateManager(typeof(EndFrameTransformSystem));
             world.CreateManager(typeof(MoveSystem));
+            world.CreateManager(typeof(EnemyBulletRenderSystem), mainCamera, snowSprite, snowMaterial);
             world.CreateManager(typeof(MoveEnemySystem), player);
             world.CreateManager(typeof(ConfinePlayerPositionSystem), player, range, mainCamera.transform);
+            world.CreateManager(typeof(ShootSystem), player, 4);
             PlayerShootSystem = world.CreateManager<PlayerShootSystem>(player, mainCamera, new Action(TryToPlayTakenokoShoot));
-            world.CreateManager(typeof(TakenokoEnemyHitCheckSystem), 0.16f, enemyHashCodes, new Action(TryToPlayTakenokoBurst));
+            world.CreateManager(typeof(TakenokoEnemyHitCheckSystem), 0.16f, enemyHashCodes, playerBulletHashCodes, allPositionHashCodes, new Action(TryToPlayTakenokoBurst));
             world.CreateManager(typeof(PlayerMoveSystem), player, mainCamera.transform);
             world.CreateManager(typeof(BombRenderSystem), mainCamera, bombMaterial, bombSprites, (int)takenokoBulletBurst.length);
             world.CreateManager(typeof(DestroyEnemyOutOfBoundsSystem), range);
-            world.CreateManager(typeof(DecideMoveSpeedSystem), range, chips, playerSpeeds, enemySpeeds);
+            world.CreateManager(typeof(DecideMoveSpeedSystem), range, chips, playerSpeeds.Speeds, enemySpeeds.Speeds);
             world.CreateManager(typeof(UpdateCoolTimeSystem));
-            world.CreateManager(typeof(TakenokoRenderSystem), mainCamera, playerBulletSprite, unlit);
+            world.CreateManager(typeof(TakenokoRenderSystem), mainCamera, playerBulletSprite, playerBulletMaterial);
             world.CreateManager(typeof(BombHitCheckSystem), player, 4, enemyHashCodes);
-            world.CreateManager(typeof(ChipRenderSystem), mainCamera, range, chips, chipTemperatures, map, unlit);
+            world.CreateManager(typeof(ChipRenderSystem), mainCamera, range, chips, mapTable.chipTemperatures, mapTable.map, unlit);
             (this.RainSystem = world.CreateManager<RainSystem>(range, rainCoolTimeSpan, rainCoolPower, rainCoolFrequency)).Enabled = false;
-            deathCounter = InitializeSpawnEnemy(enemyMesh, world, range, LeaderCount).DeathCount;
+            var SpawnEnemySystem = InitializeSpawnEnemy(player, enemyMesh, world, range, LeaderCount);
+            deathCounter = SpawnEnemySystem.DeathCount;
+            nearToRespawn = SpawnEnemySystem.NearToRespawn;
             (this.EnemyPlayerCollisionSystem = world.CreateManager<EnemyPlayerCollisionSystem>(player, enemyHashCodes, 0.16f, deathCounter)).Enabled = false;
             world.CreateManager(typeof(PlayerTemperatureSystem), player, range, chips, heatDamageRatio, coolRatio);
             world.CreateManager(typeof(空蝉RenderSystem), mainCamera, playerMaterial, playerSprite, 15);
@@ -90,11 +98,11 @@ namespace Unity1Week
             ScriptBehaviourUpdateOrder.UpdatePlayerLoop(world);
         }
 
-        private SpawnEnemySystem InitializeSpawnEnemy(Mesh enemyMesh, World world, Unity.Mathematics.uint2 range, uint count) => world.CreateManager<SpawnEnemySystem>(count, range,
+        private SpawnEnemySystem InitializeSpawnEnemy(Entity player, Mesh enemyMesh, World world, Unity.Mathematics.uint2 range, uint count) => world.CreateManager<SpawnEnemySystem>(player, count, range,
             new MeshInstanceRenderer
             {
                 mesh = enemyMesh,
-                material = bossMaterial,
+                material = enemyDisplay.bossMaterial,
                 castShadows = ShadowCastingMode.Off,
                 receiveShadows = false,
                 subMesh = 0,
@@ -102,7 +110,7 @@ namespace Unity1Week
             new MeshInstanceRenderer
             {
                 mesh = enemyMesh,
-                material = leaderMaterial,
+                material = enemyDisplay.leaderMaterial,
                 castShadows = ShadowCastingMode.Off,
                 receiveShadows = false,
                 subMesh = 0,
@@ -110,7 +118,7 @@ namespace Unity1Week
             new MeshInstanceRenderer
             {
                 mesh = enemyMesh,
-                material = subordinateMaterial,
+                material = enemyDisplay.subordinateMaterial,
                 castShadows = ShadowCastingMode.Off,
                 receiveShadows = false,
                 subMesh = 0,
@@ -192,8 +200,8 @@ namespace Unity1Week
 
         private MeshInstanceRenderer[] InitializeMeshInstanceRendererArray()
         {
-            var renderers = new MeshInstanceRenderer[map.Length];
-            for (int i = 0; i < map.Length; i++)
+            var renderers = new MeshInstanceRenderer[mapTable.map.Length];
+            for (int i = 0; i < mapTable.map.Length; i++)
             {
                 renderers[i] = new MeshInstanceRenderer
                 {
@@ -201,7 +209,7 @@ namespace Unity1Week
                     mesh = CreateQuad(),
                     material = new Material(unlit)
                     {
-                        mainTexture = map[i],
+                        mainTexture = mapTable.map[i],
                     },
                     receiveShadows = false,
                     subMesh = 0,

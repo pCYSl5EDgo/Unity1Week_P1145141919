@@ -1,5 +1,6 @@
 using UniRx;
 using UniRx.Triggers;
+using UniRx.Async;
 using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
@@ -29,6 +30,8 @@ namespace Unity1Week
         private readonly Color zeroColor = Color.gray;
 
         private ReactiveProperty<uint> deathCounter;
+        private BoolReactiveProperty nearToRespawn;
+        [SerializeField] GameObject respawnDisplay;
         private FloatReactiveProperty life;
         private TMP_Text 武器名;
         [SerializeField] string[] weaponNames;
@@ -48,7 +51,7 @@ namespace Unity1Week
             武器名.text = weaponNames[1];
             武器名.SetLayoutDirty();
         }
-
+        private GameObject 注意;
         void InitializeUGUI()
         {
             life = new FloatReactiveProperty();
@@ -72,6 +75,13 @@ namespace Unity1Week
                 駆逐数説明.color = color;
                 駆逐数.color = color;
                 ノルマ.color = color;
+            });
+            nearToRespawn.Skip(1).Subscribe((bool _) =>
+            {
+                if (_)
+                    注意 = GameObject.Instantiate(respawnDisplay, UpperLeftCanvas);
+                else
+                    GameObject.Destroy(注意);
             });
             this.UpdateAsObservable().Select(_ => Input.GetKey(KeyCode.Backspace)).ThrottleFirst(System.TimeSpan.FromMilliseconds(200)).Where(_ => _).Subscribe(_ =>
             {

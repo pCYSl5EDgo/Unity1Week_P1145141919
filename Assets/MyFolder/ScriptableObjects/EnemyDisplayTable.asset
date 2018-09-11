@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2130658d5b379b45b50014dbdc66390, type: 3}
+  m_Name: EnemyDisplayTable
+  m_EditorClassIdentifier: 
+  enemySprite: {fileID: 21300000, guid: 2b63f0f62724b5b49a46dde97bf60cca, type: 3}
+  bossMaterial: {fileID: 2100000, guid: e7f664847eaa7094da97530a828acfef, type: 2}
+  leaderMaterial: {fileID: 2100000, guid: 9243a1ab62f1bb544a0ab5712642226d, type: 2}
+  subordinateMaterial: {fileID: 2100000, guid: c69d68d7bb3c34649819322ef2a5de09, type: 2}

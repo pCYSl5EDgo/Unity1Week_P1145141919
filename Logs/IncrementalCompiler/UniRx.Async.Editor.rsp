@@ -292,6 +292,7 @@
 -d:ENABLE_BURST_AOT
 -d:UNITY_TEAM_LICENSE
 -d:UNITY_DISABLE_AUTOMATIC_SYSTEM_BOOTSTRAP
+-d:CSHARP_7_OR_LATER
 -i:"C:/Users/I/Saved Games/Unity1Week/Assets/Plugins/UniRx/Scripts/Async/Editor/SplitterGUILayout.cs"
 -i:"C:/Users/I/Saved Games/Unity1Week/Assets/Plugins/UniRx/Scripts/Async/Editor/UniTaskTrackerTreeView.cs"
 -i:"C:/Users/I/Saved Games/Unity1Week/Assets/Plugins/UniRx/Scripts/Async/Editor/UniTaskTrackerWindow.cs"

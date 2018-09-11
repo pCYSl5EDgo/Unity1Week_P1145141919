@@ -11,8 +11,9 @@ namespace Unity1Week
     [UpdateBefore(typeof(MoveSystem))]
     sealed class SpawnEnemySystem : ComponentSystem
     {
-        public SpawnEnemySystem(uint spawnLimit, uint2 range, MeshInstanceRenderer bossMesh, MeshInstanceRenderer leaderMesh, MeshInstanceRenderer subordinateMesh, float skillCoolTime)
+        public SpawnEnemySystem(Entity player, uint spawnLimit, uint2 range, MeshInstanceRenderer bossMesh, MeshInstanceRenderer leaderMesh, MeshInstanceRenderer subordinateMesh, float skillCoolTime)
         {
+            this.player = player;
             this.spawnLimit = spawnLimit;
             this.respwan = (uint)(spawnLimit * 0.2f);
             this.range = range;
@@ -31,7 +32,9 @@ namespace Unity1Week
             gLeader = GetComponentGroup(ComponentType.ReadOnly<Teammate>());
         }
 
+        private const float DISTANCE = 0.3f;
         private readonly uint respwan;
+        private readonly Entity player;
         private readonly uint spawnLimit;
         private readonly uint2 range;
         private EntityArchetype archetypeBoss, archetypeLeader, archetypeSubordinate;
@@ -42,6 +45,7 @@ namespace Unity1Week
         private readonly float skillCoolTime;
         ComponentGroup gDead, gAlive, gLeader;
         public UniRx.ReactiveProperty<uint> DeathCount { get; } = new UniRx.ReactiveProperty<uint>(0);
+        public UniRx.BoolReactiveProperty NearToRespawn { get; } = new UniRx.BoolReactiveProperty(true);
         private uint aliveCount;
 
         protected override unsafe void OnUpdate()
@@ -50,8 +54,14 @@ namespace Unity1Week
             var manager = EntityManager;
             manager.DestroyEntity(gDead);
             if (DeathCount.Value >= 114514u) return;
-            if ((aliveCount = (uint)gAlive.CalculateLength()) >= spawnLimit && gLeader.CalculateLength() >= respwan) return;
-            float3 _range = new float3(range.x - 0.0001f, 0, range.y - 0.0001f);
+            aliveCount = (uint)gAlive.CalculateLength();
+            var diff0 = aliveCount - spawnLimit;
+            var diff1 = gLeader.CalculateLength() - respwan;
+            NearToRespawn.Value = diff1 < 0.1f * respwan || diff0 < 0.1 * respwan;
+            if (diff0 >= 0 && diff1 >= 0) return;
+            NearToRespawn.Value = false;
+            var playerPosition = manager.GetComponentData<Position>(player).Value;
+            var _range = new float3(range.x - 0.0001f, 0, range.y - 0.0001f);
             var leaders = new NativeArray<Entity>((int)spawnLimit, Allocator.Temp, NativeArrayOptions.UninitializedMemory);
             var subordinates = new NativeArray<Entity>(4 * leaders.Length, Allocator.Temp, NativeArrayOptions.UninitializedMemory);
             try
@@ -62,7 +72,13 @@ namespace Unity1Week
                 manager.Instantiate(leaders[0], leaders.SkipFirst());
                 for (int i = 0; i < leaders.Length; i++)
                 {
-                    manager.SetComponentData(leaders[i], new Position { Value = random.NextFloat3(default, new float3(range.x, 0, range.y)) });
+                    float3 float31;
+                    do
+                    {
+                        float31 = random.NextFloat3(default, new float3(range.x, 0, range.y));
+                    }
+                    while (System.Math.Abs(float31.x - playerPosition.x) <= DISTANCE && System.Math.Abs(float31.z - playerPosition.z) <= DISTANCE);
+                    manager.SetComponentData(leaders[i], new Position { Value = float31 });
                     manager.SetComponentData(leaders[i], new Heading2D { Value = random.NextFloat2Direction() });
                     random = new Random(random.state + 1);
                 }
@@ -75,14 +91,14 @@ namespace Unity1Week
                     var buf = manager.GetBuffer<Teammate>(leaders[i]);
                     var pos = manager.GetComponentData<Position>(leaders[i]).Value;
                     var index = i << 2;
-                    SetComponentData(ref subordinates, _range, manager, index, pos);
+                    SetComponentData(in playerPosition, ref subordinates, _range, manager, index, pos);
                     buf.Add(subordinates[index++]);
-                    SetComponentData(ref subordinates, _range, manager, index, pos);
+                    SetComponentData(in playerPosition, ref subordinates, _range, manager, index, pos);
                     random = new Random(random.state + 1);
                     buf.Add(subordinates[index++]);
-                    SetComponentData(ref subordinates, _range, manager, index, pos);
+                    SetComponentData(in playerPosition, ref subordinates, _range, manager, index, pos);
                     buf.Add(subordinates[index++]);
-                    SetComponentData(ref subordinates, _range, manager, index, pos);
+                    SetComponentData(in playerPosition, ref subordinates, _range, manager, index, pos);
                     buf.Add(subordinates[index]);
                 }
             }
@@ -93,11 +109,17 @@ namespace Unity1Week
             }
         }
 
-        private unsafe void SetComponentData(ref NativeArray<Entity> subordinates, in float3 _range, EntityManager manager, int i, in float3 pos)
+        private unsafe void SetComponentData(in float3 playerPosition, ref NativeArray<Entity> subordinates, in float3 _range, EntityManager manager, int i, in float3 pos)
         {
+            float3 float31;
+            do
+            {
+                float31 = math.clamp(pos + random.NextFloat3(new float3(-5f, 0, -5f), new float3(5f, 0, 5f)), 0, _range);
+            }
+            while (System.Math.Abs(float31.x - playerPosition.x) <= DISTANCE && System.Math.Abs(float31.z - playerPosition.z) <= DISTANCE);
             manager.SetComponentData(subordinates[i], new Position
             {
-                Value = math.clamp(pos + random.NextFloat3(new float3(-5f, 0, -5f), new float3(5f, 0, 5f)), 0, _range)
+                Value = float31
             });
             manager.SetComponentData(subordinates[i], new Heading2D { Value = random.NextFloat2Direction() });
             random = new Random(random.state + 1);
