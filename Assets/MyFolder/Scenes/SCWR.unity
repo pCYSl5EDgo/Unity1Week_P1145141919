@@ -1084,7 +1084,7 @@ MonoBehaviour:
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 0
+  m_isInputParsingRequired: 1
   m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_subTextObjects:
@@ -1424,7 +1424,7 @@ MonoBehaviour:
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 0
+  m_isInputParsingRequired: 1
   m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_subTextObjects:
@@ -1445,6 +1445,48 @@ CanvasRenderer:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 927296654}
   m_CullTransparentMesh: 0
+--- !u!1001 &1267252424
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4949129043521788, guid: ee393f04960d94baeaf854699b2ae1e3, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4949129043521788, guid: ee393f04960d94baeaf854699b2ae1e3, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4949129043521788, guid: ee393f04960d94baeaf854699b2ae1e3, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4949129043521788, guid: ee393f04960d94baeaf854699b2ae1e3, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4949129043521788, guid: ee393f04960d94baeaf854699b2ae1e3, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4949129043521788, guid: ee393f04960d94baeaf854699b2ae1e3, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4949129043521788, guid: ee393f04960d94baeaf854699b2ae1e3, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4949129043521788, guid: ee393f04960d94baeaf854699b2ae1e3, type: 2}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ee393f04960d94baeaf854699b2ae1e3, type: 2}
+  m_IsPrefabAsset: 0
 --- !u!1 &1445300971
 GameObject:
   m_ObjectHideFlags: 0
@@ -2036,31 +2078,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7ce878f943554f4b8cd893e90e7248e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  respawnDisplay: {fileID: 1498458810679054, guid: 4695ce1766badc642b8828f46ffebdbf,
-    type: 2}
-  weaponNames:
-  - "\u30C9\u30A6\u30EA\u30EB\u30F4\u30A7\u30EB\u30D5\u30A1\u30FC"
-  - "\u73FE\u8EAB\u98A8\u8239"
-  BGMSource: {fileID: 1698338219}
-  nextStageCount: 64000000e80300001027000050c30000
-  "\u6B66\u5668\u6B04": {fileID: 882133032}
-  stage4EnemySpeed: {fileID: 11400000, guid: 0bfc3346cfa646e48a8fb01728fb7f5b, type: 2}
-  takenokoBulletShoot: {fileID: 8300000, guid: 60c050250d89cec499d69760cd53e4e7, type: 3}
-  takenokoBulletBurst: {fileID: 8300000, guid: be87f536c189217448cef59e97d96440, type: 3}
-  snowBurst: {fileID: 8300000, guid: 2315424d595130d43b5115c6cc9ac564, type: 3}
-  sources:
-  - {fileID: 1698338227}
-  - {fileID: 1698338226}
-  - {fileID: 1698338225}
-  - {fileID: 1698338224}
-  - {fileID: 1698338223}
-  gameOverPrefab: {fileID: 1284260447523830, guid: 17a5a67bc7e91174b9dbf13d5ef6dbda,
-    type: 2}
-  gameClearPrefab: {fileID: 1538500192339580, guid: 95bacadfae3c6104fa47a9d7e3d6742b,
-    type: 2}
-  CoolTime: 0.1
-  playerSprite: {fileID: 21300000, guid: ed6e828e81e0c3348b954468719c7091, type: 3}
-  playerMaterial: {fileID: 2100000, guid: 8f21d86978253e24db1191dbcd6aad97, type: 2}
   mapTable: {fileID: 11400000, guid: 95b3f5381198b6846bb59dbb55f2bac3, type: 2}
   unlit: {fileID: 2100000, guid: 01b9b150470910148b1b60978b6fbd25, type: 2}
   enemyDisplay: {fileID: 11400000, guid: 46cfa6ae3ddcfa94eb23924c1fb8f31e, type: 2}
@@ -2095,6 +2112,31 @@ MonoBehaviour:
   rainCoolFrequency: 0.1
   snowCoolTime: 1.5
   snowDamageRatio: 1
+  takenokoBulletShoot: {fileID: 8300000, guid: 60c050250d89cec499d69760cd53e4e7, type: 3}
+  takenokoBulletBurst: {fileID: 8300000, guid: be87f536c189217448cef59e97d96440, type: 3}
+  snowBurst: {fileID: 8300000, guid: 2315424d595130d43b5115c6cc9ac564, type: 3}
+  sources:
+  - {fileID: 1698338227}
+  - {fileID: 1698338226}
+  - {fileID: 1698338225}
+  - {fileID: 1698338224}
+  - {fileID: 1698338223}
+  gameOverPrefab: {fileID: 1284260447523830, guid: 17a5a67bc7e91174b9dbf13d5ef6dbda,
+    type: 2}
+  gameClearPrefab: {fileID: 1538500192339580, guid: 95bacadfae3c6104fa47a9d7e3d6742b,
+    type: 2}
+  CoolTime: 0.1
+  playerSprite: {fileID: 21300000, guid: ed6e828e81e0c3348b954468719c7091, type: 3}
+  playerMaterial: {fileID: 2100000, guid: 8f21d86978253e24db1191dbcd6aad97, type: 2}
+  nextStageCount: 64000000e80300001027000050c30000
+  "\u6B66\u5668\u6B04": {fileID: 882133032}
+  stage4EnemySpeed: {fileID: 11400000, guid: 0bfc3346cfa646e48a8fb01728fb7f5b, type: 2}
+  respawnDisplay: {fileID: 1498458810679054, guid: 4695ce1766badc642b8828f46ffebdbf,
+    type: 2}
+  weaponNames:
+  - "\u30C9\u30A6\u30EA\u30EB\u30F4\u30A7\u30EB\u30D5\u30A1\u30FC"
+  - "\u73FE\u8EAB\u98A8\u8239"
+  BGMSource: {fileID: 1698338219}
 --- !u!82 &1698338219
 AudioSource:
   m_ObjectHideFlags: 0
@@ -3062,3 +3104,49 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!1 &2106433604
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2106433606}
+  - component: {fileID: 2106433605}
+  m_Layer: 0
+  m_Name: NCMB Settings
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2106433605
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2106433604}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0973fb6d802aae442a5dda6484693f6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  applicationKey: a4dfe3a6c9d78d2fb33dbc890740d61ac46071b6758248ddfcbbc45c884ad649
+  clientKey: 8e8b10f55613f39aaba519a827612a8f22be74205dd127a37b6be74de581c9ee
+  usePush: 0
+  useAnalytics: 0
+  androidSenderId: 
+  responseValidation: 0
+--- !u!4 &2106433606
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2106433604}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

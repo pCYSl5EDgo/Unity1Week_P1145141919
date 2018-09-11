@@ -27,6 +27,7 @@ namespace Unity1Week
                 playerMoveObserver.Dispose();
                 cameraMoveObserver.Dispose();
                 var clear = GameObject.Instantiate<GameObject>(gameClearPrefab, rootCanvas);
+                naichilab.RankingLoader.Instance.SendScoreAndShowRanking(deathCounter.Value * (Manager.LeaderCount * Manager.LeaderCount / 10000));
             });
             isGameOver = life.Select(lp => lp <= 0);
             isGameOver.Where(_ => _).Skip(1).First().Subscribe(_ =>
@@ -54,6 +55,7 @@ namespace Unity1Week
                 else if (killScore < 114514)
                     文章.text = $"ファッ！？\nはぇ～～、すっごい";
                 vertPanel.Find("Tweet").GetComponent<UI.TweetButton>().KillScore = killScore;
+                naichilab.RankingLoader.Instance.SendScoreAndShowRanking(deathCounter.Value * (Manager.LeaderCount / 100));
             });
         }
     }
