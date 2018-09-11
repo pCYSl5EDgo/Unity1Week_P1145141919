@@ -2093,7 +2093,8 @@ MonoBehaviour:
   rainCoolPower: -1000
   rainCoolTimeSpan: 60
   rainCoolFrequency: 0.1
-  snowDamageRatio: 0.1
+  snowCoolTime: 1.5
+  snowDamageRatio: 1
 --- !u!82 &1698338219
 AudioSource:
   m_ObjectHideFlags: 0

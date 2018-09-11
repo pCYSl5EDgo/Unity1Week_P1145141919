@@ -5,9 +5,6 @@ namespace Unity1Week
 {
     partial class Manager
     {
-        [SerializeField] uint[] nextStageCount;
-        [SerializeField] GameObject 武器欄;
-        [SerializeField] ScriptableObjects.Speed stage4EnemySpeed;
         IntReactiveProperty stageReactiveProperty = new IntReactiveProperty(0);
 
         private void InitializeStageWatch()

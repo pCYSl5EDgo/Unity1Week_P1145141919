@@ -13,8 +13,6 @@ namespace Unity1Week
     {
         IObservable<bool> isGameClear;
         IObservable<bool> isGameOver;
-        [SerializeField] GameObject gameOverPrefab;
-        [SerializeField] GameObject gameClearPrefab;
         private Transform rootCanvas;
 
         void InitializeGameOverUI()

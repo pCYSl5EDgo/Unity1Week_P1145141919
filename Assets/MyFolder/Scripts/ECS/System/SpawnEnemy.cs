@@ -11,7 +11,7 @@ namespace Unity1Week
     [UpdateBefore(typeof(MoveSystem))]
     public sealed class SpawnEnemySystem : ComponentSystem
     {
-        public SpawnEnemySystem(Entity player, uint spawnLimit, uint2 range, MeshInstanceRenderer bossMesh, MeshInstanceRenderer leaderMesh, MeshInstanceRenderer subordinateMesh, float skillCoolTime)
+        public SpawnEnemySystem(Entity player, uint spawnLimit, uint2 range, float skillCoolTime, MeshInstanceRenderer bossMesh, MeshInstanceRenderer leaderMesh, MeshInstanceRenderer subordinateMesh)
         {
             this.player = player;
             this.spawnLimit = spawnLimit;
@@ -24,9 +24,9 @@ namespace Unity1Week
         }
         protected override void OnCreateManager(int capacity)
         {
-            archetypeBoss = EntityManager.CreateArchetype(ComponentType.Create<Boss>(), ComponentType.Create<Position>(), ComponentType.Create<MeshInstanceRenderer>(), ComponentType.Create<Enemy>(), ComponentType.Create<Destination>(), ComponentType.Create<MoveSpeed>(), ComponentType.Create<Heading2D>(), ComponentType.Create<SkillElement>());
-            archetypeLeader = EntityManager.CreateArchetype(ComponentType.Create<Teammate>(), ComponentType.Create<Position>(), ComponentType.Create<MeshInstanceRenderer>(), ComponentType.Create<Enemy>(), ComponentType.Create<Destination>(), ComponentType.Create<MoveSpeed>(), ComponentType.Create<Heading2D>(), ComponentType.Create<SkillElement>());
-            archetypeSubordinate = EntityManager.CreateArchetype(ComponentType.Create<Position>(), ComponentType.Create<MeshInstanceRenderer>(), ComponentType.Create<Enemy>(), ComponentType.Create<Destination>(), ComponentType.Create<MoveSpeed>(), ComponentType.Create<Heading2D>(), ComponentType.Create<SkillElement>());
+            archetypeBoss = EntityManager.CreateArchetype(ComponentType.Create<Boss>(), ComponentType.Create<Position>(), ComponentType.Create<MeshInstanceRenderer>(), ComponentType.Create<Enemy>(), ComponentType.Create<SkillElement>(), ComponentType.Create<DestroyEnemyOutOfBoundsSystem.Tag>());
+            archetypeLeader = EntityManager.CreateArchetype(ComponentType.Create<Teammate>(), ComponentType.Create<Position>(), ComponentType.Create<MeshInstanceRenderer>(), ComponentType.Create<Enemy>(), ComponentType.Create<MoveSpeed>(), ComponentType.Create<Heading2D>(), ComponentType.Create<DestroyEnemyOutOfBoundsSystem.Tag>());
+            archetypeSubordinate = EntityManager.CreateArchetype(ComponentType.Create<Position>(), ComponentType.Create<MeshInstanceRenderer>(), ComponentType.Create<Enemy>(), ComponentType.Create<MoveSpeed>(), ComponentType.Create<Heading2D>(), ComponentType.Create<DestroyEnemyOutOfBoundsSystem.Tag>());
             gDead = GetComponentGroup(ComponentType.ReadOnly<DeadMan>());
             gAlive = GetComponentGroup(ComponentType.ReadOnly<Position>(), ComponentType.ReadOnly<MeshInstanceRenderer>(), ComponentType.ReadOnly<Enemy>());
             gLeader = GetComponentGroup(ComponentType.ReadOnly<Teammate>());
@@ -47,13 +47,43 @@ namespace Unity1Week
         public UniRx.ReactiveProperty<uint> DeathCount { get; } = new UniRx.ReactiveProperty<uint>(0);
         public UniRx.BoolReactiveProperty NearToRespawn { get; } = new UniRx.BoolReactiveProperty(true);
         private uint aliveCount;
+        private uint spawnTime = 1;
 
-        protected override unsafe void OnUpdate()
+        protected override void OnUpdate()
         {
             DeathCount.Value += (uint)gDead.CalculateLength();
             var manager = EntityManager;
             manager.DestroyEntity(gDead);
             if (DeathCount.Value >= 114514u) return;
+            SpawnBoss(manager, DeathCount.Value >> 10);
+            SpawnLeaders(manager);
+        }
+
+        void SpawnBoss(EntityManager manager, uint spawnCount)
+        {
+            if (spawnCount < spawnTime) return;
+            spawnTime = spawnCount + 1;
+            var bosses = new NativeArray<Entity>((int)spawnCount << 1, Allocator.Temp, NativeArrayOptions.UninitializedMemory);
+            try
+            {
+                bosses[0] = manager.CreateEntity(archetypeBoss);
+                manager.SetSharedComponentData(bosses[0], bossMesh);
+                manager.GetBuffer<SkillElement>(bosses[0]).Add(new SkillElement(2, skillCoolTime));
+                manager.Instantiate(bosses[0], bosses.SkipFirst());
+                for (int i = 0; i < bosses.Length; i++)
+                {
+                    manager.SetComponentData(bosses[i], new Position { Value = random.NextFloat3(default, new float3(range.x, 0, range.y)) });
+                    random = new Random(random.state + 1);
+                }
+            }
+            finally
+            {
+                bosses.Dispose();
+            }
+        }
+
+        unsafe void SpawnLeaders(EntityManager manager)
+        {
             aliveCount = (uint)gAlive.CalculateLength();
             var diff0 = aliveCount - spawnLimit;
             var diff1 = gLeader.CalculateLength() - respwan;
@@ -68,7 +98,6 @@ namespace Unity1Week
             {
                 leaders[0] = manager.CreateEntity(archetypeLeader);
                 manager.SetSharedComponentData(leaders[0], leaderMesh);
-                manager.GetBuffer<SkillElement>(leaders[0]).Add(new SkillElement(2, skillCoolTime));
                 manager.Instantiate(leaders[0], leaders.SkipFirst());
                 for (int i = 0; i < leaders.Length; i++)
                 {
@@ -84,7 +113,6 @@ namespace Unity1Week
                 }
                 subordinates[0] = manager.CreateEntity(archetypeSubordinate);
                 manager.SetSharedComponentData(subordinates[0], subordinateMesh);
-                manager.GetBuffer<SkillElement>(subordinates[0]).Add(new SkillElement(2, skillCoolTime));
                 manager.Instantiate(subordinates[0], subordinates.SkipFirst());
                 for (int i = 0; i < leaders.Length; i++)
                 {

@@ -5,6 +5,7 @@
 -out:"C:/Users/I/Saved Games/Unity1Week/Temp/Assembly-CSharp.dll"
 -nostdlib
 -unsafe
+-r:"C:/Users/I/Saved Games/Unity1Week/Library/ScriptAssemblies/ECS_Systems.dll"
 -r:"C:\Program Files\Unity\Hub\Editor\2018.2.7f1\Editor\Data\Managed/UnityEngine/UnityEngine.dll"
 -r:"C:\Program Files\Unity\Hub\Editor\2018.2.7f1\Editor\Data\Managed/UnityEngine/UnityEngine.AIModule.dll"
 -r:"C:\Program Files\Unity\Hub\Editor\2018.2.7f1\Editor\Data\Managed/UnityEngine/UnityEngine.ARModule.dll"
@@ -89,7 +90,6 @@
 -r:"C:/Users/I/Saved Games/Unity1Week/Library/ScriptAssemblies/Unity.TextMeshPro.dll"
 -r:"C:/Users/I/Saved Games/Unity1Week/Library/ScriptAssemblies/Unity.Mathematics.dll"
 -r:"C:/Users/I/Saved Games/Unity1Week/Library/ScriptAssemblies/Unity.Collections.dll"
--r:"C:/Users/I/Saved Games/Unity1Week/Library/ScriptAssemblies/ECS_Systems.dll"
 -r:"C:/Users/I/Saved Games/Unity1Week/Library/ScriptAssemblies/ECS_ComponentTypes.dll"
 -r:"C:/Program Files/Unity/Hub/Editor/2018.2.7f1/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll"
 -r:"C:/Program Files/Unity/Hub/Editor/2018.2.7f1/Editor/Data/UnityExtensions/Unity/Timeline/RuntimeEditor/UnityEngine.Timeline.dll"

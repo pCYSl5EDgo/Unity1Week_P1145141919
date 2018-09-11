@@ -31,11 +31,8 @@ namespace Unity1Week
 
         private ReactiveProperty<uint> deathCounter;
         private BoolReactiveProperty nearToRespawn;
-        [SerializeField] GameObject respawnDisplay;
         private FloatReactiveProperty life;
         private TMP_Text 武器名;
-        [SerializeField] string[] weaponNames;
-        [SerializeField] AudioSource BGMSource;
         private float 目標駆逐数 = 114514;
         private IDisposable cameraMoveObserver;
         private IDisposable playerMoveObserver;

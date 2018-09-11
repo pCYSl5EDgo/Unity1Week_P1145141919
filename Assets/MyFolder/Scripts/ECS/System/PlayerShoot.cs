@@ -13,7 +13,7 @@ namespace Unity1Week
         private readonly Camera mainCamera;
         private readonly Entity player;
         private readonly Action playSoundEffect;
-        private EntityArchetype archetype, 空蝉;
+        private EntityArchetype ドウリルヴェルファー, 空蝉;
 
         public int WeaponType = 0;
 
@@ -25,8 +25,8 @@ namespace Unity1Week
         }
         protected override void OnCreateManager(int capacity)
         {
-            archetype = EntityManager.CreateArchetype(ComponentType.Create<TakenokoBullet>(), ComponentType.Create<Position>(), ComponentType.Create<Frozen>(), ComponentType.Create<Heading2D>(), ComponentType.Create<MoveSpeed>());
-            空蝉 = EntityManager.CreateArchetype(ComponentType.Create<空蝉Tag>(), ComponentType.Create<LifeTime>(), ComponentType.Create<Position>(), ComponentType.Create<Heading2D>(), ComponentType.Create<MoveSpeed>());
+            ドウリルヴェルファー = EntityManager.CreateArchetype(ComponentType.Create<TakenokoBullet>(), ComponentType.Create<Position>(), ComponentType.Create<Frozen>(), ComponentType.Create<Heading2D>(), ComponentType.Create<MoveSpeed>(), ComponentType.Create<DestroyEnemyOutOfBoundsSystem.Tag>());
+            空蝉 = EntityManager.CreateArchetype(ComponentType.Create<空蝉Tag>(), ComponentType.Create<LifeTime>(), ComponentType.Create<Position>(), ComponentType.Create<Heading2D>(), ComponentType.Create<MoveSpeed>(), ComponentType.Create<DestroyEnemyOutOfBoundsSystem.Tag>());
         }
         protected override void OnUpdate()
         {
@@ -48,7 +48,7 @@ namespace Unity1Week
             {
                 case 0: // ドウリルヴェルファー
                     playSoundEffect();
-                    buf.CreateEntity(archetype);
+                    buf.CreateEntity(ドウリルヴェルファー);
                     break;
                 case 1: // ラジエーション空蝉
                     buf.CreateEntity(空蝉);

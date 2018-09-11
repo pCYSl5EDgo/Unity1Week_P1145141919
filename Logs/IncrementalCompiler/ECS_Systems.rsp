@@ -297,6 +297,7 @@
 -d:UNITY_TEAM_LICENSE
 -d:UNITY_DISABLE_AUTOMATIC_SYSTEM_BOOTSTRAP
 -d:CSHARP_7_OR_LATER
+-i:"C:/Users/I/Saved Games/Unity1Week/Assets/MyFolder/Scripts/ECS/System/EnemyShoot.cs"
 -i:"C:/Users/I/Saved Games/Unity1Week/Assets/MyFolder/Scripts/ECS/System/Hit/BombHit.cs"
 -i:"C:/Users/I/Saved Games/Unity1Week/Assets/MyFolder/Scripts/ECS/System/Hit/EnemyPlayerCollision.cs"
 -i:"C:/Users/I/Saved Games/Unity1Week/Assets/MyFolder/Scripts/ECS/System/Hit/SnowPlayerHit.cs"
@@ -305,7 +306,6 @@
 -i:"C:/Users/I/Saved Games/Unity1Week/Assets/MyFolder/Scripts/ECS/System/Move/ConfinePlayerPosition.cs"
 -i:"C:/Users/I/Saved Games/Unity1Week/Assets/MyFolder/Scripts/ECS/System/Move/DecideMoveSpeed.cs"
 -i:"C:/Users/I/Saved Games/Unity1Week/Assets/MyFolder/Scripts/ECS/System/Move/DestroyEnemyOutOfBounds.cs"
--i:"C:/Users/I/Saved Games/Unity1Week/Assets/MyFolder/Scripts/ECS/System/Move/EnemyShoot.cs"
 -i:"C:/Users/I/Saved Games/Unity1Week/Assets/MyFolder/Scripts/ECS/System/Move/HeadingEnemy.cs"
 -i:"C:/Users/I/Saved Games/Unity1Week/Assets/MyFolder/Scripts/ECS/System/Move/Move.cs"
 -i:"C:/Users/I/Saved Games/Unity1Week/Assets/MyFolder/Scripts/ECS/System/Move/PlayerMove.cs"

@@ -11,9 +11,6 @@ namespace Unity1Week
     partial class Manager
     {
         Entity player;
-        [SerializeField] float CoolTime;
-        [SerializeField] Sprite playerSprite;
-        [SerializeField] Material playerMaterial;
 
         void InitializePlayer(uint2 range, int maxLife, float temperature, float thermalDeathPoint)
         {

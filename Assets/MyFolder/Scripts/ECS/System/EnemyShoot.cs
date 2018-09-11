@@ -32,7 +32,7 @@ namespace Unity1Week
 
         protected override void OnCreateManager(int capacity)
         {
-            archetype = EntityManager.CreateArchetype(ComponentType.Create<Position>(), ComponentType.Create<Heading2D>(), ComponentType.Create<MoveSpeed>(), ComponentType.Create<SnowBulletTag>());
+            archetype = EntityManager.CreateArchetype(ComponentType.Create<Position>(), ComponentType.Create<Heading2D>(), ComponentType.Create<MoveSpeed>(), ComponentType.Create<SnowBulletTag>(), ComponentType.Create<DestroyEnemyOutOfBoundsSystem.Tag>());
         }
 
         protected override void OnDestroyManager()
@@ -63,9 +63,11 @@ namespace Unity1Week
                     var skills = chunks[i].GetBufferAccessor(skillElementRW);
                     for (int j = 0; j < positions.Length; ++j, ++positionPtr)
                     {
-                        var _ = skills[j][0];
+                        var skill = skills[j];
+                        var _ = skill[0];
                         if (!_.IsActivateble) continue;
                         _.SinceLastTime = 0;
+                        skill[0] = _;
                         buf.CreateEntity(archetype);
                         buf.SetComponent(*positionPtr);
                         var diffX = playerX - positionPtr->Value.x;

@@ -42,7 +42,7 @@ namespace Unity1Week
             var playerPosition = manager.GetComponentData<Position>(player).Value;
             var playerSettings = manager.GetComponentData<PlayerSettings>(player);
             var playerX = playerPosition.x;
-            var playerY = playerPosition.y;
+            var playerY = playerPosition.z;
             var damage = damageRatio * Time.deltaTime * killScore.Value;
             var temperatureDelta = damageRatio * Time.deltaTime;
             DecidePositionHashCodeSystem.Tuple snowItem, playerBulletItem;
@@ -54,6 +54,7 @@ namespace Unity1Week
                 var diffY = playerY - snowItem.Position.y;
                 if (diffX * diffX + diffY * diffY <= rangeSquared)
                 {
+                    Debug.Log(damage);
                     playerSettings.Life -= damage;
                     playerSettings.Temperature -= temperatureDelta;
                     toDestroy.Add(snowItem);

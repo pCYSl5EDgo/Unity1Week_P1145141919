@@ -12,12 +12,13 @@ namespace Unity1Week
     [UpdateAfter(typeof(ConfinePlayerPositionSystem))]
     public sealed class DestroyEnemyOutOfBoundsSystem : ComponentSystem
     {
+        public struct Tag : IComponentData { }
         private readonly uint2 range;
         private readonly EntityArchetypeQuery q = new EntityArchetypeQuery
         {
-            None = new[] { ComponentType.Create<Controlable>() },
-            Any = new[] { ComponentType.Create<Enemy>(), ComponentType.Create<PlayerShootSystem.TakenokoBullet>() },
-            All = new[] { ComponentType.Create<Position>() },
+            None = Array.Empty<ComponentType>(),
+            Any = Array.Empty<ComponentType>(),
+            All = new[] { ComponentType.Create<Position>(), ComponentType.Create<Tag>() },
         };
         private readonly NativeList<EntityArchetype> f = new NativeList<EntityArchetype>(1024, Allocator.Persistent);
 

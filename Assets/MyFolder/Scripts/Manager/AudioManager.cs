@@ -6,11 +6,6 @@ namespace Unity1Week
 {
     partial class Manager
     {
-        [SerializeField] AudioClip takenokoBulletShoot;
-        [SerializeField] AudioClip takenokoBulletBurst;
-        [SerializeField] AudioClip snowBurst;
-
-        [SerializeField] AudioSource[] sources;
         private bool canPlaySE = true;
         (float startTime, float endTime, AudioClip clip)[] sourceInfos;
 

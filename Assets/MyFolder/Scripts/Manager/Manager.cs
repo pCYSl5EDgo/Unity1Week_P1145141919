@@ -29,7 +29,23 @@ namespace Unity1Week
         [SerializeField] float rainCoolPower;
         [SerializeField] float rainCoolTimeSpan;
         [SerializeField] float rainCoolFrequency;
+        [SerializeField] float snowCoolTime;
         [SerializeField] float snowDamageRatio;
+        [SerializeField] AudioClip takenokoBulletShoot;
+        [SerializeField] AudioClip takenokoBulletBurst;
+        [SerializeField] AudioClip snowBurst;
+        [SerializeField] AudioSource[] sources;
+        [SerializeField] GameObject gameOverPrefab;
+        [SerializeField] GameObject gameClearPrefab;
+        [SerializeField] float CoolTime;
+        [SerializeField] Sprite playerSprite;
+        [SerializeField] Material playerMaterial;
+        [SerializeField] uint[] nextStageCount;
+        [SerializeField] GameObject 武器欄;
+        [SerializeField] ScriptableObjects.Speed stage4EnemySpeed;
+        [SerializeField] GameObject respawnDisplay;
+        [SerializeField] string[] weaponNames;
+        [SerializeField] AudioSource BGMSource;
 
         public static uint LeaderCount = 1000u;
 
@@ -100,7 +116,8 @@ namespace Unity1Week
             ScriptBehaviourUpdateOrder.UpdatePlayerLoop(world);
         }
 
-        private SpawnEnemySystem InitializeSpawnEnemy(Entity player, Mesh enemyMesh, World world, Unity.Mathematics.uint2 range, uint count) => world.CreateManager<SpawnEnemySystem>(player, count, range,
+        private SpawnEnemySystem InitializeSpawnEnemy(Entity player, Mesh enemyMesh, World world, Unity.Mathematics.uint2 range, uint count)
+        => world.CreateManager<SpawnEnemySystem>(player, count, range, snowCoolTime,
             new MeshInstanceRenderer
             {
                 mesh = enemyMesh,
@@ -124,7 +141,7 @@ namespace Unity1Week
                 castShadows = ShadowCastingMode.Off,
                 receiveShadows = false,
                 subMesh = 0,
-            }, 2f);
+            });
 
         private EntityManager manager;
         private Camera UICamera;
