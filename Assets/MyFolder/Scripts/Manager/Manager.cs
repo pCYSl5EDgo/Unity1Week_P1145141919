@@ -29,14 +29,15 @@ namespace Unity1Week
         [SerializeField] float rainCoolPower;
         [SerializeField] float rainCoolTimeSpan;
         [SerializeField] float rainCoolFrequency;
+        [SerializeField] float snowDamageRatio;
 
-        public static uint LeaderCount = 10000u;
+        public static uint LeaderCount = 1000u;
 
         void Start()
         {
             mainCamera = GetComponent<Camera>();
             UICamera = GameObject.Find("UI Camera").GetComponent<Camera>();
-            sourceInfos = new(float, float, AudioClip)[sources.Length];
+            sourceInfos = new (float, float, AudioClip)[sources.Length];
 #if UNITY_EDITOR
             Validate();
 #endif
@@ -78,6 +79,9 @@ namespace Unity1Week
             world.CreateManager(typeof(ConfinePlayerPositionSystem), player, range, mainCamera.transform);
             world.CreateManager(typeof(ShootSystem), player, 4);
             PlayerShootSystem = world.CreateManager<PlayerShootSystem>(player, mainCamera, new Action(TryToPlayTakenokoShoot));
+            var SpawnEnemySystem = InitializeSpawnEnemy(player, enemyMesh, world, range, LeaderCount);
+            deathCounter = SpawnEnemySystem.DeathCount;
+            nearToRespawn = SpawnEnemySystem.NearToRespawn;
             world.CreateManager(typeof(TakenokoEnemyHitCheckSystem), 0.16f, enemyHashCodes, playerBulletHashCodes, allPositionHashCodes, new Action(TryToPlayTakenokoBurst));
             world.CreateManager(typeof(PlayerMoveSystem), player, mainCamera.transform);
             world.CreateManager(typeof(BombRenderSystem), mainCamera, bombMaterial, bombSprites, (int)takenokoBulletBurst.length);
@@ -87,10 +91,8 @@ namespace Unity1Week
             world.CreateManager(typeof(TakenokoRenderSystem), mainCamera, playerBulletSprite, playerBulletMaterial);
             world.CreateManager(typeof(BombHitCheckSystem), player, 4, enemyHashCodes);
             world.CreateManager(typeof(ChipRenderSystem), mainCamera, range, chips, mapTable.chipTemperatures, mapTable.map, unlit);
+            world.CreateManager(typeof(SnowPlayerHitCheckSystem), player, snowDamageRatio, deathCounter, 1f, snowHashCodes, playerBulletHashCodes, allPositionHashCodes, new Action(TryToPlaySnowBurst));
             (this.RainSystem = world.CreateManager<RainSystem>(range, rainCoolTimeSpan, rainCoolPower, rainCoolFrequency)).Enabled = false;
-            var SpawnEnemySystem = InitializeSpawnEnemy(player, enemyMesh, world, range, LeaderCount);
-            deathCounter = SpawnEnemySystem.DeathCount;
-            nearToRespawn = SpawnEnemySystem.NearToRespawn;
             (this.EnemyPlayerCollisionSystem = world.CreateManager<EnemyPlayerCollisionSystem>(player, enemyHashCodes, 0.16f, deathCounter)).Enabled = false;
             world.CreateManager(typeof(PlayerTemperatureSystem), player, range, chips, heatDamageRatio, coolRatio);
             world.CreateManager(typeof(空蝉RenderSystem), mainCamera, playerMaterial, playerSprite, 15);

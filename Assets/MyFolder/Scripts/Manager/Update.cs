@@ -35,7 +35,7 @@ namespace Unity1Week
         private FloatReactiveProperty life;
         private TMP_Text 武器名;
         [SerializeField] string[] weaponNames;
-
+        [SerializeField] AudioSource BGMSource;
         private float 目標駆逐数 = 114514;
         private IDisposable cameraMoveObserver;
         private IDisposable playerMoveObserver;
@@ -83,10 +83,17 @@ namespace Unity1Week
                 else
                     GameObject.Destroy(注意);
             });
-            this.UpdateAsObservable().Select(_ => Input.GetKey(KeyCode.Backspace)).ThrottleFirst(System.TimeSpan.FromMilliseconds(200)).Where(_ => _).Subscribe(_ =>
+            this.UpdateAsObservable().Select(_ => Input.GetKeyDown(KeyCode.Backspace)).ThrottleFirst(System.TimeSpan.FromMilliseconds(200)).Where(_ => _).Subscribe(_ =>
             {
                 UICamera.enabled = !UICamera.enabled;
             });
+            this.UpdateAsObservable().Select(_ => Input.GetKeyDown(KeyCode.K)).ThrottleFirst(System.TimeSpan.FromMilliseconds(200)).Where(_ => _).Subscribe(_ =>
+            {
+                if (BGMSource.isPlaying)
+                    BGMSource.Stop();
+                else BGMSource.Play();
+            });
+            this.UpdateAsObservable().Select(_ => Input.GetKeyDown(KeyCode.J)).ThrottleFirst(System.TimeSpan.FromMilliseconds(200)).Where(_ => _).Subscribe(_ => canPlaySE = !canPlaySE);
             cameraMoveObserver = this.UpdateAsObservable().Subscribe(_ =>
             {
                 var deltaY = Input.mouseScrollDelta.y;
