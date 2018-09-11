@@ -10,7 +10,7 @@ using System;
 namespace Unity1Week
 {
     [UpdateAfter(typeof(MoveEnemySystem))]
-    sealed class DecidePositionHashCodeSystem : ComponentSystem
+    public sealed class DecidePositionHashCodeSystem : ComponentSystem
     {
         public readonly struct Tuple : IEquatable<Tuple>
         {

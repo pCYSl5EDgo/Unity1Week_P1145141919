@@ -12,7 +12,7 @@ using UnityEngine.Rendering;
 namespace Unity1Week
 {
     [UpdateAfter(typeof(Unity.Rendering.MeshInstanceRendererSystem))]
-    sealed class BombRenderSystem : ComponentSystem
+    public sealed class BombRenderSystem : ComponentSystem
     {
         private readonly Material material;
         private Camera mainCamera;

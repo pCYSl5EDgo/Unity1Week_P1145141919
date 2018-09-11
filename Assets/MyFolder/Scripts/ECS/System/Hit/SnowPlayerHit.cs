@@ -11,7 +11,7 @@ namespace Unity1Week
 {
     [UpdateAfter(typeof(DecidePositionHashCodeSystem))]
     [UpdateBefore(typeof(BombRenderSystem))]
-    sealed class SnowPlayerHitCheckSystem : ComponentSystem
+    public sealed class SnowPlayerHitCheckSystem : ComponentSystem
     {
         private readonly float rangeSquared;
         private readonly Entity player;

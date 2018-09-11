@@ -4,7 +4,7 @@ using Unity.Collections.LowLevel.Unsafe;
 
 namespace Unity1Week
 {
-    sealed class UpdateCoolTimeSystem : ComponentSystem
+    public sealed class UpdateCoolTimeSystem : ComponentSystem
     {
         protected override void OnCreateManager(int capacity)
         {

@@ -13,7 +13,7 @@ namespace Unity1Week
 {
     [AlwaysUpdateSystem]
     [UpdateAfter(typeof(MeshInstanceRendererSystem))]
-    sealed class ChipRenderSystem : ComponentSystem
+    public sealed class ChipRenderSystem : ComponentSystem
     {
         public struct Tag : IComponentData
         {

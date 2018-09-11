@@ -10,7 +10,7 @@ using UniRx;
 
 namespace Unity1Week
 {
-    sealed class LeaderShootSystem : ComponentSystem
+    public sealed class LeaderShootSystem : ComponentSystem
     {
         public LeaderShootSystem()
         {

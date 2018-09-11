@@ -9,7 +9,7 @@ namespace Unity1Week
 {
     [AlwaysUpdateSystem]
     [UpdateBefore(typeof(MoveSystem))]
-    sealed class SpawnEnemySystem : ComponentSystem
+    public sealed class SpawnEnemySystem : ComponentSystem
     {
         public SpawnEnemySystem(Entity player, uint spawnLimit, uint2 range, MeshInstanceRenderer bossMesh, MeshInstanceRenderer leaderMesh, MeshInstanceRenderer subordinateMesh, float skillCoolTime)
         {

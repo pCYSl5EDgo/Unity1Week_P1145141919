@@ -13,7 +13,7 @@ using UnityEngine.Rendering;
 namespace Unity1Week
 {
     [AlwaysUpdateSystem]
-    sealed class RainSystem : ComponentSystem
+    public sealed class RainSystem : ComponentSystem
     {
         private readonly uint2 range;
         private readonly float timeSpan;

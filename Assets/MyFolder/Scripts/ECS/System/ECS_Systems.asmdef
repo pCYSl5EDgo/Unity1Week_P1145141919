@@ -1,0 +1,16 @@
+{
+    "name": "ECS_Systems",
+    "references": [
+        "UniRx",
+        "Unity.Entities",
+        "Unity.Rendering.Hybrid",
+        "Unity.Transforms",
+        "Unity.Mathematics",
+        "Unity.Collections",
+        "ECS_ComponentTypes"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true
+}

@@ -89,9 +89,9 @@
 -r:C:/Users/I/AppData/Local/Unity/cache/packages/staging-packages.unity.com/com.unity.ads@2.0.9/Editor/UnityEditor.Advertisements.dll
 -r:C:/Users/I/AppData/Local/Unity/cache/packages/staging-packages.unity.com/com.unity.analytics@2.0.16/UnityEngine.Analytics.dll
 -r:C:/Users/I/AppData/Local/Unity/cache/packages/staging-packages.unity.com/com.unity.analytics@2.0.16/Editor/UnityEditor.Analytics.dll
--r:C:/Users/I/AppData/Local/Unity/cache/packages/staging-packages.unity.com/com.unity.collections@0.0.9-preview.4/System.Runtime.CompilerServices.Unsafe.dll
 -r:C:/Users/I/AppData/Local/Unity/cache/packages/staging-packages.unity.com/com.unity.purchasing@2.0.3/Editor/UnityEditor.Purchasing.dll
 -r:C:/Users/I/AppData/Local/Unity/cache/packages/staging-packages.unity.com/com.unity.standardevents@1.0.13/UnityEngine.StandardEvents.dll
+-r:"C:/Users/I/Saved Games/Unity1Week/Assets/Plugins/com.unity.collections@0.0.9-preview.4/System.Runtime.CompilerServices.Unsafe.dll"
 -r:"C:\Program Files\Unity\Hub\Editor\2018.2.7f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\mscorlib.dll"
 -r:"C:\Program Files\Unity\Hub\Editor\2018.2.7f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\System.dll"
 -r:"C:\Program Files\Unity\Hub\Editor\2018.2.7f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\System.Core.dll"
@@ -291,16 +291,16 @@
 -d:UNITY_TEAM_LICENSE
 -d:UNITY_DISABLE_AUTOMATIC_SYSTEM_BOOTSTRAP
 -d:CSHARP_7_OR_LATER
--i:C:/Users/I/AppData/Local/Unity/cache/packages/staging-packages.unity.com/com.unity.collections@0.0.9-preview.4/Unity.Collections/CollectionHelper.cs
--i:C:/Users/I/AppData/Local/Unity/cache/packages/staging-packages.unity.com/com.unity.collections@0.0.9-preview.4/Unity.Collections/ListExtensions.cs
--i:C:/Users/I/AppData/Local/Unity/cache/packages/staging-packages.unity.com/com.unity.collections@0.0.9-preview.4/Unity.Collections/NativeArrayExtensions.cs
--i:C:/Users/I/AppData/Local/Unity/cache/packages/staging-packages.unity.com/com.unity.collections@0.0.9-preview.4/Unity.Collections/NativeArraySOA.cs
--i:C:/Users/I/AppData/Local/Unity/cache/packages/staging-packages.unity.com/com.unity.collections@0.0.9-preview.4/Unity.Collections/NativeBuffer.cs
--i:C:/Users/I/AppData/Local/Unity/cache/packages/staging-packages.unity.com/com.unity.collections@0.0.9-preview.4/Unity.Collections/NativeHashMap.cs
--i:C:/Users/I/AppData/Local/Unity/cache/packages/staging-packages.unity.com/com.unity.collections@0.0.9-preview.4/Unity.Collections/NativeList.cs
--i:C:/Users/I/AppData/Local/Unity/cache/packages/staging-packages.unity.com/com.unity.collections@0.0.9-preview.4/Unity.Collections/NativeListImpl.cs
--i:C:/Users/I/AppData/Local/Unity/cache/packages/staging-packages.unity.com/com.unity.collections@0.0.9-preview.4/Unity.Collections/NativeQueue.cs
--i:C:/Users/I/AppData/Local/Unity/cache/packages/staging-packages.unity.com/com.unity.collections@0.0.9-preview.4/Unity.Collections/NativeSort.cs
--i:C:/Users/I/AppData/Local/Unity/cache/packages/staging-packages.unity.com/com.unity.collections@0.0.9-preview.4/Unity.Collections/UnsafeUtilityEx.cs
+-i:"C:/Users/I/Saved Games/Unity1Week/Assets/Plugins/com.unity.collections@0.0.9-preview.4/Unity.Collections/CollectionHelper.cs"
+-i:"C:/Users/I/Saved Games/Unity1Week/Assets/Plugins/com.unity.collections@0.0.9-preview.4/Unity.Collections/ListExtensions.cs"
+-i:"C:/Users/I/Saved Games/Unity1Week/Assets/Plugins/com.unity.collections@0.0.9-preview.4/Unity.Collections/NativeArrayExtensions.cs"
+-i:"C:/Users/I/Saved Games/Unity1Week/Assets/Plugins/com.unity.collections@0.0.9-preview.4/Unity.Collections/NativeArraySOA.cs"
+-i:"C:/Users/I/Saved Games/Unity1Week/Assets/Plugins/com.unity.collections@0.0.9-preview.4/Unity.Collections/NativeBuffer.cs"
+-i:"C:/Users/I/Saved Games/Unity1Week/Assets/Plugins/com.unity.collections@0.0.9-preview.4/Unity.Collections/NativeHashMap.cs"
+-i:"C:/Users/I/Saved Games/Unity1Week/Assets/Plugins/com.unity.collections@0.0.9-preview.4/Unity.Collections/NativeList.cs"
+-i:"C:/Users/I/Saved Games/Unity1Week/Assets/Plugins/com.unity.collections@0.0.9-preview.4/Unity.Collections/NativeListImpl.cs"
+-i:"C:/Users/I/Saved Games/Unity1Week/Assets/Plugins/com.unity.collections@0.0.9-preview.4/Unity.Collections/NativeQueue.cs"
+-i:"C:/Users/I/Saved Games/Unity1Week/Assets/Plugins/com.unity.collections@0.0.9-preview.4/Unity.Collections/NativeSort.cs"
+-i:"C:/Users/I/Saved Games/Unity1Week/Assets/Plugins/com.unity.collections@0.0.9-preview.4/Unity.Collections/UnsafeUtilityEx.cs"
 @Assets\mcs.rsp
 -v:0

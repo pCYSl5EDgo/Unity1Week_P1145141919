@@ -10,7 +10,7 @@ using UnityEngine;
 namespace Unity1Week
 {
     [AlwaysUpdateSystem]
-    sealed class PlayerTemperatureSystem : ComponentSystem
+    public sealed class PlayerTemperatureSystem : ComponentSystem
     {
         private readonly Entity player;
         private readonly Chip[] chips;

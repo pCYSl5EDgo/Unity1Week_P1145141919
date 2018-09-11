@@ -12,7 +12,7 @@ namespace Unity1Week
 {
     [UpdateAfter(typeof(DecidePositionHashCodeSystem))]
     [AlwaysUpdateSystem]
-    sealed class EnemyPlayerCollisionSystem : ComponentSystem
+    public sealed class EnemyPlayerCollisionSystem : ComponentSystem
     {
         private readonly NativeMultiHashMap<int, DecidePositionHashCodeSystem.Tuple> enemyHashCodes;
         private readonly Entity player;

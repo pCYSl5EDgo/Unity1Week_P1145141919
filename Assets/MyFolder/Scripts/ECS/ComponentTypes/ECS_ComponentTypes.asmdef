@@ -1,0 +1,11 @@
+{
+    "name": "ECS_ComponentTypes",
+    "references": [
+        "Unity.Entities",
+        "Unity.Mathematics"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true
+}

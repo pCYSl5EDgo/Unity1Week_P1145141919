@@ -11,7 +11,7 @@ namespace Unity1Week
 {
     [UpdateAfter(typeof(DecidePositionHashCodeSystem))]
     [UpdateBefore(typeof(BombRenderSystem))]
-    sealed class BombHitCheckSystem : ComponentSystem
+    public sealed class BombHitCheckSystem : ComponentSystem
     {
         private readonly float rangeSquared;
         private readonly NativeMultiHashMap<int, DecidePositionHashCodeSystem.Tuple> enemyHashCodes;

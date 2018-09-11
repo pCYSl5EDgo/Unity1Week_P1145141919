@@ -11,7 +11,7 @@ using UnityEngine.Rendering;
 namespace Unity1Week
 {
     [UpdateAfter(typeof(MoveSystem))]
-    sealed class EnemyBulletRenderSystem : ComponentSystem
+    public sealed class EnemyBulletRenderSystem : ComponentSystem
     {
         private readonly Camera mainCamera;
         private readonly Mesh mesh;

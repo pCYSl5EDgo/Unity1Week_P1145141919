@@ -7,7 +7,7 @@ using System;
 namespace Unity1Week
 {
     [AlwaysUpdateSystem]
-    sealed class PlayerShootSystem : ComponentSystem
+    public sealed class PlayerShootSystem : ComponentSystem
     {
         public struct TakenokoBullet : IComponentData { }
         private readonly Camera mainCamera;

@@ -11,7 +11,7 @@ namespace Unity1Week
 {
     [UpdateAfter(typeof(DecidePositionHashCodeSystem))]
     [UpdateBefore(typeof(BombRenderSystem))]
-    sealed class TakenokoEnemyHitCheckSystem : ComponentSystem
+    public sealed class TakenokoEnemyHitCheckSystem : ComponentSystem
     {
         public TakenokoEnemyHitCheckSystem(float radius, NativeMultiHashMap<int, DecidePositionHashCodeSystem.Tuple> enemyHashCodes, NativeMultiHashMap<int, DecidePositionHashCodeSystem.Tuple> playerBulletHashCodes, HashSet<int> allPositionHashCodes, Action playSoundEffect)
         {
