@@ -2,7 +2,6 @@
 
 namespace Unity1Week.ScriptableObjects
 {
-    [CreateAssetMenu(menuName = "ScriptableObjects/EnemyDisplay", fileName = "EnemyDisplayTable")]
     public class EnemyDisplay : ScriptableObject
     {
         public Sprite enemySprite;

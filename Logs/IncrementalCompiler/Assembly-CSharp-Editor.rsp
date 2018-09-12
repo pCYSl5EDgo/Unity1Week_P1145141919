@@ -71,9 +71,11 @@
 -r:"C:\Program Files\Unity\Hub\Editor\2018.2.7f1\Editor\Data\Managed/UnityEditor.dll"
 -r:"C:\Program Files\Unity\Hub\Editor\2018.2.7f1\Editor\Data\Managed/Unity.Locator.dll"
 -r:"C:/Users/I/Saved Games/Unity1Week/Library/ScriptAssemblies/Unity.PackageManagerDocTools.Editor.dll"
+-r:"C:/Users/I/Saved Games/Unity1Week/Library/ScriptAssemblies/Unity.Mathematics.dll"
 -r:"C:/Users/I/Saved Games/Unity1Week/Library/ScriptAssemblies/UniRx.dll"
 -r:"C:/Users/I/Saved Games/Unity1Week/Library/ScriptAssemblies/Unity.Properties.Codegen.dll"
 -r:"C:/Users/I/Saved Games/Unity1Week/Library/ScriptAssemblies/Unity.Jobs.dll"
+-r:"C:/Users/I/Saved Games/Unity1Week/Library/ScriptAssemblies/Unity.Collections.dll"
 -r:"C:/Users/I/Saved Games/Unity1Week/Library/ScriptAssemblies/Unity.Jobs.Editor.dll"
 -r:"C:/Users/I/Saved Games/Unity1Week/Library/ScriptAssemblies/Unity.Properties.dll"
 -r:"C:/Users/I/Saved Games/Unity1Week/Library/ScriptAssemblies/Unity.Entities.dll"
@@ -87,13 +89,11 @@
 -r:"C:/Users/I/Saved Games/Unity1Week/Library/ScriptAssemblies/Unity.Transforms.dll"
 -r:"C:/Users/I/Saved Games/Unity1Week/Library/ScriptAssemblies/UniRx.Async.dll"
 -r:"C:/Users/I/Saved Games/Unity1Week/Library/ScriptAssemblies/UniRx.Async.Editor.dll"
+-r:"C:/Users/I/Saved Games/Unity1Week/Library/ScriptAssemblies/ECS_ComponentTypes.dll"
+-r:"C:/Users/I/Saved Games/Unity1Week/Library/ScriptAssemblies/ECS_Systems.dll"
 -r:"C:/Users/I/Saved Games/Unity1Week/Library/ScriptAssemblies/Unity.Entities.Hybrid.dll"
 -r:"C:/Users/I/Saved Games/Unity1Week/Library/ScriptAssemblies/Unity.Burst.Editor.dll"
 -r:"C:/Users/I/Saved Games/Unity1Week/Library/ScriptAssemblies/Unity.TextMeshPro.dll"
--r:"C:/Users/I/Saved Games/Unity1Week/Library/ScriptAssemblies/Unity.Mathematics.dll"
--r:"C:/Users/I/Saved Games/Unity1Week/Library/ScriptAssemblies/Unity.Collections.dll"
--r:"C:/Users/I/Saved Games/Unity1Week/Library/ScriptAssemblies/ECS_Systems.dll"
--r:"C:/Users/I/Saved Games/Unity1Week/Library/ScriptAssemblies/ECS_ComponentTypes.dll"
 -r:"C:/Program Files/Unity/Hub/Editor/2018.2.7f1/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll"
 -r:"C:/Program Files/Unity/Hub/Editor/2018.2.7f1/Editor/Data/UnityExtensions/Unity/GUISystem/Editor/UnityEditor.UI.dll"
 -r:"C:/Program Files/Unity/Hub/Editor/2018.2.7f1/Editor/Data/UnityExtensions/Unity/TestRunner/Editor/UnityEditor.TestRunner.dll"
@@ -114,13 +114,13 @@
 -r:"C:/Program Files/Unity/Hub/Editor/2018.2.7f1/Editor/Data/Managed/UnityEditor.Graphs.dll"
 -r:"C:/Program Files/Unity/Hub/Editor/2018.2.7f1/Editor/Data/PlaybackEngines/WebGLSupport/UnityEditor.WebGL.Extensions.dll"
 -r:"C:/Program Files/Unity/Hub/Editor/2018.2.7f1/Editor/Data/PlaybackEngines/windowsstandalonesupport/UnityEditor.WindowsStandalone.Extensions.dll"
+-r:"C:/Users/I/Saved Games/Unity1Week/Assets/Plugins/com.unity.collections@0.0.9-preview.4/System.Runtime.CompilerServices.Unsafe.dll"
 -r:"C:/Users/I/Saved Games/Unity1Week/Assets/Plugins/Editor/CSharpLatest.dll"
 -r:C:/Users/I/AppData/Local/Unity/cache/packages/staging-packages.unity.com/com.unity.ads@2.0.9/Editor/UnityEditor.Advertisements.dll
 -r:C:/Users/I/AppData/Local/Unity/cache/packages/staging-packages.unity.com/com.unity.analytics@2.0.16/UnityEngine.Analytics.dll
 -r:C:/Users/I/AppData/Local/Unity/cache/packages/staging-packages.unity.com/com.unity.analytics@2.0.16/Editor/UnityEditor.Analytics.dll
 -r:C:/Users/I/AppData/Local/Unity/cache/packages/staging-packages.unity.com/com.unity.purchasing@2.0.3/Editor/UnityEditor.Purchasing.dll
 -r:C:/Users/I/AppData/Local/Unity/cache/packages/staging-packages.unity.com/com.unity.standardevents@1.0.13/UnityEngine.StandardEvents.dll
--r:"C:/Users/I/Saved Games/Unity1Week/Assets/Plugins/com.unity.collections@0.0.9-preview.4/System.Runtime.CompilerServices.Unsafe.dll"
 -r:"C:\Program Files\Unity\Hub\Editor\2018.2.7f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\mscorlib.dll"
 -r:"C:\Program Files\Unity\Hub\Editor\2018.2.7f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\System.dll"
 -r:"C:\Program Files\Unity\Hub\Editor\2018.2.7f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\System.Core.dll"
@@ -322,5 +322,6 @@
 -d:CSHARP_7_OR_LATER
 -i:"C:/Users/I/Saved Games/Unity1Week/Assets/Editor/NCMBMenu.cs"
 -i:"C:/Users/I/Saved Games/Unity1Week/Assets/Editor/UpdateXcodeProject.cs"
+-i:"C:/Users/I/Saved Games/Unity1Week/Assets/MyFolder/Scripts/SelectPlayerMachine/Editor/ChooseEx.cs"
 @Assets\mcs.rsp
 -v:0

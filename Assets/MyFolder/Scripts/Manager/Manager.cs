@@ -46,8 +46,7 @@ namespace Unity1Week
         [SerializeField] GameObject respawnDisplay;
         [SerializeField] string[] weaponNames;
         [SerializeField] AudioSource BGMSource;
-
-        public static uint LeaderCount = 1000u;
+        [SerializeField] ScriptableObjects.TitleSettings titleSettings;
 
         void Start()
         {
@@ -95,7 +94,7 @@ namespace Unity1Week
             world.CreateManager(typeof(ConfinePlayerPositionSystem), player, range, mainCamera.transform);
             world.CreateManager(typeof(ShootSystem), player, 4);
             PlayerShootSystem = world.CreateManager<PlayerShootSystem>(player, mainCamera, new Action(TryToPlayTakenokoShoot));
-            var SpawnEnemySystem = InitializeSpawnEnemy(player, enemyMesh, world, range, LeaderCount);
+            var SpawnEnemySystem = InitializeSpawnEnemy(player, enemyMesh, world, range, titleSettings.LeaderCount);
             deathCounter = SpawnEnemySystem.DeathCount;
             nearToRespawn = SpawnEnemySystem.NearToRespawn;
             world.CreateManager(typeof(TakenokoEnemyHitCheckSystem), 0.16f, enemyHashCodes, playerBulletHashCodes, allPositionHashCodes, new Action(TryToPlayTakenokoBurst));
@@ -107,7 +106,7 @@ namespace Unity1Week
             world.CreateManager(typeof(TakenokoRenderSystem), mainCamera, playerBulletSprite, playerBulletMaterial);
             world.CreateManager(typeof(BombHitCheckSystem), player, 4, enemyHashCodes);
             world.CreateManager(typeof(ChipRenderSystem), mainCamera, range, chips, mapTable.chipTemperatures, mapTable.map, unlit);
-            world.CreateManager(typeof(SnowPlayerHitCheckSystem), player, snowDamageRatio, deathCounter, 1f, snowHashCodes, playerBulletHashCodes, allPositionHashCodes, new Action(TryToPlaySnowBurst));
+            world.CreateManager(typeof(SnowPlayerHitCheckSystem), player, snowDamageRatio, deathCounter, 0.5f, snowHashCodes, playerBulletHashCodes, allPositionHashCodes, new Action(TryToPlaySnowBurst));
             (this.RainSystem = world.CreateManager<RainSystem>(range, rainCoolTimeSpan, rainCoolPower, rainCoolFrequency)).Enabled = false;
             (this.EnemyPlayerCollisionSystem = world.CreateManager<EnemyPlayerCollisionSystem>(player, enemyHashCodes, 0.16f, deathCounter)).Enabled = false;
             world.CreateManager(typeof(PlayerTemperatureSystem), player, range, chips, heatDamageRatio, coolRatio);
