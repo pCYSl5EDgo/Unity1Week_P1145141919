@@ -12,7 +12,7 @@ using UnityEngine.Rendering;
 namespace Unity1Week
 {
     [AlwaysUpdateSystem]
-    [UpdateAfter(typeof(MeshInstanceRendererSystem))]
+    [UpdateAfter(typeof(PlayerEnemyRenderSystem))]
     public sealed class ChipRenderSystem : ComponentSystem
     {
         public struct Tag : IComponentData

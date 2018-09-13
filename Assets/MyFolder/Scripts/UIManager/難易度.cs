@@ -10,24 +10,21 @@ namespace Unity1Week.UI
         [SerializeField] GameObject _難易度;
         [SerializeField] Unity1Week.ScriptableObjects.TitleSettings titleSettings;
         TMPro.TMP_Text text;
-        float cached;
         void Start()
         {
             slider = GetComponent<Slider>();
-            cached = slider.value;
             text = _難易度.GetComponent<TMPro.TMP_Text>();
-            text.text = "難易度:" + titleSettings.LeaderCount.ToString() + "個";
+            text.text = titleSettings.LeaderCount.ToString();
             if (titleSettings.LeaderCount == 200)
-                cached = slider.value = 0;
+                slider.value = 0;
             else
-                cached = slider.value = (titleSettings.LeaderCount - 200) / 9800f;
+                slider.value = (titleSettings.LeaderCount - 200) / 9800f;
         }
         void Update()
         {
-            if (slider.value == cached) return;
-            cached = slider.value;
-            titleSettings.LeaderCount = (uint)(200 + (cached * 9800));
-            text.text = "難易度:" + titleSettings.LeaderCount.ToString() + "個";
+            var value = (uint)(200 + (slider.value * 9800));
+            if (titleSettings.LeaderCount == value) return;
+            text.text = (titleSettings.LeaderCount = value).ToString();
         }
     }
 }

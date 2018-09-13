@@ -1,5 +1,5 @@
 [Ll]ibrary/
-[Ll]ogs/*.rsp
+[Ll]ogs/**.rsp
 [Dd]ebug/
 [Tt]emp/
 [Oo]bj/

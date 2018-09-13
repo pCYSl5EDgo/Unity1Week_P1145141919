@@ -27,7 +27,7 @@ namespace Unity1Week
                 playerMoveObserver.Dispose();
                 cameraMoveObserver.Dispose();
                 var clear = GameObject.Instantiate<GameObject>(gameClearPrefab, rootCanvas);
-                naichilab.RankingLoader.Instance.SendScoreAndShowRanking(deathCounter.Value * (titleSettings.LeaderCount * titleSettings.LeaderCount / 10000));
+                naichilab.RankingLoader.Instance.SendScoreAndShowRanking(CalcScore(true, deathCounter.Value));
             });
             isGameOver = life.Select(lp => lp <= 0);
             isGameOver.Where(_ => _).Skip(1).First().Subscribe(_ =>
@@ -45,9 +45,9 @@ namespace Unity1Week
                 if (killScore < 100)
                     文章.text = $"お前ここは初めてか？\n力抜けよ";
                 else if (killScore < 1000)
-                    文章.text = $"あ　ほ　く　さ";
+                    文章.text = $"あ　ほ　く　さ\nつっかえ、ほんまつっかえ";
                 else if (killScore < 10000)
-                    文章.text = $"まぁ多少はね？\nじゃ、またやって、どうぞ";
+                    文章.text = $"まぁ多少はね？\nアイスティー飲んでリフレッシュしよ？";
                 else if (killScore < 50000)
                     文章.text = $"やりますねぇ！\nま、ミスするのも多少はね？";
                 else if (killScore < 100000)
@@ -57,8 +57,15 @@ namespace Unity1Week
                 var tweetButton = vertPanel.Find("Tweet").GetComponent<UI.TweetButton>();
                 tweetButton.KillScore = killScore;
                 tweetButton.titleSettings = titleSettings;
-                naichilab.RankingLoader.Instance.SendScoreAndShowRanking(deathCounter.Value * (titleSettings.LeaderCount / 100));
+                naichilab.RankingLoader.Instance.SendScoreAndShowRanking(CalcScore(false, killScore));
             });
+        }
+        double CalcScore(bool isClear, uint killScore)
+        {
+            var times = (double)10000 / (double)(titleSettings.Width * titleSettings.Height);
+            return isClear ?
+               killScore * (double)(titleSettings.LeaderCount * titleSettings.LeaderCount) * times
+               : killScore * (double)(titleSettings.LeaderCount / 100) * times;
         }
     }
 }
