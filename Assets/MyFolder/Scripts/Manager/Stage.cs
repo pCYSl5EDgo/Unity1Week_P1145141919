@@ -25,7 +25,9 @@ namespace Unity1Week
                     case 0:
                         break;
                     case 1:
+#if !UNITY_EDITOR
                         EnemyPlayerCollisionSystem.Enabled = true;
+#endif
                         break;
                     case 2:
                         RainSystem.Enabled = true;

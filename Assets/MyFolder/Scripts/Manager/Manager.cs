@@ -40,6 +40,8 @@ namespace Unity1Week
         [SerializeField] float CoolTime;
         [SerializeField] Sprite playerSprite;
         [SerializeField] Material playerMaterial;
+        [SerializeField] Sprite kinokoHammer;
+        [SerializeField] Material kinokoMaterial;
         [SerializeField] uint[] nextStageCount;
         [SerializeField] GameObject 武器欄;
         [SerializeField] ScriptableObjects.Speed stage4EnemySpeed;
@@ -56,12 +58,22 @@ namespace Unity1Week
 #if UNITY_EDITOR
             Validate();
 #endif
+            InitializeAudio();
             InitializeWorld();
             InitializeUGUI();
             InitializeBGM();
             InitializeUniRx();
             InitializeStageWatch();
             InitializeGameOverUI();
+        }
+
+        private void InitializeAudio()
+        {
+            if (!titleSettings.IsBgmOn)
+                BgmSource.enabled = false;
+            if (!titleSettings.IsSEOn)
+                for (int i = 0; i < sources.Length; i++)
+                    sources[i].enabled = false;
         }
 #if UNITY_EDITOR
         private void Validate()
@@ -79,7 +91,7 @@ namespace Unity1Week
             var world = World.Active = new World("default");
             world.SetDefaultCapacity(1 << 18);
             manager = world.CreateManager<EntityManager>();
-            var range = new Unity.Mathematics.uint2(100u, 100u);
+            var range = new Unity.Mathematics.uint2(titleSettings.Width, titleSettings.Height);
             var decidePositionHashCodeSystem = world.CreateManager<DecidePositionHashCodeSystem>(range);
             var enemyHashCodes = decidePositionHashCodeSystem.EnemyHashCodes;
             var snowHashCodes = decidePositionHashCodeSystem.SnowBulletCodes;
@@ -87,12 +99,16 @@ namespace Unity1Week
             var allPositionHashCodes = decidePositionHashCodeSystem.AllPositionHashCodeSet;
             var chips = InitializePlane(range.x, range.y);
             InitializePlayer(range, 100, InitialTemperature, ThermalDeathPoint);
-            world.CreateManager(typeof(EndFrameTransformSystem));
+            // この２つで4~5ms消費
+            // world.CreateManager(typeof(EndFrameTransformSystem));
+            // world.CreateManager<MeshInstanceRendererSystem>().ActiveCamera = mainCamera;
+            world.CreateManager(typeof(PlayerEnemyRenderSystem), mainCamera, playerSprite, playerMaterial, enemyMesh, new Material[] { enemyDisplay.bossMaterial, enemyDisplay.leaderMaterial, enemyDisplay.subordinateMaterial });
             world.CreateManager(typeof(MoveSystem));
             world.CreateManager(typeof(EnemyBulletRenderSystem), mainCamera, snowSprite, snowMaterial);
             world.CreateManager(typeof(MoveEnemySystem), player);
             world.CreateManager(typeof(ConfinePlayerPositionSystem), player, range, mainCamera.transform);
             world.CreateManager(typeof(ShootSystem), player, 4);
+            world.CreateManager(typeof(KinokoRenderSystem), mainCamera, kinokoHammer, kinokoMaterial, 120 * Math.PI / 180, 1f);
             PlayerShootSystem = world.CreateManager<PlayerShootSystem>(player, mainCamera, new Action(TryToPlayTakenokoShoot));
             var SpawnEnemySystem = InitializeSpawnEnemy(player, enemyMesh, world, range, titleSettings.LeaderCount);
             deathCounter = SpawnEnemySystem.DeathCount;
@@ -106,12 +122,15 @@ namespace Unity1Week
             world.CreateManager(typeof(TakenokoRenderSystem), mainCamera, playerBulletSprite, playerBulletMaterial);
             world.CreateManager(typeof(BombHitCheckSystem), player, 4, enemyHashCodes);
             world.CreateManager(typeof(ChipRenderSystem), mainCamera, range, chips, mapTable.chipTemperatures, mapTable.map, unlit);
+#if !UNITY_EDITOR
             world.CreateManager(typeof(SnowPlayerHitCheckSystem), player, snowDamageRatio, deathCounter, 0.5f, snowHashCodes, playerBulletHashCodes, allPositionHashCodes, new Action(TryToPlaySnowBurst));
+#endif
             (this.RainSystem = world.CreateManager<RainSystem>(range, rainCoolTimeSpan, rainCoolPower, rainCoolFrequency)).Enabled = false;
             (this.EnemyPlayerCollisionSystem = world.CreateManager<EnemyPlayerCollisionSystem>(player, enemyHashCodes, 0.16f, deathCounter)).Enabled = false;
+#if !UNITY_EDITOR
             world.CreateManager(typeof(PlayerTemperatureSystem), player, range, chips, heatDamageRatio, coolRatio);
+#endif
             world.CreateManager(typeof(空蝉RenderSystem), mainCamera, playerMaterial, playerSprite, 15);
-            world.CreateManager<MeshInstanceRendererSystem>().ActiveCamera = mainCamera;
             ScriptBehaviourUpdateOrder.UpdatePlayerLoop(world);
         }
 

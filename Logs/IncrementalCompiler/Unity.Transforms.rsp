@@ -2,15 +2,15 @@
 -target:library
 -nowarn:0169
 -langversion:7
--out:"C:/Users/I/Saved Games/Unity1Week/Temp/Unity.Transforms.dll"
+-out:"C:/Users/I/Saved Games/Unity1Week2/Temp/Unity.Transforms.dll"
 -nostdlib
 -unsafe
--r:"C:/Users/I/Saved Games/Unity1Week/Library/ScriptAssemblies/Unity.Entities.dll"
--r:"C:/Users/I/Saved Games/Unity1Week/Library/ScriptAssemblies/Unity.Entities.Hybrid.dll"
--r:"C:/Users/I/Saved Games/Unity1Week/Library/ScriptAssemblies/Unity.Collections.dll"
--r:"C:/Users/I/Saved Games/Unity1Week/Library/ScriptAssemblies/Unity.Burst.dll"
--r:"C:/Users/I/Saved Games/Unity1Week/Library/ScriptAssemblies/Unity.Jobs.dll"
--r:"C:/Users/I/Saved Games/Unity1Week/Library/ScriptAssemblies/Unity.Mathematics.dll"
+-r:"C:/Users/I/Saved Games/Unity1Week2/Library/ScriptAssemblies/Unity.Entities.dll"
+-r:"C:/Users/I/Saved Games/Unity1Week2/Library/ScriptAssemblies/Unity.Entities.Hybrid.dll"
+-r:"C:/Users/I/Saved Games/Unity1Week2/Library/ScriptAssemblies/Unity.Collections.dll"
+-r:"C:/Users/I/Saved Games/Unity1Week2/Library/ScriptAssemblies/Unity.Burst.dll"
+-r:"C:/Users/I/Saved Games/Unity1Week2/Library/ScriptAssemblies/Unity.Jobs.dll"
+-r:"C:/Users/I/Saved Games/Unity1Week2/Library/ScriptAssemblies/Unity.Mathematics.dll"
 -r:"C:\Program Files\Unity\Hub\Editor\2018.2.7f1\Editor\Data\Managed/UnityEngine/UnityEngine.dll"
 -r:"C:\Program Files\Unity\Hub\Editor\2018.2.7f1\Editor\Data\Managed/UnityEngine/UnityEngine.AIModule.dll"
 -r:"C:\Program Files\Unity\Hub\Editor\2018.2.7f1\Editor\Data\Managed/UnityEngine/UnityEngine.ARModule.dll"
@@ -90,13 +90,13 @@
 -r:"C:/Program Files/Unity/Hub/Editor/2018.2.7f1/Editor/Data/Managed/UnityEditor.Graphs.dll"
 -r:"C:/Program Files/Unity/Hub/Editor/2018.2.7f1/Editor/Data/PlaybackEngines/WebGLSupport/UnityEditor.WebGL.Extensions.dll"
 -r:"C:/Program Files/Unity/Hub/Editor/2018.2.7f1/Editor/Data/PlaybackEngines/windowsstandalonesupport/UnityEditor.WindowsStandalone.Extensions.dll"
--r:"C:/Users/I/Saved Games/Unity1Week/Assets/Plugins/Editor/CSharpLatest.dll"
+-r:"C:/Users/I/Saved Games/Unity1Week2/Assets/Plugins/com.unity.collections@0.0.9-preview.4/System.Runtime.CompilerServices.Unsafe.dll"
+-r:"C:/Users/I/Saved Games/Unity1Week2/Assets/Plugins/Editor/CSharpLatest.dll"
 -r:C:/Users/I/AppData/Local/Unity/cache/packages/staging-packages.unity.com/com.unity.ads@2.0.9/Editor/UnityEditor.Advertisements.dll
 -r:C:/Users/I/AppData/Local/Unity/cache/packages/staging-packages.unity.com/com.unity.analytics@2.0.16/UnityEngine.Analytics.dll
 -r:C:/Users/I/AppData/Local/Unity/cache/packages/staging-packages.unity.com/com.unity.analytics@2.0.16/Editor/UnityEditor.Analytics.dll
 -r:C:/Users/I/AppData/Local/Unity/cache/packages/staging-packages.unity.com/com.unity.purchasing@2.0.3/Editor/UnityEditor.Purchasing.dll
 -r:C:/Users/I/AppData/Local/Unity/cache/packages/staging-packages.unity.com/com.unity.standardevents@1.0.13/UnityEngine.StandardEvents.dll
--r:"C:/Users/I/Saved Games/Unity1Week/Assets/Plugins/com.unity.collections@0.0.9-preview.4/System.Runtime.CompilerServices.Unsafe.dll"
 -r:"C:\Program Files\Unity\Hub\Editor\2018.2.7f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\mscorlib.dll"
 -r:"C:\Program Files\Unity\Hub\Editor\2018.2.7f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\System.dll"
 -r:"C:\Program Files\Unity\Hub\Editor\2018.2.7f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\System.Core.dll"
@@ -296,13 +296,13 @@
 -d:UNITY_TEAM_LICENSE
 -d:UNITY_DISABLE_AUTOMATIC_SYSTEM_BOOTSTRAP
 -d:CSHARP_7_OR_LATER
--i:"C:/Users/I/Saved Games/Unity1Week/Assets/com.unity.entities@0.0.12-preview.11/Unity.Transforms/AttachComponent.cs"
--i:"C:/Users/I/Saved Games/Unity1Week/Assets/com.unity.entities@0.0.12-preview.11/Unity.Transforms/AttachedComponent.cs"
--i:"C:/Users/I/Saved Games/Unity1Week/Assets/com.unity.entities@0.0.12-preview.11/Unity.Transforms/CustomLocalToWorldComponent.cs"
--i:"C:/Users/I/Saved Games/Unity1Week/Assets/com.unity.entities@0.0.12-preview.11/Unity.Transforms/PositionComponent.cs"
--i:"C:/Users/I/Saved Games/Unity1Week/Assets/com.unity.entities@0.0.12-preview.11/Unity.Transforms/RotationComponent.cs"
--i:"C:/Users/I/Saved Games/Unity1Week/Assets/com.unity.entities@0.0.12-preview.11/Unity.Transforms/ScaleComponent.cs"
--i:"C:/Users/I/Saved Games/Unity1Week/Assets/com.unity.entities@0.0.12-preview.11/Unity.Transforms/StaticComponent.cs"
--i:"C:/Users/I/Saved Games/Unity1Week/Assets/com.unity.entities@0.0.12-preview.11/Unity.Transforms/TransformSystem.cs"
+-i:"C:/Users/I/Saved Games/Unity1Week2/Assets/com.unity.entities@0.0.12-preview.11/Unity.Transforms/AttachComponent.cs"
+-i:"C:/Users/I/Saved Games/Unity1Week2/Assets/com.unity.entities@0.0.12-preview.11/Unity.Transforms/AttachedComponent.cs"
+-i:"C:/Users/I/Saved Games/Unity1Week2/Assets/com.unity.entities@0.0.12-preview.11/Unity.Transforms/CustomLocalToWorldComponent.cs"
+-i:"C:/Users/I/Saved Games/Unity1Week2/Assets/com.unity.entities@0.0.12-preview.11/Unity.Transforms/PositionComponent.cs"
+-i:"C:/Users/I/Saved Games/Unity1Week2/Assets/com.unity.entities@0.0.12-preview.11/Unity.Transforms/RotationComponent.cs"
+-i:"C:/Users/I/Saved Games/Unity1Week2/Assets/com.unity.entities@0.0.12-preview.11/Unity.Transforms/ScaleComponent.cs"
+-i:"C:/Users/I/Saved Games/Unity1Week2/Assets/com.unity.entities@0.0.12-preview.11/Unity.Transforms/StaticComponent.cs"
+-i:"C:/Users/I/Saved Games/Unity1Week2/Assets/com.unity.entities@0.0.12-preview.11/Unity.Transforms/TransformSystem.cs"
 @Assets\mcs.rsp
 -v:0

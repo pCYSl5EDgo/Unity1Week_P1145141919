@@ -11,10 +11,17 @@ namespace Unity1Week
     [UpdateBefore(typeof(MoveSystem))]
     public sealed class SpawnEnemySystem : ComponentSystem
     {
+        const int DIVISION = 10;
         public SpawnEnemySystem(Entity player, uint spawnLimit, uint2 range, float skillCoolTime, MeshInstanceRenderer bossMesh, MeshInstanceRenderer leaderMesh, MeshInstanceRenderer subordinateMesh)
         {
             this.player = player;
             this.spawnLimit = spawnLimit;
+            var len = (int)(spawnLimit / DIVISION);
+            var rest = (int)spawnLimit - DIVISION * len;
+            this.leaders = new NativeArray<Entity>(len, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
+            this.leadersRest = new NativeArray<Entity>(rest, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
+            this.subordinates = new NativeArray<Entity>((len << 2), Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
+            this.subordinatesRest = new NativeArray<Entity>((rest << 2), Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
             this.respwan = (uint)(spawnLimit * 0.2f);
             this.range = range;
             this.bossMesh = bossMesh;
@@ -25,17 +32,28 @@ namespace Unity1Week
         protected override void OnCreateManager(int capacity)
         {
             archetypeBoss = EntityManager.CreateArchetype(ComponentType.Create<Boss>(), ComponentType.Create<Position>(), ComponentType.Create<MeshInstanceRenderer>(), ComponentType.Create<Enemy>(), ComponentType.Create<SkillElement>(), ComponentType.Create<DestroyEnemyOutOfBoundsSystem.Tag>());
-            archetypeLeader = EntityManager.CreateArchetype(ComponentType.Create<Teammate>(), ComponentType.Create<Position>(), ComponentType.Create<MeshInstanceRenderer>(), ComponentType.Create<Enemy>(), ComponentType.Create<MoveSpeed>(), ComponentType.Create<Heading2D>(), ComponentType.Create<DestroyEnemyOutOfBoundsSystem.Tag>());
+            archetypeLeader = EntityManager.CreateArchetype(ComponentType.Create<Leader>(), ComponentType.Create<Position>(), ComponentType.Create<MeshInstanceRenderer>(), ComponentType.Create<Enemy>(), ComponentType.Create<MoveSpeed>(), ComponentType.Create<Heading2D>(), ComponentType.Create<DestroyEnemyOutOfBoundsSystem.Tag>());
             archetypeSubordinate = EntityManager.CreateArchetype(ComponentType.Create<Position>(), ComponentType.Create<MeshInstanceRenderer>(), ComponentType.Create<Enemy>(), ComponentType.Create<MoveSpeed>(), ComponentType.Create<Heading2D>(), ComponentType.Create<DestroyEnemyOutOfBoundsSystem.Tag>());
             gDead = GetComponentGroup(ComponentType.ReadOnly<DeadMan>());
             gAlive = GetComponentGroup(ComponentType.ReadOnly<Position>(), ComponentType.ReadOnly<MeshInstanceRenderer>(), ComponentType.ReadOnly<Enemy>());
-            gLeader = GetComponentGroup(ComponentType.ReadOnly<Teammate>());
+            gLeader = GetComponentGroup(ComponentType.ReadOnly<Leader>());
+        }
+        protected override void OnDestroyManager()
+        {
+            leaders.Dispose();
+            leadersRest.Dispose();
+            subordinates.Dispose();
+            subordinatesRest.Dispose();
         }
 
-        private const float DISTANCE = 0.3f;
+        private const float DISTANCE = 0.6f;
         private readonly uint respwan;
         private readonly Entity player;
         private readonly uint spawnLimit;
+        private NativeArray<Entity> leaders;
+        private NativeArray<Entity> leadersRest;
+        private NativeArray<Entity> subordinates;
+        private NativeArray<Entity> subordinatesRest;
         private readonly uint2 range;
         private EntityArchetype archetypeBoss, archetypeLeader, archetypeSubordinate;
         private readonly MeshInstanceRenderer bossMesh;
@@ -48,6 +66,7 @@ namespace Unity1Week
         public UniRx.BoolReactiveProperty NearToRespawn { get; } = new UniRx.BoolReactiveProperty(true);
         private uint aliveCount;
         private uint spawnTime = 1;
+        private int frame = -1;
 
         protected override void OnUpdate()
         {
@@ -87,57 +106,50 @@ namespace Unity1Week
             aliveCount = (uint)gAlive.CalculateLength();
             var diff0 = aliveCount - spawnLimit;
             var diff1 = gLeader.CalculateLength() - respwan;
-            NearToRespawn.Value = diff1 < 0.1f * respwan || diff0 < 0.1 * respwan;
-            if (diff0 >= 0 && diff1 >= 0) return;
-            NearToRespawn.Value = false;
+            if (frame == -1)
+            {
+                NearToRespawn.Value = diff1 < 0.1f * respwan || diff0 < 0.1 * respwan;
+                if (diff0 >= 0 && diff1 >= 0) return;
+                NearToRespawn.Value = false;
+                frame = 0;
+            }
             var playerPosition = manager.GetComponentData<Position>(player).Value;
             var _range = new float3(range.x - 0.0001f, 0, range.y - 0.0001f);
-            var leaders = new NativeArray<Entity>((int)spawnLimit, Allocator.Temp, NativeArrayOptions.UninitializedMemory);
-            var subordinates = new NativeArray<Entity>(4 * leaders.Length, Allocator.Temp, NativeArrayOptions.UninitializedMemory);
-            try
+            if (frame++ == DIVISION)
             {
-                leaders[0] = manager.CreateEntity(archetypeLeader);
-                manager.SetSharedComponentData(leaders[0], leaderMesh);
-                manager.Instantiate(leaders[0], leaders.SkipFirst());
-                for (int i = 0; i < leaders.Length; i++)
-                {
-                    float3 float31;
-                    do
-                    {
-                        float31 = random.NextFloat3(default, new float3(range.x, 0, range.y));
-                    }
-                    while (System.Math.Abs(float31.x - playerPosition.x) <= DISTANCE && System.Math.Abs(float31.z - playerPosition.z) <= DISTANCE);
-                    manager.SetComponentData(leaders[i], new Position { Value = float31 });
-                    manager.SetComponentData(leaders[i], new Heading2D { Value = random.NextFloat2Direction() });
-                    random = new Random(random.state + 1);
-                }
-                subordinates[0] = manager.CreateEntity(archetypeSubordinate);
-                manager.SetSharedComponentData(subordinates[0], subordinateMesh);
-                manager.Instantiate(subordinates[0], subordinates.SkipFirst());
-                for (int i = 0; i < leaders.Length; i++)
-                {
-                    var buf = manager.GetBuffer<Teammate>(leaders[i]);
-                    var pos = manager.GetComponentData<Position>(leaders[i]).Value;
-                    var index = i << 2;
-                    SetComponentData(in playerPosition, ref subordinates, _range, manager, index, pos);
-                    buf.Add(subordinates[index++]);
-                    SetComponentData(in playerPosition, ref subordinates, _range, manager, index, pos);
-                    random = new Random(random.state + 1);
-                    buf.Add(subordinates[index++]);
-                    SetComponentData(in playerPosition, ref subordinates, _range, manager, index, pos);
-                    buf.Add(subordinates[index++]);
-                    SetComponentData(in playerPosition, ref subordinates, _range, manager, index, pos);
-                    buf.Add(subordinates[index]);
-                }
+                frame = -1;
+                if (leadersRest.Length == 0) return;
+                Spawn_Inner(archetypeLeader, leadersRest, manager, playerPosition);
+                Spawn_Inner(archetypeSubordinate, subordinatesRest, manager, playerPosition);
             }
-            finally
+            else
             {
-                leaders.Dispose();
-                subordinates.Dispose();
+                Spawn_Inner(archetypeLeader, leaders, manager, playerPosition);
+                Spawn_Inner(archetypeSubordinate, subordinates, manager, playerPosition);
             }
         }
 
-        private unsafe void SetComponentData(in float3 playerPosition, ref NativeArray<Entity> subordinates, in float3 _range, EntityManager manager, int i, in float3 pos)
+
+        private void Spawn_Inner(EntityArchetype archetype, NativeArray<Entity> entities, EntityManager manager, float3 playerPosition)
+        {
+            entities[0] = manager.CreateEntity(archetype);
+            manager.SetSharedComponentData(entities[0], leaderMesh);
+            manager.Instantiate(entities[0], entities.SkipFirst());
+            for (int i = 0; i < entities.Length; i++)
+            {
+                float3 float31;
+                do
+                {
+                    float31 = random.NextFloat3(default, new float3(range.x, 0, range.y));
+                }
+                while (System.Math.Abs(float31.x - playerPosition.x) <= DISTANCE && System.Math.Abs(float31.z - playerPosition.z) <= DISTANCE);
+                manager.SetComponentData(entities[i], new Position { Value = float31 });
+                manager.SetComponentData(entities[i], new Heading2D { Value = random.NextFloat2Direction() });
+                random = new Random(random.state + 1);
+            }
+        }
+
+        private void SetComponentData(in float3 playerPosition, ref NativeArray<Entity> subordinates, in float3 _range, EntityManager manager, int i, in float3 pos)
         {
             float3 float31;
             do

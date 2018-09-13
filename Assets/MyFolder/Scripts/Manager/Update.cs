@@ -84,13 +84,6 @@ namespace Unity1Week
             {
                 UICamera.enabled = !UICamera.enabled;
             });
-            this.UpdateAsObservable().Select(_ => Input.GetKeyDown(KeyCode.K)).ThrottleFirst(System.TimeSpan.FromMilliseconds(200)).Where(_ => _).Subscribe(_ =>
-            {
-                if (BGMSource.isPlaying)
-                    BGMSource.Stop();
-                else BGMSource.Play();
-            });
-            this.UpdateAsObservable().Select(_ => Input.GetKeyDown(KeyCode.J)).ThrottleFirst(System.TimeSpan.FromMilliseconds(200)).Where(_ => _).Subscribe(_ => canPlaySE = !canPlaySE);
             cameraMoveObserver = this.UpdateAsObservable().Subscribe(_ =>
             {
                 var deltaY = Input.mouseScrollDelta.y;

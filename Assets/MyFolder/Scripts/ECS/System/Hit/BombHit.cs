@@ -88,7 +88,8 @@ namespace Unity1Week
                     }
                 }
                 foreach (var item in toDestroy)
-                    manager.DestroyEntity(item);
+                    if (manager.Exists(item))
+                        manager.DestroyEntity(item);
                 consumed += posChunk.Length;
             }
         }

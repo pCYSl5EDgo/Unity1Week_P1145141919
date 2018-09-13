@@ -13,8 +13,8 @@ namespace Unity1Week
         }
         protected override void OnCreateManager(int capacity)
         {
-            gLeader = GetComponentGroup(ComponentType.ReadOnly<Position>(), ComponentType.ReadOnly<Teammate>(), ComponentType.Create<Heading2D>());
-            gSubordinate = GetComponentGroup(ComponentType.ReadOnly<Position>(), ComponentType.ReadOnly<Enemy>(), ComponentType.Subtractive<Teammate>(), ComponentType.Create<Heading2D>());
+            gLeader = GetComponentGroup(ComponentType.ReadOnly<Position>(), ComponentType.ReadOnly<Leader>(), ComponentType.Create<Heading2D>());
+            gSubordinate = GetComponentGroup(ComponentType.ReadOnly<Position>(), ComponentType.ReadOnly<Enemy>(), ComponentType.Subtractive<Leader>(), ComponentType.Create<Heading2D>());
             g空蝉 = GetComponentGroup(ComponentType.ReadOnly<Position>(), ComponentType.ReadOnly<PlayerShootSystem.空蝉Tag>());
         }
         private ComponentGroup gLeader, gSubordinate, g空蝉;

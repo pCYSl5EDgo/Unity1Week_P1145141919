@@ -11,7 +11,7 @@ using UnityEngine.Rendering;
 
 namespace Unity1Week
 {
-    [UpdateAfter(typeof(Unity.Rendering.MeshInstanceRendererSystem))]
+    [UpdateAfter(typeof(PlayerEnemyRenderSystem))]
     public sealed class BombRenderSystem : ComponentSystem
     {
         private readonly Material material;
