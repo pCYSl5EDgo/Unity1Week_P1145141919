@@ -12,16 +12,27 @@ namespace Unity1Week
     public sealed class SpawnEnemySystem : ComponentSystem
     {
         const int DIVISION = 10;
-        public SpawnEnemySystem(Entity player, uint spawnLimit, uint2 range, float skillCoolTime, MeshInstanceRenderer bossMesh, MeshInstanceRenderer leaderMesh, MeshInstanceRenderer subordinateMesh)
+        const int ONCE = 100;
+        public SpawnEnemySystem(Entity player, uint clearCount, uint spawnLimit, uint2 range, float skillCoolTime, MeshInstanceRenderer bossMesh, MeshInstanceRenderer leaderMesh, MeshInstanceRenderer subordinateMesh)
         {
             this.player = player;
+            this.clearCount = clearCount;
             this.spawnLimit = spawnLimit;
-            var len = (int)(spawnLimit / DIVISION);
-            var rest = (int)spawnLimit - DIVISION * len;
-            this.leaders = new NativeArray<Entity>(len, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
-            this.leadersRest = new NativeArray<Entity>(rest, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
-            this.subordinates = new NativeArray<Entity>((len << 2), Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
-            this.subordinatesRest = new NativeArray<Entity>((rest << 2), Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
+            if (clearCount >= ONCE * DIVISION)
+            {
+                this.repetitionCount = spawnLimit / DIVISION / ONCE;
+                this.leaders = new NativeArray<Entity>(ONCE, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
+                int length = ((int)(spawnLimit / DIVISION)) % ONCE;
+                this.leadersRest = length == 0 ? default : new NativeArray<Entity>(length, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
+                var restLength = (int)(spawnLimit - repetitionCount * this.leaders.Length + this.leadersRest.Length);
+                this.leadersRestRest = restLength == 0 ? default : new NativeArray<Entity>(restLength, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
+            }
+            else
+            {
+                this.repetitionCount = 1u;
+                this.leaders = new NativeArray<Entity>((int)clearCount, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
+                this.leadersRest = this.leadersRestRest = default;
+            }
             this.respwan = (uint)(spawnLimit * 0.2f);
             this.range = range;
             this.bossMesh = bossMesh;
@@ -40,20 +51,24 @@ namespace Unity1Week
         }
         protected override void OnDestroyManager()
         {
-            leaders.Dispose();
-            leadersRest.Dispose();
-            subordinates.Dispose();
-            subordinatesRest.Dispose();
+            if (leaders.IsCreated)
+                leaders.Dispose();
+            if (leadersRest.IsCreated)
+                leadersRest.Dispose();
+            if (leadersRestRest.IsCreated)
+                leadersRestRest.Dispose();
         }
 
         private const float DISTANCE = 0.6f;
+        private const int SUBORDINATE_REPETITION = 4;
+        private readonly uint repetitionCount;
         private readonly uint respwan;
         private readonly Entity player;
+        private readonly uint clearCount;
         private readonly uint spawnLimit;
         private NativeArray<Entity> leaders;
         private NativeArray<Entity> leadersRest;
-        private NativeArray<Entity> subordinates;
-        private NativeArray<Entity> subordinatesRest;
+        private NativeArray<Entity> leadersRestRest;
         private readonly uint2 range;
         private EntityArchetype archetypeBoss, archetypeLeader, archetypeSubordinate;
         private readonly MeshInstanceRenderer bossMesh;
@@ -73,7 +88,7 @@ namespace Unity1Week
             DeathCount.Value += (uint)gDead.CalculateLength();
             var manager = EntityManager;
             manager.DestroyEntity(gDead);
-            if (DeathCount.Value >= 114514u) return;
+            if (DeathCount.Value >= clearCount) return;
             SpawnBoss(manager, DeathCount.Value >> 10);
             SpawnLeaders(manager);
         }
@@ -118,14 +133,25 @@ namespace Unity1Week
             if (frame++ == DIVISION)
             {
                 frame = -1;
-                if (leadersRest.Length == 0) return;
-                Spawn_Inner(archetypeLeader, leadersRest, manager, playerPosition);
-                Spawn_Inner(archetypeSubordinate, subordinatesRest, manager, playerPosition);
+                if (leadersRestRest.Length == 0) return;
+                Spawn_Inner(archetypeLeader, leadersRestRest, manager, playerPosition);
+                for (int i = 0; i < SUBORDINATE_REPETITION; i++)
+                {
+                    Spawn_Inner(archetypeSubordinate, leadersRestRest, manager, playerPosition);
+                }
             }
             else
             {
-                Spawn_Inner(archetypeLeader, leaders, manager, playerPosition);
-                Spawn_Inner(archetypeSubordinate, subordinates, manager, playerPosition);
+                for (uint i = 0; i < repetitionCount; i++)
+                {
+                    Spawn_Inner(archetypeLeader, leaders, manager, playerPosition);
+                    for (int j = 0; j < SUBORDINATE_REPETITION; j++)
+                        Spawn_Inner(archetypeSubordinate, leaders, manager, playerPosition);
+                }
+                if (leadersRest.Length == 0) return;
+                Spawn_Inner(archetypeLeader, leadersRest, manager, playerPosition);
+                for (int j = 0; j < SUBORDINATE_REPETITION; j++)
+                    Spawn_Inner(archetypeSubordinate, leadersRest, manager, playerPosition);
             }
         }
 

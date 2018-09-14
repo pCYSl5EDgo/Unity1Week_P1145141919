@@ -1,5 +1,4 @@
-﻿using UnityEngine;
-using UniRx;
+﻿using UniRx;
 
 namespace Unity1Week
 {
@@ -11,9 +10,9 @@ namespace Unity1Week
         {
             deathCounter.Subscribe(count =>
             {
-                for (int i = nextStageCount.Length - 1; i >= 0; --i)
+                for (int i = titleSettings.NextStageCount.Length - 1; i >= 0; --i)
                 {
-                    if (count < nextStageCount[i]) continue;
+                    if (count < titleSettings.NextStageCount[i]) continue;
                     stageReactiveProperty.Value = i + 1;
                     return;
                 }
@@ -25,9 +24,7 @@ namespace Unity1Week
                     case 0:
                         break;
                     case 1:
-#if !UNITY_EDITOR
                         EnemyPlayerCollisionSystem.Enabled = true;
-#endif
                         break;
                     case 2:
                         RainSystem.Enabled = true;
@@ -39,7 +36,7 @@ namespace Unity1Week
                         武器名 = 武器欄.transform.Find(nameof(武器名)).GetComponent<TMPro.TMP_Text>();
                         break;
                     case 4:
-                        System.Buffer.BlockCopy(stage4EnemySpeed.Speeds, 0, enemySpeeds.Speeds, 0, enemySpeeds.Speeds.Length);
+                        // System.Buffer.BlockCopy(stage4EnemySpeed.Speeds, 0, enemySpeeds.Speeds, 0, enemySpeeds.Speeds.Length);
                         break;
                     case 5:
                         break;

@@ -4,7 +4,7 @@ using UnityEditor.UI;
 namespace Unity1Week.UI
 {
     [CanEditMultipleObjects, CustomEditor(typeof(閉じるボタン), true)]
-    public class CloseButtonEx : ButtonEditor
+    public sealed class CloseButtonEx : ButtonEditor
     {
         public override void OnInspectorGUI()
         {

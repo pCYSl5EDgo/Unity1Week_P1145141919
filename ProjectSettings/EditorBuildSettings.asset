@@ -26,4 +26,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/MyFolder/Scenes/DifficultySetting.unity
     guid: 8cda0449dfaf8c14aa68b4a24d5f4ef9
+  - enabled: 1
+    path: Assets/MyFolder/Scenes/GameOver.unity
+    guid: 490a030c824f5e744bcb5fde6090dba6
+  - enabled: 1
+    path: Assets/MyFolder/Scenes/GameClear.unity
+    guid: e0b6fb58f78b0734d8e38c812058e92f
   m_configObjects: {}

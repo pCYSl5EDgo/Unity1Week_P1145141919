@@ -10,12 +10,12 @@ using System;
 namespace Unity1Week
 {
     [AlwaysUpdateSystem]
-    public sealed class ShootSystem : ComponentSystem
+    public sealed class EnemySnowShootSystem : ComponentSystem
     {
         private readonly Entity player;
         private readonly float moveSpeed;
 
-        public ShootSystem(Entity player, float moveSpeed)
+        public EnemySnowShootSystem(Entity player, float moveSpeed)
         {
             this.player = player;
             this.moveSpeed = moveSpeed;

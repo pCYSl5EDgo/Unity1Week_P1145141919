@@ -1,10 +1,7 @@
 ﻿using UniRx;
-using UniRx.Triggers;
 using Unity.Entities;
-using Unity.Mathematics;
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
+using UnityEngine.SceneManagement;
 using System;
 
 namespace Unity1Week
@@ -18,54 +15,36 @@ namespace Unity1Week
         void InitializeGameOverUI()
         {
             rootCanvas = GameObject.Find("Root Canvas").GetComponent<Transform>();
-            isGameClear = deathCounter.Select(count => count >= 114514u);
+            isGameClear = deathCounter.Select(count => count >= titleSettings.ClearKillScore);
             isGameClear.Where(_ => _).First().Subscribe(_ =>
             {
                 UICamera.enabled = true;
-                World.DisposeAllWorlds();
+                var readonlyCollection = World.AllWorlds;
+                foreach (var item in readonlyCollection)
+                    foreach (var manager in item.BehaviourManagers)
+                        if (manager is ComponentSystemBase system)
+                            system.Enabled = false;
                 GameObject.Destroy(UpperLeftCanvas.gameObject);
                 playerMoveObserver.Dispose();
                 cameraMoveObserver.Dispose();
-                var clear = GameObject.Instantiate<GameObject>(gameClearPrefab, rootCanvas);
-                naichilab.RankingLoader.Instance.SendScoreAndShowRanking(CalcScore(true, deathCounter.Value));
+                resultSettings.KillScore = deathCounter.Value;
+                SceneManager.LoadSceneAsync(7, LoadSceneMode.Additive);
             });
             isGameOver = life.Select(lp => lp <= 0);
             isGameOver.Where(_ => _).Skip(1).First().Subscribe(_ =>
             {
-                UICamera.enabled = true;
-                World.DisposeAllWorlds();
                 GameObject.Destroy(UpperLeftCanvas.gameObject);
+                UICamera.enabled = true;
+                var readonlyCollection = World.AllWorlds;
+                foreach (var item in readonlyCollection)
+                    foreach (var manager in item.BehaviourManagers)
+                        if (manager is ComponentSystemBase system)
+                            system.Enabled = false;
                 playerMoveObserver.Dispose();
                 cameraMoveObserver.Dispose();
-                var over = GameObject.Instantiate<GameObject>(gameOverPrefab, rootCanvas);
-                var killScore = deathCounter.Value;
-                var vertPanel = over.transform.Find("Vertical Panel");
-                vertPanel.Find("Horizontal Panel").Find("結果").GetComponent<TMPro.TMP_Text>().text = killScore.ToString();
-                var 文章 = vertPanel.Find("文章").GetComponent<TMPro.TMP_Text>();
-                if (killScore < 100)
-                    文章.text = $"お前ここは初めてか？\n力抜けよ";
-                else if (killScore < 1000)
-                    文章.text = $"あ　ほ　く　さ\nつっかえ、ほんまつっかえ";
-                else if (killScore < 10000)
-                    文章.text = $"まぁ多少はね？\nアイスティー飲んでリフレッシュしよ？";
-                else if (killScore < 50000)
-                    文章.text = $"やりますねぇ！\nま、ミスするのも多少はね？";
-                else if (killScore < 100000)
-                    文章.text = $"おっ、大丈夫か大丈夫か？\n緊張すっと力でないからね";
-                else if (killScore < 114514)
-                    文章.text = $"ファッ！？\nはぇ～～、すっごい";
-                var tweetButton = vertPanel.Find("Tweet").GetComponent<UI.TweetButton>();
-                tweetButton.KillScore = killScore;
-                tweetButton.titleSettings = titleSettings;
-                naichilab.RankingLoader.Instance.SendScoreAndShowRanking(CalcScore(false, killScore));
+                resultSettings.KillScore = deathCounter.Value;
+                SceneManager.LoadSceneAsync(6, LoadSceneMode.Additive);
             });
-        }
-        double CalcScore(bool isClear, uint killScore)
-        {
-            var times = (double)10000 / (double)(titleSettings.Width * titleSettings.Height);
-            return isClear ?
-               killScore * (double)(titleSettings.LeaderCount * titleSettings.LeaderCount) * times
-               : killScore * (double)(titleSettings.LeaderCount / 100) * times;
         }
     }
 }

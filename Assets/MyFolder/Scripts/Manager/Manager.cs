@@ -35,20 +35,18 @@ namespace Unity1Week
         [SerializeField] AudioClip takenokoBulletBurst;
         [SerializeField] AudioClip snowBurst;
         [SerializeField] AudioSource[] sources;
-        [SerializeField] GameObject gameOverPrefab;
-        [SerializeField] GameObject gameClearPrefab;
         [SerializeField] float CoolTime;
         [SerializeField] Sprite playerSprite;
         [SerializeField] Material playerMaterial;
         [SerializeField] Sprite kinokoHammer;
         [SerializeField] Material kinokoMaterial;
-        [SerializeField] uint[] nextStageCount;
         [SerializeField] GameObject 武器欄;
         [SerializeField] ScriptableObjects.Speed stage4EnemySpeed;
         [SerializeField] GameObject respawnDisplay;
         [SerializeField] string[] weaponNames;
         [SerializeField] AudioSource BGMSource;
         [SerializeField] ScriptableObjects.TitleSettings titleSettings;
+        [SerializeField] ScriptableObjects.Result resultSettings;
 
         void Start()
         {
@@ -99,15 +97,12 @@ namespace Unity1Week
             var allPositionHashCodes = decidePositionHashCodeSystem.AllPositionHashCodeSet;
             var chips = InitializePlane(range.x, range.y);
             InitializePlayer(range, 100, InitialTemperature, ThermalDeathPoint);
-            // この２つで4~5ms消費
-            // world.CreateManager(typeof(EndFrameTransformSystem));
-            // world.CreateManager<MeshInstanceRendererSystem>().ActiveCamera = mainCamera;
             world.CreateManager(typeof(PlayerEnemyRenderSystem), mainCamera, playerSprite, playerMaterial, enemyMesh, new Material[] { enemyDisplay.bossMaterial, enemyDisplay.leaderMaterial, enemyDisplay.subordinateMaterial });
             world.CreateManager(typeof(MoveSystem));
             world.CreateManager(typeof(EnemyBulletRenderSystem), mainCamera, snowSprite, snowMaterial);
             world.CreateManager(typeof(MoveEnemySystem), player);
+            world.CreateManager(typeof(EnemySnowShootSystem), player, 4);
             world.CreateManager(typeof(ConfinePlayerPositionSystem), player, range, mainCamera.transform);
-            world.CreateManager(typeof(ShootSystem), player, 4);
             world.CreateManager(typeof(KinokoRenderSystem), mainCamera, kinokoHammer, kinokoMaterial, 120 * Math.PI / 180, 1f);
             PlayerShootSystem = world.CreateManager<PlayerShootSystem>(player, mainCamera, new Action(TryToPlayTakenokoShoot));
             var SpawnEnemySystem = InitializeSpawnEnemy(player, enemyMesh, world, range, titleSettings.LeaderCount);
@@ -122,20 +117,16 @@ namespace Unity1Week
             world.CreateManager(typeof(TakenokoRenderSystem), mainCamera, playerBulletSprite, playerBulletMaterial);
             world.CreateManager(typeof(BombHitCheckSystem), player, 4, enemyHashCodes);
             world.CreateManager(typeof(ChipRenderSystem), mainCamera, range, chips, mapTable.chipTemperatures, mapTable.map, unlit);
-#if !UNITY_EDITOR
             world.CreateManager(typeof(SnowPlayerHitCheckSystem), player, snowDamageRatio, deathCounter, 0.5f, snowHashCodes, playerBulletHashCodes, allPositionHashCodes, new Action(TryToPlaySnowBurst));
-#endif
             (this.RainSystem = world.CreateManager<RainSystem>(range, rainCoolTimeSpan, rainCoolPower, rainCoolFrequency)).Enabled = false;
             (this.EnemyPlayerCollisionSystem = world.CreateManager<EnemyPlayerCollisionSystem>(player, enemyHashCodes, 0.16f, deathCounter)).Enabled = false;
-#if !UNITY_EDITOR
             world.CreateManager(typeof(PlayerTemperatureSystem), player, range, chips, heatDamageRatio, coolRatio);
-#endif
             world.CreateManager(typeof(空蝉RenderSystem), mainCamera, playerMaterial, playerSprite, 15);
             ScriptBehaviourUpdateOrder.UpdatePlayerLoop(world);
         }
 
         private SpawnEnemySystem InitializeSpawnEnemy(Entity player, Mesh enemyMesh, World world, Unity.Mathematics.uint2 range, uint count)
-        => world.CreateManager<SpawnEnemySystem>(player, count, range, snowCoolTime,
+        => world.CreateManager<SpawnEnemySystem>(player, titleSettings.ClearKillScore, count, range, snowCoolTime,
             new MeshInstanceRenderer
             {
                 mesh = enemyMesh,

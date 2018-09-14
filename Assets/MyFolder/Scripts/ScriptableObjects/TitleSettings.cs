@@ -6,6 +6,12 @@ namespace Unity1Week.ScriptableObjects
 {
     public sealed class TitleSettings : ScriptableObject
     {
+        public uint ClearKillScore;
+        public uint[] NextStageCount;
+        [Multiline]
+        public string[] lastMessages;
+        [Multiline]
+        public string[] tweetMessages;
         [Range(25, 1024)]
         public uint Width;
         [Range(25, 1024)]

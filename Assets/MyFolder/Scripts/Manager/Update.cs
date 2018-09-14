@@ -33,7 +33,6 @@ namespace Unity1Week
         private BoolReactiveProperty nearToRespawn;
         private FloatReactiveProperty life;
         private TMP_Text 武器名;
-        private float 目標駆逐数 = 114514;
         private IDisposable cameraMoveObserver;
         private IDisposable playerMoveObserver;
         private void ChangeWeapon1(bool _)
@@ -65,9 +64,10 @@ namespace Unity1Week
             駆逐数説明 = 殺害数.Find(nameof(駆逐数説明)).GetComponent<TMP_Text>();
             駆逐数 = 殺害数.Find(nameof(駆逐数)).GetComponent<TMP_Text>();
             ノルマ = 殺害数.Find(nameof(ノルマ)).GetComponent<TMP_Text>();
+            ノルマ.text = "体/" + titleSettings.ClearKillScore + "体";
             deathCounter.Subscribe(deadCount =>
             {
-                var color = Color.Lerp(zeroColor, clearColor, deadCount / 目標駆逐数);
+                var color = Color.Lerp(zeroColor, clearColor, deadCount / (float)titleSettings.ClearKillScore);
                 駆逐数.text = deadCount.ToString();
                 駆逐数説明.color = color;
                 駆逐数.color = color;
@@ -94,7 +94,7 @@ namespace Unity1Week
                     mainCamera.transform.position = @position;
                 }
             });
-            playerMoveObserver = this.UpdateAsObservable().Subscribe(_ =>
+            playerMoveObserver = this.UpdateAsObservable().Where(_ => UICamera.enabled).Subscribe(_ =>
             {
                 var settings = manager.GetComponentData<PlayerSettings>(player);
                 if (cached.Temperature != settings.Temperature)

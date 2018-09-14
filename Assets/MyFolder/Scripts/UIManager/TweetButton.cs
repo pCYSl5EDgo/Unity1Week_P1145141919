@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System.Text;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -8,23 +6,26 @@ namespace Unity1Week.UI
 {
     sealed class TweetButton : Button
     {
-        public uint KillScore;
+        public ScriptableObjects.Result result;
         public ScriptableObjects.TitleSettings titleSettings;
         public override void OnPointerClick(PointerEventData eventData)
         {
-            if (KillScore < 100)
-                naichilab.UnityRoomTweet.Tweet("p1145141919", $"難易度:{titleSettings.LeaderCount}\nランク：自滅\n駆逐数:{KillScore}\nおふざけして得る最低評価は楽しいか？\nスコア:{KillScore}", "晩夏の昼の挽歌", "unity1week");
-            else if (KillScore < 1000)
-                naichilab.UnityRoomTweet.Tweet("p1145141919", $"難易度:{titleSettings.LeaderCount}\nランク：クソザコナメクジ\n駆逐数:{KillScore}\nあっ……（察し）\nスコア:{KillScore}", "晩夏の昼の挽歌", "unity1week");
-            else if (KillScore < 10000)
-                naichilab.UnityRoomTweet.Tweet("p1145141919", $"難易度:{titleSettings.LeaderCount}\nランク：クッキー☆\n駆逐数:{KillScore}\nスイーツ（笑）\nスコア:{KillScore}", "晩夏の昼の挽歌", "unity1week");
-            else if (KillScore < 50000)
-                naichilab.UnityRoomTweet.Tweet("p1145141919", $"難易度:{titleSettings.LeaderCount}\nランク：姉貴兄貴姉貴\n駆逐数:{KillScore}\nやりますねぇ！（感心）\nスコア:{KillScore}", "晩夏の昼の挽歌", "unity1week");
-            else if (KillScore < 100000)
-                naichilab.UnityRoomTweet.Tweet("p1145141919", $"難易度:{titleSettings.LeaderCount}\nランク：ナアル地獄の脱獄皇\n駆逐数:{KillScore}\nｱｰｲｷｿ\nスコア:{KillScore}", "晩夏の昼の挽歌", "unity1week");
-            else if (KillScore < 114514)
-                naichilab.UnityRoomTweet.Tweet("p1145141919", $"難易度:{titleSettings.LeaderCount}\nランク：ニアミス先輩\n駆逐数:{KillScore}\n止まるんじゃねぇぞ……\nスコア:{KillScore}", "晩夏の昼の挽歌", "unity1week");
-            else naichilab.UnityRoomTweet.Tweet("p1145141919", $"難易度:{titleSettings.LeaderCount}\nランク：異能生存体\n駆逐数:{KillScore}\nThis way...\nスコア:{KillScore}", "晩夏の昼の挽歌", "unity1week");
+            var buf = new StringBuilder(512);
+            buf.Append("難易度:").Append(titleSettings.LeaderCount).Append(" 駆逐数:").Append(result.KillScore).Append(" スコア:").Append(result.CalcScore()).Append("\nランク:");
+            if (result.KillScore < titleSettings.NextStageCount[0])
+                buf.Append(titleSettings.tweetMessages[0]);
+            else if (result.KillScore < titleSettings.NextStageCount[1])
+                buf.Append(titleSettings.tweetMessages[1]);
+            else if (result.KillScore < titleSettings.NextStageCount[2])
+                buf.Append(titleSettings.tweetMessages[2]);
+            else if (result.KillScore < titleSettings.NextStageCount[3])
+                buf.Append(titleSettings.tweetMessages[3]);
+            else if (result.KillScore < titleSettings.NextStageCount[4])
+                buf.Append(titleSettings.tweetMessages[4]);
+            else if (result.KillScore < titleSettings.ClearKillScore)
+                buf.Append(titleSettings.tweetMessages[5]);
+            else buf.Append(titleSettings.tweetMessages[6]);
+            naichilab.UnityRoomTweet.Tweet("p1145141919", buf.Append('\n').ToString(), "晩夏の昼の挽歌", "unity1week");
         }
     }
 }
