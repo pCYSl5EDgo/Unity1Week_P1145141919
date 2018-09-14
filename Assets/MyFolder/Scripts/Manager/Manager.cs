@@ -53,6 +53,10 @@ namespace Unity1Week
             mainCamera = GetComponent<Camera>();
             UICamera = GameObject.Find("UI Camera").GetComponent<Camera>();
             sourceInfos = new (float, float, AudioClip)[sources.Length];
+            var position = this.transform.position;
+            position.x = titleSettings.Width * 0.5f;
+            position.z = titleSettings.Height * 0.5f;
+            this.transform.position = position;
 #if UNITY_EDITOR
             Validate();
 #endif

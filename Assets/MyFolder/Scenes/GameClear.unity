@@ -690,7 +690,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 90.005, y: -25.105}
-  m_SizeDelta: {x: 180.01, y: 53.3}
+  m_SizeDelta: {x: 180.01, y: 50.21}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1553428840
 MonoBehaviour:
@@ -713,8 +713,8 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_text: "\u5730\u4E0A\u3052\u6210\u529F"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 7b09b26dff2e2e14ea819eabed0b5032, type: 2}
-  m_sharedMaterial: {fileID: 21752304477719876, guid: 7b09b26dff2e2e14ea819eabed0b5032,
+  m_fontAsset: {fileID: 11400000, guid: 58549e86ae15ceb4f978f07451dd5158, type: 2}
+  m_sharedMaterial: {fileID: 21907375740318994, guid: 58549e86ae15ceb4f978f07451dd5158,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}

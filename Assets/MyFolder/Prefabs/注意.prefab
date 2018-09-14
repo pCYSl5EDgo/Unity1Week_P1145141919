@@ -50,8 +50,8 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_text: "\u539F\u4F4F\u751F\u7269\u306E\u5927\u7FA4\u304C\u63A5\u8FD1\u4E2D"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: cf23b30448d6f5943b32122a2daac028, type: 2}
-  m_sharedMaterial: {fileID: 21777183349728504, guid: cf23b30448d6f5943b32122a2daac028,
+  m_fontAsset: {fileID: 11400000, guid: 58549e86ae15ceb4f978f07451dd5158, type: 2}
+  m_sharedMaterial: {fileID: 21907375740318994, guid: 58549e86ae15ceb4f978f07451dd5158,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -178,6 +178,6 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: -222.26001}
+  m_AnchoredPosition: {x: 0, y: -177.63}
   m_SizeDelta: {x: 704.01, y: 89.26}
-  m_Pivot: {x: 0, y: 0.5}
+  m_Pivot: {x: 0, y: 1}

@@ -64,15 +64,13 @@
 -r:"C:\Program Files\Unity\Hub\Editor\2018.2.7f1\Editor\Data\Managed/UnityEngine/UnityEngine.VRModule.dll"
 -r:"C:\Program Files\Unity\Hub\Editor\2018.2.7f1\Editor\Data\Managed/UnityEngine/UnityEngine.VehiclesModule.dll"
 -r:"C:\Program Files\Unity\Hub\Editor\2018.2.7f1\Editor\Data\Managed/UnityEngine/UnityEngine.VideoModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.7f1\Editor\Data\PlaybackEngines\WebGLSupport/Managed/UnityEngine.WebGLModule.dll"
 -r:"C:\Program Files\Unity\Hub\Editor\2018.2.7f1\Editor\Data\Managed/UnityEngine/UnityEngine.WindModule.dll"
 -r:"C:\Program Files\Unity\Hub\Editor\2018.2.7f1\Editor\Data\Managed/UnityEngine/UnityEngine.XRModule.dll"
 -r:"C:\Program Files\Unity\Hub\Editor\2018.2.7f1\Editor\Data\Managed/UnityEditor.dll"
 -r:"C:\Program Files\Unity\Hub\Editor\2018.2.7f1\Editor\Data\Managed/Unity.Locator.dll"
 -r:"C:/Program Files/Unity/Hub/Editor/2018.2.7f1/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll"
 -r:"C:/Program Files/Unity/Hub/Editor/2018.2.7f1/Editor/Data/UnityExtensions/Unity/GUISystem/Editor/UnityEditor.UI.dll"
--r:"C:/Program Files/Unity/Hub/Editor/2018.2.7f1/Editor/Data/UnityExtensions/Unity/TestRunner/Editor/UnityEditor.TestRunner.dll"
--r:"C:/Program Files/Unity/Hub/Editor/2018.2.7f1/Editor/Data/UnityExtensions/Unity/TestRunner/UnityEngine.TestRunner.dll"
--r:"C:/Program Files/Unity/Hub/Editor/2018.2.7f1/Editor/Data/UnityExtensions/Unity/TestRunner/net35/unity-custom/nunit.framework.dll"
 -r:"C:/Program Files/Unity/Hub/Editor/2018.2.7f1/Editor/Data/UnityExtensions/Unity/Timeline/RuntimeEditor/UnityEngine.Timeline.dll"
 -r:"C:/Program Files/Unity/Hub/Editor/2018.2.7f1/Editor/Data/UnityExtensions/Unity/Timeline/Editor/UnityEditor.Timeline.dll"
 -r:"C:/Program Files/Unity/Hub/Editor/2018.2.7f1/Editor/Data/UnityExtensions/Unity/TreeEditor/Editor/UnityEditor.TreeEditor.dll"
@@ -90,7 +88,8 @@
 -r:"C:/Program Files/Unity/Hub/Editor/2018.2.7f1/Editor/Data/PlaybackEngines/windowsstandalonesupport/UnityEditor.WindowsStandalone.Extensions.dll"
 -r:"C:/Users/I/Saved Games/Unity1Week2/Assets/Plugins/com.unity.collections@0.0.9-preview.4/System.Runtime.CompilerServices.Unsafe.dll"
 -r:"C:/Users/I/Saved Games/Unity1Week2/Assets/Plugins/Editor/CSharpLatest.dll"
--r:C:/Users/I/AppData/Local/Unity/cache/packages/staging-packages.unity.com/com.unity.purchasing@2.0.3/Editor/UnityEditor.Purchasing.dll
+-r:"C:/Users/I/Saved Games/Unity1Week2/Assets/Demigiant/DOTween/Editor/DOTweenEditor.dll"
+-r:"C:/Users/I/Saved Games/Unity1Week2/Assets/Demigiant/DOTween/DOTween.dll"
 -r:"C:\Program Files\Unity\Hub\Editor\2018.2.7f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\mscorlib.dll"
 -r:"C:\Program Files\Unity\Hub\Editor\2018.2.7f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\System.dll"
 -r:"C:\Program Files\Unity\Hub\Editor\2018.2.7f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\System.Core.dll"
@@ -219,13 +218,9 @@
 -d:UNITY_2018_2_7
 -d:UNITY_2018_2
 -d:UNITY_2018
--d:PLATFORM_ARCH_64
--d:UNITY_64
 -d:ENABLE_AUDIO
 -d:ENABLE_CACHING
 -d:ENABLE_CLOTH
--d:ENABLE_DUCK_TYPING
--d:ENABLE_MICROPHONE
 -d:ENABLE_MULTIPLE_DISPLAYS
 -d:ENABLE_PHYSICS
 -d:ENABLE_SPRITES
@@ -235,13 +230,11 @@
 -d:ENABLE_TEXTURE_STREAMING
 -d:ENABLE_DIRECTOR
 -d:ENABLE_UNET
--d:ENABLE_LZMA
 -d:ENABLE_UNITYEVENTS
 -d:ENABLE_WEBCAM
 -d:ENABLE_WWW
 -d:ENABLE_CLOUD_SERVICES_COLLAB
 -d:ENABLE_CLOUD_SERVICES_COLLAB_SOFTLOCKS
--d:ENABLE_CLOUD_SERVICES_ADS
 -d:ENABLE_CLOUD_HUB
 -d:ENABLE_CLOUD_PROJECT_ID
 -d:ENABLE_CLOUD_SERVICES_USE_WEBREQUEST
@@ -262,36 +255,28 @@
 -d:INCLUDE_DYNAMIC_GI
 -d:INCLUDE_GI
 -d:ENABLE_MONO_BDWGC
--d:PLATFORM_SUPPORTS_MONO
 -d:RENDER_SOFTWARE_CURSOR
 -d:INCLUDE_PUBNUB
 -d:ENABLE_VIDEO
 -d:ENABLE_PACKMAN
 -d:ENABLE_CUSTOM_RENDER_TEXTURE
 -d:ENABLE_LOCALIZATION
--d:PLATFORM_STANDALONE_WIN
--d:PLATFORM_STANDALONE
--d:UNITY_STANDALONE_WIN
--d:UNITY_STANDALONE
--d:ENABLE_SUBSTANCE
--d:ENABLE_RUNTIME_GI
--d:ENABLE_MOVIES
--d:ENABLE_NETWORK
+-d:PLATFORM_WEBGL
+-d:UNITY_WEBGL
+-d:UNITY_WEBGL_API
+-d:UNITY_DISABLE_WEB_VERIFICATION
+-d:UNITY_GFX_USE_PLATFORM_VSYNC
 -d:ENABLE_CRUNCH_TEXTURE_COMPRESSION
 -d:ENABLE_UNITYWEBREQUEST
 -d:ENABLE_CLOUD_SERVICES
+-d:ENABLE_CLOUD_SERVICES_ADS
 -d:ENABLE_CLOUD_SERVICES_ANALYTICS
 -d:ENABLE_CLOUD_SERVICES_PURCHASING
 -d:ENABLE_CLOUD_SERVICES_CRASH_REPORTING
--d:ENABLE_OUT_OF_PROCESS_CRASH_HANDLER
--d:ENABLE_EVENT_QUEUE
--d:ENABLE_CLUSTER_SYNC
--d:ENABLE_CLUSTERINPUT
 -d:ENABLE_VR
--d:ENABLE_AR
--d:ENABLE_WEBSOCKET_HOST
--d:ENABLE_MONO
--d:NET_STANDARD_2_0
+-d:ENABLE_SPATIALTRACKING
+-d:ENABLE_IL2CPP
+-d:NET_4_6
 -d:ENABLE_PROFILER
 -d:DEBUG
 -d:TRACE
@@ -303,6 +288,7 @@
 -d:ENABLE_BURST_AOT
 -d:UNITY_TEAM_LICENSE
 -d:UNITY_DISABLE_AUTOMATIC_SYSTEM_BOOTSTRAP
+-d:CSHARP_7_OR_LATER
 -i:C:/Users/I/AppData/Local/Unity/cache/packages/staging-packages.unity.com/com.unity.package-manager-ui@1.9.11/Editor/AssemblyInfo.cs
 -i:C:/Users/I/AppData/Local/Unity/cache/packages/staging-packages.unity.com/com.unity.package-manager-ui@1.9.11/Editor/Sources/External/SemVersion.cs
 -i:C:/Users/I/AppData/Local/Unity/cache/packages/staging-packages.unity.com/com.unity.package-manager-ui@1.9.11/Editor/Sources/External/SemVersionExtension.cs

@@ -15,16 +15,13 @@ namespace Unity1Week.UI
             slider = GetComponent<Slider>();
             text = _難易度.GetComponent<TMPro.TMP_Text>();
             text.text = titleSettings.LeaderCount.ToString();
-            if (titleSettings.LeaderCount == 200)
-                slider.value = 0;
-            else
-                slider.value = (titleSettings.LeaderCount - 200) / 9800f;
+            slider.value = titleSettings.LeaderCount;
         }
         void Update()
         {
-            var value = (uint)(200 + (slider.value * 9800));
-            if (titleSettings.LeaderCount == value) return;
-            text.text = (titleSettings.LeaderCount = value).ToString();
+            var _value = (uint)slider.value;
+            if (titleSettings.LeaderCount == _value) return;
+            text.text = (titleSettings.LeaderCount = _value).ToString();
         }
     }
 }

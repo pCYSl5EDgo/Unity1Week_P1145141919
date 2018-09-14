@@ -1,4 +1,5 @@
-﻿using UniRx;
+﻿using System;
+using UniRx;
 
 namespace Unity1Week
 {
@@ -39,11 +40,13 @@ namespace Unity1Week
                         // System.Buffer.BlockCopy(stage4EnemySpeed.Speeds, 0, enemySpeeds.Speeds, 0, enemySpeeds.Speeds.Length);
                         break;
                     case 5:
+                        LastBossAppear();
                         break;
                     default: break;
                 }
             });
         }
+
         private void InitializeBGM()
         {
             stageReactiveProperty.Subscribe((stage) =>
