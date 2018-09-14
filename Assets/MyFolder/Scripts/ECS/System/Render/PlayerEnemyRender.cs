@@ -10,7 +10,7 @@ using UnityEngine.Rendering;
 
 namespace Unity1Week
 {
-    public sealed class PlayerEnemyRenderSystem : ComponentSystem
+    public sealed class PlayerEnemyRenderSystem : ComponentSystem, IRenderSystem
     {
         private readonly Material playerMaterial;
         private readonly Mesh playerMesh;

@@ -54,7 +54,6 @@ namespace Unity1Week
                 var diffY = playerY - snowItem.Position.y;
                 if (diffX * diffX + diffY * diffY <= rangeSquared)
                 {
-                    Debug.Log(damage);
                     playerSettings.Life -= damage;
                     playerSettings.Temperature -= temperatureDelta;
                     toDestroy.Add(snowItem);

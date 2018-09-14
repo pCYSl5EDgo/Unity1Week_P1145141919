@@ -13,7 +13,7 @@ namespace Unity1Week
 {
     [AlwaysUpdateSystem]
     [UpdateAfter(typeof(PlayerEnemyRenderSystem))]
-    public sealed class ChipRenderSystem : ComponentSystem
+    public sealed class ChipRenderSystem : ComponentSystem, IRenderSystem
     {
         public struct Tag : IComponentData
         {

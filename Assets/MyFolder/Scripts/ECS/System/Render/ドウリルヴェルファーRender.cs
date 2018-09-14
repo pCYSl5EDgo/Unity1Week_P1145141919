@@ -11,7 +11,7 @@ using UnityEngine.Rendering;
 namespace Unity1Week
 {
     [UpdateAfter(typeof(MoveSystem))]
-    public sealed class TakenokoRenderSystem : ComponentSystem
+    public sealed class TakenokoRenderSystem : ComponentSystem, IRenderSystem
     {
         private readonly Camera mainCamera;
         private readonly Mesh mesh;

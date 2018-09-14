@@ -11,7 +11,7 @@ using UnityEngine.Rendering;
 namespace Unity1Week
 {
     [UpdateAfter(typeof(PlayerEnemyRenderSystem))]
-    public sealed class KinokoRenderSystem : ComponentSystem
+    public sealed class KinokoRenderSystem : ComponentSystem, IRenderSystem
     {
         private readonly Camera mainCamera;
         private readonly Mesh mesh;

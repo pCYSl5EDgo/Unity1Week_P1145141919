@@ -12,7 +12,7 @@ using UnityEngine.Rendering;
 namespace Unity1Week
 {
     [UpdateAfter(typeof(PlayerEnemyRenderSystem))]
-    public sealed class 空蝉RenderSystem : ComponentSystem
+    public sealed class 空蝉RenderSystem : ComponentSystem, IRenderSystem
     {
         private readonly Material material;
         private readonly Camera mainCamera;
