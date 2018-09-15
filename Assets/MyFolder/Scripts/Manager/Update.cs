@@ -38,13 +38,13 @@ namespace Unity1Week
         private void ChangeWeapon1(bool _)
         {
             PlayerShootSystem.WeaponType = 0;
-            武器名.text = weaponNames[0];
+            武器名.text = playerSkills[0].Name;
             武器名.SetLayoutDirty();
         }
         private void ChangeWeapon2(bool _)
         {
             PlayerShootSystem.WeaponType = 1;
-            武器名.text = weaponNames[1];
+            武器名.text = playerSkills[1].Name;
             武器名.SetLayoutDirty();
         }
         private GameObject 注意;

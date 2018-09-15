@@ -98,11 +98,11 @@ namespace Unity1Week
             }
             using (var playerBulletChunks = manager.CreateArchetypeChunkArray(fPlayerBullet, Allocator.Temp))
             {
-                AddHashCode(PositionTypeRO, EntityType, playerBulletChunks, PlayerBulletCodes);
+                AddHashCode(PositionTypeRO, EntityType, playerBulletChunks, PlayerBulletCodes, PlayerBulletPositionHashCodeSet);
             }
             using (var snowBulletChunks = manager.CreateArchetypeChunkArray(fSnowBullet, Allocator.Temp))
             {
-                AddHashCode(PositionTypeRO, EntityType, snowBulletChunks, SnowBulletCodes);
+                AddHashCode(PositionTypeRO, EntityType, snowBulletChunks, SnowBulletCodes, SnowBulletPositionHashCodeSet);
             }
         }
 

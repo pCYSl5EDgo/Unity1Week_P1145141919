@@ -16,8 +16,8 @@ namespace Unity1Week
         {
             player = manager.CreateEntity(ComponentType.Create<Position>(), ComponentType.Create<MeshInstanceRenderer>(), ComponentType.Create<Controlable>(), ComponentType.Create<MoveSpeed>(), ComponentType.Create<PlayerSettings>(), ComponentType.Create<Heading2D>(), ComponentType.Create<SkillElement>());
             var buffer = manager.GetBuffer<SkillElement>(player);
-            buffer.Add(new SkillElement(1, CoolTime));
-            buffer.Add(new SkillElement(2, CoolTime * 4));
+            for (int i = 0; i < this.playerSkills.Length; ++i)
+                buffer.Add(new SkillElement((uint)(i + 1), playerSkills[i].CoolTime));
             manager.SetSharedComponentData(player, new MeshInstanceRenderer
             {
                 mesh = RotateSprite(playerSprite),

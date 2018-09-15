@@ -18,10 +18,6 @@ namespace Unity1Week
         [SerializeField] Sprite[] bombSprites;
         [SerializeField] ScriptableObjects.Speed playerSpeeds;
         [SerializeField] ScriptableObjects.Speed enemySpeeds;
-        [SerializeField] Sprite playerBulletSprite;
-        [SerializeField] Material playerBulletMaterial;
-        [SerializeField] Sprite snowSprite;
-        [SerializeField] Material snowMaterial;
         [SerializeField] AudioSource BgmSource;
         [SerializeField] AudioClip[] BgmClips;
         [SerializeField] float heatDamageRatio;
@@ -29,13 +25,11 @@ namespace Unity1Week
         [SerializeField] float rainCoolPower;
         [SerializeField] float rainCoolTimeSpan;
         [SerializeField] float rainCoolFrequency;
-        [SerializeField] float snowCoolTime;
-        [SerializeField] float snowDamageRatio;
+        [SerializeField] ScriptableObjects.SkillSetting snowSkillSetting;
         [SerializeField] AudioClip takenokoBulletShoot;
         [SerializeField] AudioClip takenokoBulletBurst;
         [SerializeField] AudioClip snowBurst;
         [SerializeField] AudioSource[] sources;
-        [SerializeField] float CoolTime;
         [SerializeField] Sprite playerSprite;
         [SerializeField] Material playerMaterial;
         [SerializeField] Sprite kinokoHammer;
@@ -43,10 +37,10 @@ namespace Unity1Week
         [SerializeField] GameObject 武器欄;
         [SerializeField] ScriptableObjects.Speed stage4EnemySpeed;
         [SerializeField] GameObject respawnDisplay;
-        [SerializeField] string[] weaponNames;
         [SerializeField] AudioSource BGMSource;
         [SerializeField] ScriptableObjects.TitleSettings titleSettings;
         [SerializeField] ScriptableObjects.Result resultSettings;
+        [SerializeField] ScriptableObjects.SkillSetting[] playerSkills;
 
         void Start()
         {
@@ -104,7 +98,7 @@ namespace Unity1Week
             InitializePlayer(range, 100, InitialTemperature, ThermalDeathPoint);
             world.CreateManager(typeof(PlayerEnemyRenderSystem), mainCamera, playerSprite, playerMaterial, enemyMesh, new Material[] { enemyDisplay.bossMaterial, enemyDisplay.leaderMaterial, enemyDisplay.subordinateMaterial });
             world.CreateManager(typeof(MoveSystem));
-            world.CreateManager(typeof(EnemyBulletRenderSystem), mainCamera, snowSprite, snowMaterial);
+            world.CreateManager(typeof(EnemyBulletRenderSystem), mainCamera, snowSkillSetting.Sprites[0], snowSkillSetting.Material);
             world.CreateManager(typeof(MoveEnemySystem), player);
             world.CreateManager(typeof(EnemySnowShootSystem), player, 4);
             world.CreateManager(typeof(ConfinePlayerPositionSystem), player, range, mainCamera.transform);
@@ -119,19 +113,19 @@ namespace Unity1Week
             world.CreateManager(typeof(DestroyEnemyOutOfBoundsSystem), range);
             world.CreateManager(typeof(DecideMoveSpeedSystem), range, chips, playerSpeeds.Speeds, enemySpeeds.Speeds);
             world.CreateManager(typeof(UpdateCoolTimeSystem));
-            world.CreateManager(typeof(TakenokoRenderSystem), mainCamera, playerBulletSprite, playerBulletMaterial);
+            world.CreateManager(typeof(TakenokoRenderSystem), mainCamera, playerSkills[0].Sprites[0], playerSkills[0].Material);
             world.CreateManager(typeof(BombHitCheckSystem), player, 4, enemyHashCodes);
             world.CreateManager(typeof(ChipRenderSystem), mainCamera, range, chips, mapTable.chipTemperatures, mapTable.map, unlit);
-            world.CreateManager(typeof(SnowPlayerHitCheckSystem), player, snowDamageRatio, deathCounter, 0.5f, snowHashCodes, playerBulletHashCodes, snowBulletPositionHashSet, new Action(TryToPlaySnowBurst));
+            world.CreateManager(typeof(SnowPlayerHitCheckSystem), player, snowSkillSetting.DamageRatio, deathCounter, 0.5f, snowHashCodes, playerBulletHashCodes, snowBulletPositionHashSet, new Action(TryToPlaySnowBurst));
             (this.RainSystem = world.CreateManager<RainSystem>(range, rainCoolTimeSpan, rainCoolPower, rainCoolFrequency)).Enabled = false;
             (this.EnemyPlayerCollisionSystem = world.CreateManager<EnemyPlayerCollisionSystem>(player, enemyHashCodes, 0.16f, deathCounter)).Enabled = false;
             world.CreateManager(typeof(PlayerTemperatureSystem), player, range, chips, heatDamageRatio, coolRatio);
-            world.CreateManager(typeof(空蝉RenderSystem), mainCamera, playerMaterial, playerSprite, 15);
+            world.CreateManager(typeof(UtusemiRenderSystem), mainCamera, playerSkills[1].Sprites[0], playerSkills[1].Material, 15);
             ScriptBehaviourUpdateOrder.UpdatePlayerLoop(world);
         }
 
         private SpawnEnemySystem InitializeSpawnEnemy(Entity player, Mesh enemyMesh, World world, Unity.Mathematics.uint2 range, uint count)
-        => world.CreateManager<SpawnEnemySystem>(player, titleSettings.ClearKillScore, count, range, snowCoolTime,
+        => world.CreateManager<SpawnEnemySystem>(player, titleSettings.ClearKillScore, count, range, snowSkillSetting.CoolTime,
             new MeshInstanceRenderer
             {
                 mesh = enemyMesh,

@@ -2068,7 +2068,7 @@ MonoBehaviour:
   rainCoolPower: -1000
   rainCoolTimeSpan: 60
   rainCoolFrequency: 0.1
-  snowCoolTime: 1.5
+  snowSkillSetting: {fileID: 11400000, guid: ee44bcc0b44052e4f804d942a50f92f7, type: 2}
   snowDamageRatio: 1
   takenokoBulletShoot: {fileID: 8300000, guid: 60c050250d89cec499d69760cd53e4e7, type: 3}
   takenokoBulletBurst: {fileID: 8300000, guid: be87f536c189217448cef59e97d96440, type: 3}
@@ -2094,6 +2094,9 @@ MonoBehaviour:
   BGMSource: {fileID: 1698338219}
   titleSettings: {fileID: 11400000, guid: 81000242d0a67f642b5656d0ac05030c, type: 2}
   resultSettings: {fileID: 11400000, guid: ff739e7b069c7fc42b81d10225da988b, type: 2}
+  playerSkills:
+  - {fileID: 11400000, guid: db8cbb5996d97de46867ce71dc01edcd, type: 2}
+  - {fileID: 11400000, guid: 0cdd84ca175f26b43b8af73404669524, type: 2}
 --- !u!82 &1698338219
 AudioSource:
   m_ObjectHideFlags: 0

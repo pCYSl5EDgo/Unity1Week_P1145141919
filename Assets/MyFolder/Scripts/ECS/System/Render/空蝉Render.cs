@@ -12,7 +12,7 @@ using UnityEngine.Rendering;
 namespace Unity1Week
 {
     [UpdateAfter(typeof(PlayerEnemyRenderSystem))]
-    public sealed class 空蝉RenderSystem : ComponentSystem, IRenderSystem
+    public sealed class UtusemiRenderSystem : ComponentSystem, IRenderSystem
     {
         private readonly Material material;
         private readonly Camera mainCamera;
@@ -23,7 +23,7 @@ namespace Unity1Week
         private readonly Bounds bounds = new Bounds(new Vector3(50, 0, 50), new Vector3(1000, 1000, 1000));
         private ComponentGroup g;
 
-        public 空蝉RenderSystem(Camera mainCamera, Material material, Sprite sprite, float seconds)
+        public UtusemiRenderSystem(Camera mainCamera, Sprite sprite, Material material, float seconds)
         {
             this.material = material;
             this.mainCamera = mainCamera;
