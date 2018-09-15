@@ -6,6 +6,7 @@ using Unity.Mathematics;
 using Unity.Transforms;
 
 using System;
+using System.Collections.Generic;
 
 namespace Unity1Week
 {
@@ -65,7 +66,9 @@ namespace Unity1Week
         private readonly NativeList<EntityArchetype> fEnemy = new NativeList<EntityArchetype>(128, Allocator.Persistent);
         private readonly NativeList<EntityArchetype> fPlayerBullet = new NativeList<EntityArchetype>(128, Allocator.Persistent);
         private readonly NativeList<EntityArchetype> fSnowBullet = new NativeList<EntityArchetype>(128, Allocator.Persistent);
-        public System.Collections.Generic.HashSet<int> AllPositionHashCodeSet = new System.Collections.Generic.HashSet<int>();
+        public HashSet<int> AllPositionHashCodeSet = new HashSet<int>();
+        public HashSet<int> PlayerBulletPositionHashCodeSet = new HashSet<int>();
+        public HashSet<int> SnowBulletPositionHashCodeSet = new HashSet<int>();
         protected override void OnDestroyManager()
         {
             EnemyHashCodes.Dispose();
@@ -81,7 +84,8 @@ namespace Unity1Week
             EnemyHashCodes.Clear();
             PlayerBulletCodes.Clear();
             SnowBulletCodes.Clear();
-            AllPositionHashCodeSet.Clear();
+            PlayerBulletPositionHashCodeSet.Clear();
+            SnowBulletPositionHashCodeSet.Clear();
             var manager = EntityManager;
             manager.AddMatchingArchetypes(qEnemy, fEnemy);
             manager.AddMatchingArchetypes(qPlayerBullet, fPlayerBullet);
@@ -114,7 +118,22 @@ namespace Unity1Week
                     key <<= 16;
                     key |= (int)positions[j].Value.z;
                     hashCodes.Add(key, new Tuple(entities[j], positions[j].Value.x, positions[j].Value.z));
-                    AllPositionHashCodeSet.Add(key);
+                }
+            }
+        }
+        private void AddHashCode(in ArchetypeChunkComponentType<Position> PositionTypeRO, in ArchetypeChunkEntityType EntityType, NativeArray<ArchetypeChunk> chunks, NativeMultiHashMap<int, Tuple> hashCodes, HashSet<int> hashSet)
+        {
+            for (int i = 0; i < chunks.Length; ++i)
+            {
+                var positions = chunks[i].GetNativeArray(PositionTypeRO);
+                var entities = chunks[i].GetNativeArray(EntityType);
+                for (int j = 0; j < positions.Length; ++j)
+                {
+                    var key = (int)positions[j].Value.x;
+                    key <<= 16;
+                    key |= (int)positions[j].Value.z;
+                    hashCodes.Add(key, new Tuple(entities[j], positions[j].Value.x, positions[j].Value.z));
+                    hashSet.Add(key);
                 }
             }
         }

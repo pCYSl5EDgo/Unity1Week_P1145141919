@@ -98,7 +98,8 @@ namespace Unity1Week
             var enemyHashCodes = decidePositionHashCodeSystem.EnemyHashCodes;
             var snowHashCodes = decidePositionHashCodeSystem.SnowBulletCodes;
             var playerBulletHashCodes = decidePositionHashCodeSystem.PlayerBulletCodes;
-            var allPositionHashCodes = decidePositionHashCodeSystem.AllPositionHashCodeSet;
+            var playerBulletPositionHashSet = decidePositionHashCodeSystem.PlayerBulletPositionHashCodeSet;
+            var snowBulletPositionHashSet = decidePositionHashCodeSystem.SnowBulletPositionHashCodeSet;
             var chips = InitializePlane(range.x, range.y);
             InitializePlayer(range, 100, InitialTemperature, ThermalDeathPoint);
             world.CreateManager(typeof(PlayerEnemyRenderSystem), mainCamera, playerSprite, playerMaterial, enemyMesh, new Material[] { enemyDisplay.bossMaterial, enemyDisplay.leaderMaterial, enemyDisplay.subordinateMaterial });
@@ -112,7 +113,7 @@ namespace Unity1Week
             var SpawnEnemySystem = InitializeSpawnEnemy(player, enemyMesh, world, range, titleSettings.LeaderCount);
             deathCounter = SpawnEnemySystem.DeathCount;
             nearToRespawn = SpawnEnemySystem.NearToRespawn;
-            world.CreateManager(typeof(TakenokoEnemyHitCheckSystem), 0.16f, enemyHashCodes, playerBulletHashCodes, allPositionHashCodes, new Action(TryToPlayTakenokoBurst));
+            world.CreateManager(typeof(TakenokoEnemyHitCheckSystem), 0.16f, enemyHashCodes, playerBulletHashCodes, playerBulletPositionHashSet, new Action(TryToPlayTakenokoBurst));
             world.CreateManager(typeof(PlayerMoveSystem), player, mainCamera.transform);
             world.CreateManager(typeof(BombRenderSystem), mainCamera, bombMaterial, bombSprites, (int)takenokoBulletBurst.length);
             world.CreateManager(typeof(DestroyEnemyOutOfBoundsSystem), range);
@@ -121,7 +122,7 @@ namespace Unity1Week
             world.CreateManager(typeof(TakenokoRenderSystem), mainCamera, playerBulletSprite, playerBulletMaterial);
             world.CreateManager(typeof(BombHitCheckSystem), player, 4, enemyHashCodes);
             world.CreateManager(typeof(ChipRenderSystem), mainCamera, range, chips, mapTable.chipTemperatures, mapTable.map, unlit);
-            world.CreateManager(typeof(SnowPlayerHitCheckSystem), player, snowDamageRatio, deathCounter, 0.5f, snowHashCodes, playerBulletHashCodes, allPositionHashCodes, new Action(TryToPlaySnowBurst));
+            world.CreateManager(typeof(SnowPlayerHitCheckSystem), player, snowDamageRatio, deathCounter, 0.5f, snowHashCodes, playerBulletHashCodes, snowBulletPositionHashSet, new Action(TryToPlaySnowBurst));
             (this.RainSystem = world.CreateManager<RainSystem>(range, rainCoolTimeSpan, rainCoolPower, rainCoolFrequency)).Enabled = false;
             (this.EnemyPlayerCollisionSystem = world.CreateManager<EnemyPlayerCollisionSystem>(player, enemyHashCodes, 0.16f, deathCounter)).Enabled = false;
             world.CreateManager(typeof(PlayerTemperatureSystem), player, range, chips, heatDamageRatio, coolRatio);

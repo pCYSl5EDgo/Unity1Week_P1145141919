@@ -11,7 +11,7 @@ namespace Unity1Week.UI
         public override void OnPointerClick(PointerEventData eventData)
         {
             base.OnPointerClick(eventData);
-            titleSettings.IsSEOn = isOn
+            titleSettings.IsSEOn = isOn;
         }
     }
 }

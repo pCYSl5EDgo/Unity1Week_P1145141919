@@ -19,10 +19,10 @@ namespace Unity1Week
         private readonly Action playSoundEffect;
         private readonly NativeMultiHashMap<int, DecidePositionHashCodeSystem.Tuple> snowHashCodes;
         private readonly NativeMultiHashMap<int, DecidePositionHashCodeSystem.Tuple> playerBulletHashCodes;
-        private readonly HashSet<int> allPositionHashCodes;
+        private readonly HashSet<int> snowBulletPositionHashSet;
         private readonly HashSet<DecidePositionHashCodeSystem.Tuple> toDestroy = new HashSet<DecidePositionHashCodeSystem.Tuple>();
 
-        public SnowPlayerHitCheckSystem(Entity player, float damageRatio, UniRx.ReactiveProperty<uint> killScore, float radius, NativeMultiHashMap<int, DecidePositionHashCodeSystem.Tuple> snowHashCodes, NativeMultiHashMap<int, DecidePositionHashCodeSystem.Tuple> playerBulletHashCodes, HashSet<int> allPositionHashCodes, Action playSoundEffect)
+        public SnowPlayerHitCheckSystem(Entity player, float damageRatio, UniRx.ReactiveProperty<uint> killScore, float radius, NativeMultiHashMap<int, DecidePositionHashCodeSystem.Tuple> snowHashCodes, NativeMultiHashMap<int, DecidePositionHashCodeSystem.Tuple> playerBulletHashCodes, HashSet<int> snowBulletPositionHashSet, Action playSoundEffect)
         {
             this.rangeSquared = radius * radius;
             this.damageRatio = damageRatio;
@@ -31,7 +31,7 @@ namespace Unity1Week
             this.playSoundEffect = playSoundEffect;
             this.snowHashCodes = snowHashCodes;
             this.playerBulletHashCodes = playerBulletHashCodes;
-            this.allPositionHashCodes = allPositionHashCodes;
+            this.snowBulletPositionHashSet = snowBulletPositionHashSet;
         }
 
         protected override void OnUpdate()
@@ -47,7 +47,7 @@ namespace Unity1Week
             var temperatureDelta = damageRatio * Time.deltaTime;
             DecidePositionHashCodeSystem.Tuple snowItem, playerBulletItem;
             NativeMultiHashMapIterator<int> snowIt, playerBulletIt;
-            foreach (var key in allPositionHashCodes)
+            foreach (var key in snowBulletPositionHashSet)
             {
                 if (!snowHashCodes.TryGetFirstValue(key, out snowItem, out snowIt)) continue;
                 var diffX = playerX - snowItem.Position.x;

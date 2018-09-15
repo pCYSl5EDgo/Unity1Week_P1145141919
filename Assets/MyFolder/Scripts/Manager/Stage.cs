@@ -40,7 +40,7 @@ namespace Unity1Week
                         // System.Buffer.BlockCopy(stage4EnemySpeed.Speeds, 0, enemySpeeds.Speeds, 0, enemySpeeds.Speeds.Length);
                         break;
                     case 5:
-                        LastBossAppear();
+                        // LastBossAppear();
                         break;
                     default: break;
                 }

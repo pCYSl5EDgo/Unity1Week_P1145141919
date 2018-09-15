@@ -30,7 +30,7 @@ MonoBehaviour:
   - "\u7570\u80FD\u751F\u5B58\u4F53\nThis way..."
   Width: 100
   Height: 100
-  LeaderCount: 10000
+  LeaderCount: 1000
   PlayerKind: 0
   MaxLifes: e803000050c300000a000000
   ThermalDeathTemperatures:

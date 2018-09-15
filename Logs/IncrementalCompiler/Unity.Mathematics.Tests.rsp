@@ -90,10 +90,10 @@
 -r:"C:/Program Files/Unity/Hub/Editor/2018.2.7f1/Editor/Data/Managed/UnityEditor.Graphs.dll"
 -r:"C:/Program Files/Unity/Hub/Editor/2018.2.7f1/Editor/Data/PlaybackEngines/WebGLSupport/UnityEditor.WebGL.Extensions.dll"
 -r:"C:/Program Files/Unity/Hub/Editor/2018.2.7f1/Editor/Data/PlaybackEngines/windowsstandalonesupport/UnityEditor.WindowsStandalone.Extensions.dll"
+-r:"C:/Users/I/Saved Games/Unity1Week2/Assets/Demigiant/DOTween/DOTween.dll"
+-r:"C:/Users/I/Saved Games/Unity1Week2/Assets/Demigiant/DOTween/Editor/DOTweenEditor.dll"
 -r:"C:/Users/I/Saved Games/Unity1Week2/Assets/Plugins/com.unity.collections@0.0.9-preview.4/System.Runtime.CompilerServices.Unsafe.dll"
 -r:"C:/Users/I/Saved Games/Unity1Week2/Assets/Plugins/Editor/CSharpLatest.dll"
--r:"C:/Users/I/Saved Games/Unity1Week2/Assets/Demigiant/DOTween/Editor/DOTweenEditor.dll"
--r:"C:/Users/I/Saved Games/Unity1Week2/Assets/Demigiant/DOTween/DOTween.dll"
 -r:"C:\Program Files\Unity\Hub\Editor\2018.2.7f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\mscorlib.dll"
 -r:"C:\Program Files\Unity\Hub\Editor\2018.2.7f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\System.dll"
 -r:"C:\Program Files\Unity\Hub\Editor\2018.2.7f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\System.Core.dll"
@@ -280,7 +280,7 @@
 -d:ENABLE_VR
 -d:ENABLE_SPATIALTRACKING
 -d:ENABLE_IL2CPP
--d:NET_STANDARD_2_0
+-d:NET_4_6
 -d:ENABLE_PROFILER
 -d:DEBUG
 -d:TRACE

@@ -13,20 +13,20 @@ namespace Unity1Week
     [UpdateBefore(typeof(BombRenderSystem))]
     public sealed class TakenokoEnemyHitCheckSystem : ComponentSystem
     {
-        public TakenokoEnemyHitCheckSystem(float radius, NativeMultiHashMap<int, DecidePositionHashCodeSystem.Tuple> enemyHashCodes, NativeMultiHashMap<int, DecidePositionHashCodeSystem.Tuple> playerBulletHashCodes, HashSet<int> allPositionHashCodes, Action playSoundEffect)
+        public TakenokoEnemyHitCheckSystem(float radius, NativeMultiHashMap<int, DecidePositionHashCodeSystem.Tuple> enemyHashCodes, NativeMultiHashMap<int, DecidePositionHashCodeSystem.Tuple> playerBulletHashCodes, HashSet<int> playerBulletPositionHashSet, Action playSoundEffect)
         {
             this.radiusSquared = radius * radius;
             this.enemyHashCodes = enemyHashCodes;
             this.playerBulletHashCodes = playerBulletHashCodes;
             this.playSoundEffect = playSoundEffect;
-            this.allPositionHashCodes = allPositionHashCodes;
+            this.playerBulletPositionHashSet = playerBulletPositionHashSet;
         }
         private EntityArchetype archetype, temperatureArchetype;
         private readonly float radiusSquared;
         private readonly NativeMultiHashMap<int, DecidePositionHashCodeSystem.Tuple> enemyHashCodes;
         private readonly NativeMultiHashMap<int, DecidePositionHashCodeSystem.Tuple> playerBulletHashCodes;
         private readonly Action playSoundEffect;
-        private readonly HashSet<int> allPositionHashCodes;
+        private readonly HashSet<int> playerBulletPositionHashSet;
         private readonly HashSet<DecidePositionHashCodeSystem.Tuple> toDestroyTuples = new HashSet<DecidePositionHashCodeSystem.Tuple>();
 
         protected override void OnCreateManager(int capacity)
@@ -40,7 +40,7 @@ namespace Unity1Week
             var time = new LifeTime { Value = Time.time };
             var buf = PostUpdateCommands;
             toDestroyTuples.Clear();
-            foreach (var key in allPositionHashCodes)
+            foreach (var key in playerBulletPositionHashSet)
             {
                 if (!playerBulletHashCodes.TryGetFirstValue(key, out var playerBulletItem, out var playerBulletIt) || !enemyHashCodes.TryGetFirstValue(key, out var enemyItem, out var enemyIt))
                     continue;
