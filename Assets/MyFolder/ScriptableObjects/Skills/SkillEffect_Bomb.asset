@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a25f80f50d181734f9b50c3dc1dcdbcc, type: 3}
+  m_Name: SkillEffect_Bomb
+  m_EditorClassIdentifier: 
+  Name: 
+  CoolTime: 0
+  UtilityNumber: 0
+  IsSingleMaterial: 1
+  Sprites:
+  - {fileID: 21300000, guid: a191c1a237e9b9d49887a071fefecb3c, type: 3}
+  - {fileID: 21300002, guid: a191c1a237e9b9d49887a071fefecb3c, type: 3}
+  - {fileID: 21300004, guid: a191c1a237e9b9d49887a071fefecb3c, type: 3}
+  - {fileID: 21300006, guid: a191c1a237e9b9d49887a071fefecb3c, type: 3}
+  - {fileID: 21300008, guid: a191c1a237e9b9d49887a071fefecb3c, type: 3}
+  - {fileID: 21300010, guid: a191c1a237e9b9d49887a071fefecb3c, type: 3}
+  - {fileID: 21300012, guid: a191c1a237e9b9d49887a071fefecb3c, type: 3}
+  - {fileID: 21300014, guid: a191c1a237e9b9d49887a071fefecb3c, type: 3}
+  Material: {fileID: 2100000, guid: 3815a3867dc94424abf54fad07078dae, type: 2}
+  Materials: []

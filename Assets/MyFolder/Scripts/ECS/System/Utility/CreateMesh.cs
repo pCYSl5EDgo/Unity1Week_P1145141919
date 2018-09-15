@@ -7,13 +7,13 @@ namespace Unity1Week
     {
         static readonly List<Vector3> vertList = new List<Vector3>(16);
         static readonly List<Vector2> uvList = new List<Vector2>(16);
-        public static Mesh FromSprite(this Sprite sprite)
+        public static Mesh FromSprite(this Sprite sprite, float height = 0.01f)
         {
             var mesh = new Mesh();
             var verts = sprite.vertices;
             vertList.Clear();
             for (int j = 0; j < verts.Length; j++)
-                vertList.Add(new Vector3(verts[j].x, 0.01f, verts[j].y));
+                vertList.Add(new Vector3(verts[j].x, height, verts[j].y));
             mesh.SetVertices(vertList);
             var tris = sprite.triangles;
             var triangles = new int[tris.Length];

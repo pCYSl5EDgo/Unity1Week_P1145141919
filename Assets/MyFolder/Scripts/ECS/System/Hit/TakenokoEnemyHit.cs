@@ -10,7 +10,7 @@ using UnityEngine;
 namespace Unity1Week
 {
     [UpdateAfter(typeof(DecidePositionHashCodeSystem))]
-    [UpdateBefore(typeof(BombRenderSystem))]
+    [UpdateBefore(typeof(AnimationSkillRenderSystem))]
     public sealed class TakenokoEnemyHitCheckSystem : ComponentSystem
     {
         public TakenokoEnemyHitCheckSystem(float radius, NativeMultiHashMap<int, DecidePositionHashCodeSystem.Tuple> enemyHashCodes, NativeMultiHashMap<int, DecidePositionHashCodeSystem.Tuple> playerBulletHashCodes, HashSet<int> playerBulletPositionHashSet, Action playSoundEffect)
@@ -28,16 +28,17 @@ namespace Unity1Week
         private readonly Action playSoundEffect;
         private readonly HashSet<int> playerBulletPositionHashSet;
         private readonly HashSet<DecidePositionHashCodeSystem.Tuple> toDestroyTuples = new HashSet<DecidePositionHashCodeSystem.Tuple>();
+        private EntityManager manager;
 
         protected override void OnCreateManager(int capacity)
         {
-            archetype = EntityManager.CreateArchetype(ComponentType.Create<Position2D>(), ComponentType.Create<BombEffect>(), ComponentType.Create<LifeTime>());
-            temperatureArchetype = EntityManager.CreateArchetype(ComponentType.Create<ChipRenderSystem.Tag>());
+            manager = EntityManager;
+            archetype = manager.CreateArchetype(ComponentType.Create<Position2D>(), ComponentType.Create<BombEffect>(), ComponentType.Create<LifeTime>());
+            temperatureArchetype = manager.CreateArchetype(ComponentType.Create<ChipRenderSystem.Tag>());
         }
         protected override unsafe void OnUpdate()
         {
-            var manager = EntityManager;
-            var time = new LifeTime { Value = Time.time };
+            var time = new LifeTime { Value = Time.timeSinceLevelLoad };
             var buf = PostUpdateCommands;
             toDestroyTuples.Clear();
             foreach (var key in playerBulletPositionHashSet)
@@ -75,7 +76,8 @@ namespace Unity1Week
         }
         private unsafe void BurstTakenoko(in LifeTime time, ref EntityCommandBuffer buf, in DecidePositionHashCodeSystem.Tuple tuple)
         {
-            buf.DestroyEntity(tuple.Entity);
+            if (manager.Exists(tuple.Entity))
+                manager.DestroyEntity(tuple.Entity);
             buf.CreateEntity(archetype);
             buf.SetComponent(time);
             buf.SetComponent(new Position2D { Value = tuple.Position });

@@ -2051,11 +2051,6 @@ MonoBehaviour:
   - {fileID: 21300014, guid: a191c1a237e9b9d49887a071fefecb3c, type: 3}
   playerSpeeds: {fileID: 11400000, guid: 7f7c84cae0d23fb4780f112b8cb7c5f0, type: 2}
   enemySpeeds: {fileID: 11400000, guid: 6f50d6670d6f08e42a5c31d8b14ce042, type: 2}
-  playerBulletSprite: {fileID: 21300000, guid: 8da00bb67aa8f36488c734b2978571c4, type: 3}
-  playerBulletMaterial: {fileID: 2100000, guid: ddbce9a4794439f4c8dd72e2ca76ea58,
-    type: 2}
-  snowSprite: {fileID: 21300000, guid: 74977eb6b0b9d9c4abcd265902507303, type: 3}
-  snowMaterial: {fileID: 2100000, guid: bda2a0fdbd5c5cd4a96a116c29717b54, type: 2}
   BgmSource: {fileID: 1698338219}
   BgmClips:
   - {fileID: 8300000, guid: 4cde6bc2dc7229b40990aff8132cbbdc, type: 3}
@@ -2069,7 +2064,6 @@ MonoBehaviour:
   rainCoolTimeSpan: 60
   rainCoolFrequency: 0.1
   snowSkillSetting: {fileID: 11400000, guid: ee44bcc0b44052e4f804d942a50f92f7, type: 2}
-  snowDamageRatio: 1
   takenokoBulletShoot: {fileID: 8300000, guid: 60c050250d89cec499d69760cd53e4e7, type: 3}
   takenokoBulletBurst: {fileID: 8300000, guid: be87f536c189217448cef59e97d96440, type: 3}
   snowBurst: {fileID: 8300000, guid: 2315424d595130d43b5115c6cc9ac564, type: 3}
@@ -2079,7 +2073,6 @@ MonoBehaviour:
   - {fileID: 1698338225}
   - {fileID: 1698338224}
   - {fileID: 1698338223}
-  CoolTime: 0.1
   playerSprite: {fileID: 21300000, guid: ed6e828e81e0c3348b954468719c7091, type: 3}
   playerMaterial: {fileID: 2100000, guid: 8f21d86978253e24db1191dbcd6aad97, type: 2}
   kinokoHammer: {fileID: 21300000, guid: 9ea0e6590a597e44789cf05fc3db88fb, type: 3}
@@ -2088,15 +2081,13 @@ MonoBehaviour:
   stage4EnemySpeed: {fileID: 11400000, guid: 0bfc3346cfa646e48a8fb01728fb7f5b, type: 2}
   respawnDisplay: {fileID: 1498458810679054, guid: 4695ce1766badc642b8828f46ffebdbf,
     type: 2}
-  weaponNames:
-  - "\u30C9\u30A6\u30EA\u30EB\u30F4\u30A7\u30EB\u30D5\u30A1\u30FC"
-  - "\u73FE\u8EAB\u98A8\u8239"
   BGMSource: {fileID: 1698338219}
   titleSettings: {fileID: 11400000, guid: 81000242d0a67f642b5656d0ac05030c, type: 2}
   resultSettings: {fileID: 11400000, guid: ff739e7b069c7fc42b81d10225da988b, type: 2}
   playerSkills:
   - {fileID: 11400000, guid: db8cbb5996d97de46867ce71dc01edcd, type: 2}
   - {fileID: 11400000, guid: 0cdd84ca175f26b43b8af73404669524, type: 2}
+  bombSkillEffect: {fileID: 11400000, guid: fb714062c067c9b4b9d7641d60578b9e, type: 2}
 --- !u!82 &1698338219
 AudioSource:
   m_ObjectHideFlags: 0

@@ -19,7 +19,6 @@ namespace Unity1Week
         private readonly int seconds;
         private readonly Mesh[] meshes = new Mesh[8];
         private readonly Matrix4x4[] matrices = new Matrix4x4[1023];
-        private readonly Bounds bounds = new Bounds(new Vector3(50, 0, 50), new Vector3(1000, 1000, 1000));
         private readonly List<Matrix4x4>[] matrixList = new List<Matrix4x4>[8];
         private ComponentGroup g;
 

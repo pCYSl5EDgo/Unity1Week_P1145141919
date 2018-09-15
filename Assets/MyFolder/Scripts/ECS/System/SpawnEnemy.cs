@@ -97,7 +97,7 @@ namespace Unity1Week
         {
             if (spawnCount < spawnTime) return;
             spawnTime = spawnCount + 1;
-            var bosses = new NativeArray<Entity>((int)spawnCount << 1, Allocator.Temp, NativeArrayOptions.UninitializedMemory);
+            var bosses = new NativeArray<Entity>(System.Math.Max((int)(spawnCount * 0.75f), 2), Allocator.Temp, NativeArrayOptions.UninitializedMemory);
             try
             {
                 bosses[0] = manager.CreateEntity(archetypeBoss);

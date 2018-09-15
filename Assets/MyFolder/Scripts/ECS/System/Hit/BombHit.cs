@@ -10,7 +10,7 @@ using UnityEngine;
 namespace Unity1Week
 {
     [UpdateAfter(typeof(DecidePositionHashCodeSystem))]
-    [UpdateBefore(typeof(BombRenderSystem))]
+    [UpdateBefore(typeof(AnimationSkillRenderSystem))]
     public sealed class BombHitCheckSystem : ComponentSystem
     {
         private readonly float rangeSquared;

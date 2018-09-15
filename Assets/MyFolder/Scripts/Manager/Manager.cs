@@ -14,8 +14,6 @@ namespace Unity1Week
         [SerializeField] ScriptableObjects.Map mapTable;
         [SerializeField] Material unlit;
         [SerializeField] ScriptableObjects.EnemyDisplay enemyDisplay;
-        [SerializeField] Material bombMaterial;
-        [SerializeField] Sprite[] bombSprites;
         [SerializeField] ScriptableObjects.Speed playerSpeeds;
         [SerializeField] ScriptableObjects.Speed enemySpeeds;
         [SerializeField] AudioSource BgmSource;
@@ -41,6 +39,7 @@ namespace Unity1Week
         [SerializeField] ScriptableObjects.TitleSettings titleSettings;
         [SerializeField] ScriptableObjects.Result resultSettings;
         [SerializeField] ScriptableObjects.SkillSetting[] playerSkills;
+        [SerializeField] ScriptableObjects.SkillSetting bombSkillEffect;
 
         void Start()
         {
@@ -109,19 +108,36 @@ namespace Unity1Week
             nearToRespawn = SpawnEnemySystem.NearToRespawn;
             world.CreateManager(typeof(TakenokoEnemyHitCheckSystem), 0.16f, enemyHashCodes, playerBulletHashCodes, playerBulletPositionHashSet, new Action(TryToPlayTakenokoBurst));
             world.CreateManager(typeof(PlayerMoveSystem), player, mainCamera.transform);
-            world.CreateManager(typeof(BombRenderSystem), mainCamera, bombMaterial, bombSprites, (int)takenokoBulletBurst.length);
+            // world.CreateManager(typeof(BombRenderSystem), mainCamera, bombMaterial, bombSprites, (int)takenokoBulletBurst.length);
+            InitializeAnimationRenderSystem(world, takenokoBulletBurst.length);
             world.CreateManager(typeof(DestroyEnemyOutOfBoundsSystem), range);
             world.CreateManager(typeof(DecideMoveSpeedSystem), range, chips, playerSpeeds.Speeds, enemySpeeds.Speeds);
             world.CreateManager(typeof(UpdateCoolTimeSystem));
             world.CreateManager(typeof(TakenokoRenderSystem), mainCamera, playerSkills[0].Sprites[0], playerSkills[0].Material);
             world.CreateManager(typeof(BombHitCheckSystem), player, 4, enemyHashCodes);
             world.CreateManager(typeof(ChipRenderSystem), mainCamera, range, chips, mapTable.chipTemperatures, mapTable.map, unlit);
-            world.CreateManager(typeof(SnowPlayerHitCheckSystem), player, snowSkillSetting.DamageRatio, deathCounter, 0.5f, snowHashCodes, playerBulletHashCodes, snowBulletPositionHashSet, new Action(TryToPlaySnowBurst));
+            world.CreateManager(typeof(SnowPlayerHitCheckSystem), player, snowSkillSetting.UtilityNumber, deathCounter, 0.5f, snowHashCodes, playerBulletHashCodes, snowBulletPositionHashSet, new Action(TryToPlaySnowBurst));
             (this.RainSystem = world.CreateManager<RainSystem>(range, rainCoolTimeSpan, rainCoolPower, rainCoolFrequency)).Enabled = false;
             (this.EnemyPlayerCollisionSystem = world.CreateManager<EnemyPlayerCollisionSystem>(player, enemyHashCodes, 0.16f, deathCounter)).Enabled = false;
             world.CreateManager(typeof(PlayerTemperatureSystem), player, range, chips, heatDamageRatio, coolRatio);
             world.CreateManager(typeof(UtusemiRenderSystem), mainCamera, playerSkills[1].Sprites[0], playerSkills[1].Material, 15);
             ScriptBehaviourUpdateOrder.UpdatePlayerLoop(world);
+        }
+
+        private ScriptBehaviourManager InitializeAnimationRenderSystem(World world, params float[] times)
+        {
+            var pos2d = ComponentType.Create<Position2D>();
+            var lifeTime = ComponentType.Create<LifeTime>();
+            var array = new (EntityArchetypeQuery, Sprite[], Material, float)[1];
+            array[0] = (
+                    new EntityArchetypeQuery
+                    {
+                        None = Array.Empty<ComponentType>(),
+                        Any = Array.Empty<ComponentType>(),
+                        All = new[] { pos2d, lifeTime, ComponentType.Create<BombEffect>() }
+                    }, bombSkillEffect.Sprites, bombSkillEffect.Material, times[0]
+                );
+            return world.CreateManager(typeof(AnimationSkillRenderSystem), mainCamera, array);
         }
 
         private SpawnEnemySystem InitializeSpawnEnemy(Entity player, Mesh enemyMesh, World world, Unity.Mathematics.uint2 range, uint count)

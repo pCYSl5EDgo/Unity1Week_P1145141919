@@ -6,6 +6,7 @@ using Unity.Mathematics;
 using Unity.Transforms;
 
 using System;
+using System.Collections.Generic;
 
 namespace Unity1Week
 {
@@ -14,6 +15,7 @@ namespace Unity1Week
     {
         public struct Tag : IComponentData { }
         private readonly uint2 range;
+        private readonly HashSet<Entity> toDestroy = new HashSet<Entity>();
         private readonly EntityArchetypeQuery q = new EntityArchetypeQuery
         {
             None = Array.Empty<ComponentType>(),
@@ -22,19 +24,13 @@ namespace Unity1Week
         };
         private readonly NativeList<EntityArchetype> f = new NativeList<EntityArchetype>(1024, Allocator.Persistent);
 
-        public DestroyEnemyOutOfBoundsSystem(uint2 range)
-        {
-            this.range = range;
-        }
+        public DestroyEnemyOutOfBoundsSystem(uint2 range) => this.range = range;
 
-        protected override void OnDestroyManager()
-        {
-            f.Dispose();
-        }
+        protected override void OnDestroyManager() => f.Dispose();
         protected override void OnUpdate()
         {
+            toDestroy.Clear();
             var manager = EntityManager;
-            var buf = PostUpdateCommands;
             manager.AddMatchingArchetypes(q, f);
             var positionTypeRO = manager.GetArchetypeChunkComponentType<Position>(true);
             var entityType = manager.GetArchetypeChunkEntityType();
@@ -48,10 +44,13 @@ namespace Unity1Week
                     {
                         var pos = positions[j].Value;
                         if (pos.x < 0 || pos.z < 0 || pos.x >= range.x || pos.z >= range.y)
-                            buf.DestroyEntity(entities[j]);
+                            toDestroy.Add(entities[j]);
                     }
                 }
             }
+            foreach (var item in toDestroy)
+                if (manager.Exists(item))
+                    manager.DestroyEntity(item);
         }
     }
 }

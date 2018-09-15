@@ -9,7 +9,7 @@ using UniRx;
 namespace Unity1Week
 {
     [UpdateAfter(typeof(DecidePositionHashCodeSystem))]
-    [UpdateBefore(typeof(BombRenderSystem))]
+    [UpdateBefore(typeof(AnimationSkillRenderSystem))]
     public sealed class SnowPlayerHitCheckSystem : ComponentSystem
     {
         private readonly float rangeSquared;
@@ -84,7 +84,8 @@ namespace Unity1Week
                 }
             }
             foreach (var item in toDestroy)
-                buf.DestroyEntity(item.Entity);
+                if (manager.Exists(item.Entity))
+                    manager.DestroyEntity(item.Entity);
             manager.SetComponentData(player, playerSettings);
         }
     }
