@@ -5,7 +5,6 @@
 -out:"C:/Users/I/Saved Games/Unity1Week2/Temp/Assembly-CSharp.dll"
 -nostdlib
 -unsafe
--r:"C:/Users/I/Saved Games/Unity1Week2/Library/ScriptAssemblies/ECS_Systems.dll"
 -r:"C:\Program Files\Unity\Hub\Editor\2018.2.8f1\Editor\Data\Managed/UnityEngine/UnityEngine.dll"
 -r:"C:\Program Files\Unity\Hub\Editor\2018.2.8f1\Editor\Data\Managed/UnityEngine/UnityEngine.ARModule.dll"
 -r:"C:\Program Files\Unity\Hub\Editor\2018.2.8f1\Editor\Data\Managed/UnityEngine/UnityEngine.AccessibilityModule.dll"
@@ -73,6 +72,7 @@
 -r:"C:/Users/I/Saved Games/Unity1Week2/Library/ScriptAssemblies/UniRx.Async.dll"
 -r:"C:/Users/I/Saved Games/Unity1Week2/Library/ScriptAssemblies/UniRx.Async.Editor.dll"
 -r:"C:/Users/I/Saved Games/Unity1Week2/Library/ScriptAssemblies/ECS_ComponentTypes.dll"
+-r:"C:/Users/I/Saved Games/Unity1Week2/Library/ScriptAssemblies/ECS_Systems.dll"
 -r:"C:/Users/I/Saved Games/Unity1Week2/Library/ScriptAssemblies/Unity.Entities.Hybrid.dll"
 -r:"C:/Users/I/Saved Games/Unity1Week2/Library/ScriptAssemblies/Unity.Burst.Editor.dll"
 -r:"C:/Users/I/Saved Games/Unity1Week2/Library/ScriptAssemblies/Unity.TextMeshPro.dll"
@@ -294,6 +294,7 @@
 -i:"C:/Users/I/Saved Games/Unity1Week2/Assets/MyFolder/Scripts/Manager/AudioManager.cs"
 -i:"C:/Users/I/Saved Games/Unity1Week2/Assets/MyFolder/Scripts/Manager/GameStage.cs"
 -i:"C:/Users/I/Saved Games/Unity1Week2/Assets/MyFolder/Scripts/Manager/InitializePlayer.cs"
+-i:"C:/Users/I/Saved Games/Unity1Week2/Assets/MyFolder/Scripts/Manager/InitializeWorld.cs"
 -i:"C:/Users/I/Saved Games/Unity1Week2/Assets/MyFolder/Scripts/Manager/LastBoss.cs"
 -i:"C:/Users/I/Saved Games/Unity1Week2/Assets/MyFolder/Scripts/Manager/Manager.cs"
 -i:"C:/Users/I/Saved Games/Unity1Week2/Assets/MyFolder/Scripts/Manager/Stage.cs"
