@@ -8,8 +8,9 @@ namespace Unity1Week.ScriptableObjects
     {
         public string Name;
         public float CoolTime;
-        [FormerlySerializedAs("DamageRatio")]
-        public float UtilityNumber;
+
+        [FormerlySerializedAs("DamageRatio")] public float UtilityNumber;
+
         public bool IsSingleMaterial;
         public Sprite[] Sprites;
         public Material Material;

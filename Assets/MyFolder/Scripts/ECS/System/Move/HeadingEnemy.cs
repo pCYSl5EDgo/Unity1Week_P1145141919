@@ -1,6 +1,4 @@
-using Unity.Entities;
-using Unity.Mathematics;
-using Unity.Transforms;
+/*using Unity.Mathematics;
 
 namespace Unity1Week
 {
@@ -52,4 +50,5 @@ namespace Unity1Week
             }
         }
     }
-}
+}*/
+

@@ -1,7 +1,4 @@
-﻿using Unity.Entities;
-using Unity.Collections;
-using Unity.Transforms;
-using System;
+/*using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UniRx;
@@ -89,4 +86,5 @@ namespace Unity1Week
             manager.SetComponentData(player, playerSettings);
         }
     }
-}
+}*/
+

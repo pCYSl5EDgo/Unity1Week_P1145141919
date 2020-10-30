@@ -1,8 +1,4 @@
-﻿using System;
-using Unity.Entities;
-using Unity.Transforms;
-using Unity.Rendering;
-using Unity.Mathematics;
+/*using System;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
@@ -103,4 +99,5 @@ namespace Unity1Week
             chunks.Dispose();
         }
     }
-}
+}*/
+

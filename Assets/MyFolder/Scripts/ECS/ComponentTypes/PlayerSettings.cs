@@ -1,10 +1,6 @@
-﻿using Unity.Entities;
-using Unity.Mathematics;
-using System;
-
-namespace Unity1Week
+﻿namespace Unity1Week
 {
-    public struct PlayerSettings : IComponentData
+    public struct PlayerSettings
     {
         public float Life;
         public int MaxLife;

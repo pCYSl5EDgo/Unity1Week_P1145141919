@@ -1,12 +1,11 @@
-﻿using Unity.Entities;
-using Unity.Mathematics;
-using System;
+﻿using Unity.Mathematics;
 
 namespace Unity1Week
 {
-    public struct PlayerAttackHitCollisionCircle : IComponentData
+    public struct PlayerAttackHitCollisionCircle
     {
         public float RadiusSquared;
+
         public bool IsInRange(ref float2 center, ref float3 position)
         {
             var diffX = position.x - center.x;

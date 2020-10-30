@@ -1,4 +1,4 @@
-using Unity.Entities;
+/*using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 using Unity.Rendering;
@@ -10,8 +10,6 @@ namespace Unity1Week
 {
     partial class Manager
     {
-        Entity player;
-
         void InitializePlayer(uint2 range, int maxLife, float temperature, float thermalDeathPoint)
         {
             player = manager.CreateEntity(ComponentType.Create<Position>(), ComponentType.Create<MeshInstanceRenderer>(), ComponentType.Create<Controlable>(), ComponentType.Create<MoveSpeed>(), ComponentType.Create<PlayerSettings>(), ComponentType.Create<Heading2D>(), ComponentType.Create<SkillElement>());
@@ -39,4 +37,5 @@ namespace Unity1Week
             });
         }
     }
-}
+}*/
+

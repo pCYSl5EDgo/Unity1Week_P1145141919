@@ -6,6 +6,7 @@
 [Bb]uild*/
 Assets/AssetStoreTools*
 .vscode/
+.idea/
 *.sln
 *.csproj
 *.pdb

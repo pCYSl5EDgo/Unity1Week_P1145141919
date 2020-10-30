@@ -1,4 +1,4 @@
-﻿using Unity.Entities;
+/*using Unity.Entities;
 using UnityEngine;
 using System;
 
@@ -49,4 +49,5 @@ namespace Unity1Week
             ScriptBehaviourUpdateOrder.UpdatePlayerLoop(world);
         }
     }
-}
+}*/
+

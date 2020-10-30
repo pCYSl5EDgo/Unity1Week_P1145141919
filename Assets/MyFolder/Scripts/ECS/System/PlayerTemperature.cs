@@ -1,10 +1,5 @@
-﻿using Unity.Entities;
-using Unity.Mathematics;
-using Unity.Collections;
-using Unity.Collections.LowLevel.Unsafe;
-using Unity.Transforms;
+/*using Unity.Mathematics;
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Unity1Week
@@ -43,4 +38,5 @@ namespace Unity1Week
             manager.SetComponentData(player, settings);
         }
     }
-}
+}*/
+

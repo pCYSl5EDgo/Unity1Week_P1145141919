@@ -1,15 +1,9 @@
-﻿using Unity.Entities;
-using Unity.Mathematics;
-using Unity.Transforms;
-using Unity.Rendering;
+/*using Unity.Mathematics;
 using Unity.Collections;
-using Unity.Collections.LowLevel.Unsafe;
 
 namespace Unity1Week
 {
-    [AlwaysUpdateSystem]
-    [UpdateBefore(typeof(MoveSystem))]
-    public sealed class SpawnEnemySystem : ComponentSystem
+    public sealed class SpawnEnemySystem
     {
         const int DIVISION = 10;
         const int ONCE = 100;
@@ -191,4 +185,5 @@ namespace Unity1Week
             random = new Random(random.state + 1);
         }
     }
-}
+}*/
+

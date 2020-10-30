@@ -1,12 +1,9 @@
-﻿using System;
+/*using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
-using Unity.Entities;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
-using Unity.Mathematics;
-using Unity.Transforms;
 
 namespace Unity1Week
 {
@@ -178,4 +175,5 @@ namespace Unity1Week
             }
         }
     }
-}
+}*/
+

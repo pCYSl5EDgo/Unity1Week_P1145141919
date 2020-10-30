@@ -1,9 +1,30 @@
-﻿using System;
-using Unity.Entities;
+using MyFolder.Scripts.ECS.Types;
+using Unity.Burst;
+using Unity.Collections;
+using Unity.Jobs;
+using Unity.Mathematics;
+
+namespace Unity1Week
+{
+    [BurstCompile]
+    public struct MoveJob : IJob
+    {
+        public NativeArray<Position2D> Position;
+        [ReadOnly] public NativeArray<Speed2D> Speed;
+        public float deltaTime;
+        
+        public void Execute()
+        {
+            var time = (float4x4)deltaTime;
+            
+        }
+    }
+}
+
+/*using System;
 using Unity.Mathematics;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
-using Unity.Transforms;
 
 namespace Unity1Week
 {
@@ -70,4 +91,5 @@ namespace Unity1Week
             }
         }
     }
-}
+}*/
+

@@ -1,10 +1,5 @@
-﻿using Unity.Entities;
-using Unity.Collections;
-using Unity.Collections.LowLevel.Unsafe;
-using Unity.Rendering;
+/*using Unity.Collections;
 using Unity.Mathematics;
-using Unity.Transforms;
-
 using System;
 using System.Collections.Generic;
 
@@ -53,4 +48,5 @@ namespace Unity1Week
                     manager.DestroyEntity(item);
         }
     }
-}
+}*/
+

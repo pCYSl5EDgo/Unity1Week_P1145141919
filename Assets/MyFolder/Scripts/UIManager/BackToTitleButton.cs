@@ -1,13 +1,14 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace Unity1Week.UI
 {
-    sealed class BackToTitleButton : Button
+    internal sealed class BackToTitleButton : Button
     {
         private AsyncOperation operation;
+
         public override void OnPointerClick(PointerEventData eventData)
         {
             if (operation == null)

@@ -1,6 +1,4 @@
-﻿using Unity.Entities;
-using Unity.Transforms;
-using Unity.Mathematics;
+/*using Unity.Mathematics;
 using UnityEngine;
 using System;
 
@@ -92,4 +90,5 @@ namespace Unity1Week
             public static bool operator !=(アメイジングトレンチハンマーTag left, アメイジングトレンチハンマーTag right) => left.X != right.X || left.Y != right.Y || left.CreationTime != right.CreationTime || left.HeadingDegree != right.HeadingDegree;
         }
     }
-}
+}*/
+

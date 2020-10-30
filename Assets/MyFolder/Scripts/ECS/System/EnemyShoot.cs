@@ -1,10 +1,5 @@
-﻿using Unity.Entities;
-using Unity.Collections;
-using Unity.Collections.LowLevel.Unsafe;
-using Unity.Rendering;
+/*using Unity.Collections;
 using Unity.Mathematics;
-using Unity.Transforms;
-
 using System;
 
 namespace Unity1Week
@@ -80,4 +75,5 @@ namespace Unity1Week
             }
         }
     }
-}
+}*/
+

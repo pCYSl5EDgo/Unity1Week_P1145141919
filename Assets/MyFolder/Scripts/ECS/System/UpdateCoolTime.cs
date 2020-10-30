@@ -1,8 +1,4 @@
-﻿using Unity.Entities;
-using Unity.Collections;
-using Unity.Collections.LowLevel.Unsafe;
-
-namespace Unity1Week
+/*namespace Unity1Week
 {
     public sealed class UpdateCoolTimeSystem : ComponentSystem
     {
@@ -27,4 +23,5 @@ namespace Unity1Week
             }
         }
     }
-}
+}*/
+
