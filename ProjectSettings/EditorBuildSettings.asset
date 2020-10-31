@@ -14,9 +14,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/MyFolder/Scenes/SCWR.unity
     guid: 9b8db1a865850234285e0a557b9d750a
-  - enabled: 1
-    path: Assets/naichilab/unity-simple-ranking/Scenes/Ranking.unity
-    guid: 152244f5855414ac4a3874f14efa583c
+  - enabled: 0
+    path: 
+    guid: 00000000000000000000000000000000
   - enabled: 1
     path: Assets/MyFolder/Scenes/SelectPlayerMachine.unity
     guid: c89d1e2a0370f4547bd8f7400adb8fcf
