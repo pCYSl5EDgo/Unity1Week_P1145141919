@@ -43,10 +43,22 @@ namespace Unity1Week
         [ReadOnly] public NativeArray<int> ChipKind;
         [ReadOnly] public NativeArray<Position2D> Position;
         public NativeArray<Speed2D> Speed;
-        public int4x2 CellCountAdjustment;
-        public int4x2 CellWidthCount;
-        public int4 MaxCellCountInclusive;
-        public float4x2 RcpCellSize;
+        private readonly int4x2 cellCountAdjustment;
+        private readonly int4x2 cellWidthCount;
+        private readonly int4 maxCellCountInclusive;
+        private readonly float4x2 rcpCellSize;
+
+        public CalculateMoveSpeedJob(NativeArray<float> speedSettings, NativeArray<int> chipKind, NativeArray<Position2D> position, NativeArray<Speed2D> speed, int cellWidthCount, int cellHeightCount, int cellCountAdjustment, float rcpCellSize)
+        {
+            SpeedSettings = speedSettings;
+            ChipKind = chipKind;
+            Position = position;
+            Speed = speed;
+            this.cellCountAdjustment = cellCountAdjustment;
+            this.cellWidthCount = cellWidthCount;
+            maxCellCountInclusive = cellWidthCount * cellHeightCount - 1;
+            this.rcpCellSize = rcpCellSize;
+        }
 
         public void Execute()
         {
@@ -63,9 +75,9 @@ namespace Unity1Week
 
                 var position = Position[index];
                 {
-                    var xIndex = (int4x2)(position.X * RcpCellSize) + CellCountAdjustment;
-                    var yIndex = (int4x2)(position.Y * RcpCellSize) + CellCountAdjustment;
-                    var cellIndex = yIndex * CellWidthCount + xIndex;
+                    var xIndex = (int4x2)(position.X * rcpCellSize) + cellCountAdjustment;
+                    var yIndex = (int4x2)(position.Y * rcpCellSize) + cellCountAdjustment;
+                    var cellIndex = yIndex * cellWidthCount + xIndex;
                     var speedSetting = GetSpeed(cellIndex.c0);
                     speed.X.c0 *= speedSetting;
                     speed.Y.c0 *= speedSetting;
@@ -85,7 +97,7 @@ namespace Unity1Week
 
         private float4 GetSpeed(int4 cellIndex)
         {
-            cellIndex = math.clamp(cellIndex, int4.zero, MaxCellCountInclusive);
+            cellIndex = math.clamp(cellIndex, int4.zero, maxCellCountInclusive);
             return new float4(
                 GetSpeed(cellIndex.x),
                 GetSpeed(cellIndex.y),
@@ -151,17 +163,52 @@ namespace Unity1Week
     public struct KillOutOfBoundsJob : IJob
     {
         [ReadOnly] public NativeArray<Position2D> Position;
-        [ReadOnly] public NativeArray<IsAlive> IsAlive;
-        public float MinInclusive;
-        public float MaxExclusive;
-        
-        public void Execute()
+        [ReadOnly] public NativeArray<AliveState> IsAlive;
+        private readonly float4x2 minInclusive;
+        private readonly float4x2 maxExclusive;
+
+        public KillOutOfBoundsJob(NativeArray<Position2D> position, NativeArray<AliveState> isAlive, float minInclusive, float maxExclusive)
         {
+            Position = position;
+            IsAlive = isAlive;
+            this.minInclusive = minInclusive;
+            this.maxExclusive = maxExclusive;
+        }
+
+        public unsafe void Execute()
+        {
+            if (X86.Avx.IsAvxSupported)
+            {
+                var positionReinterpret = Position.Reinterpret<v256>(sizeof(v256));
+                var isAliveReinterpret = IsAlive.Reinterpret<v256>(sizeof(v256));
+                var minInclusive256 = new v256(minInclusive.c0.x, minInclusive.c0.x, minInclusive.c0.x, minInclusive.c0.x, minInclusive.c0.x, minInclusive.c0.x, minInclusive.c0.x, minInclusive.c0.x);
+                var maxExclusive256 = new v256(maxExclusive.c0.x, maxExclusive.c0.x, maxExclusive.c0.x, maxExclusive.c0.x, maxExclusive.c0.x, maxExclusive.c0.x, maxExclusive.c0.x, maxExclusive.c0.x);
+                for (var index = 0; index < isAliveReinterpret.Length; index++)
+                {
+                    var isOutOfBounds = isAliveReinterpret[index];
+                    
+                    var position = positionReinterpret[index << 1];
+                    isOutOfBounds = X86.Avx.mm256_or_ps(isOutOfBounds, X86.Avx.mm256_cmp_ps(position, minInclusive256, (int)X86.Avx.CMP.LE_OQ));
+                    isOutOfBounds = X86.Avx.mm256_and_ps(X86.Avx.mm256_cmp_ps(position, maxExclusive256, (int)X86.Avx.CMP.NLT_UQ), isOutOfBounds);
+
+                    position = positionReinterpret[(index << 1) + 1];
+                    isOutOfBounds = X86.Avx.mm256_or_ps(isOutOfBounds, X86.Avx.mm256_cmp_ps(position, minInclusive256, (int)X86.Avx.CMP.LE_OQ));
+                    isOutOfBounds = X86.Avx.mm256_and_ps(X86.Avx.mm256_cmp_ps(position, maxExclusive256, (int)X86.Avx.CMP.NLT_UQ), isOutOfBounds);
+                    
+                    isAliveReinterpret[index] = isOutOfBounds;
+                }
+                
+                return;
+            }
+            
+            var minus1 = new int4(-1, -1, -1, -1);
             for (var index = 0; index < Position.Length; index++)
             {
                 var position = Position[index];
                 var isAlive = IsAlive[index];
-                isAlive.Value &= position.X >= MinInclusive & position.Y >= MinInclusive & position.X < MaxExclusive & position.Y < MaxExclusive;
+                var isInRange = position.X >= minInclusive & position.Y >= minInclusive & position.X < maxExclusive & position.Y < maxExclusive;
+                isAlive.Value.c0 = math.@select(int4.zero, minus1, isInRange.c0);
+                isAlive.Value.c1 = math.@select(int4.zero, minus1, isInRange.c1);
                 IsAlive[index] = isAlive;
             }
         }

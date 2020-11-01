@@ -2,8 +2,8 @@
 
 namespace MyFolder.Scripts.ECS.Types
 {
-    public struct IsAlive
+    public struct FireStartTime
     {
-        public bool4x2 Value;
+        public float4x2 Value;
     }
 }
