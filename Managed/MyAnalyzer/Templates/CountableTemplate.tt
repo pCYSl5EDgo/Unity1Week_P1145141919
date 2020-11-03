@@ -1,0 +1,100 @@
+﻿<#@ template language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="Microsoft.CodeAnalysis" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+namespace <#= TypeSymbol.ContainingNamespace.ToDisplayString() #>
+{
+    partial struct <#= TypeSymbol.Name #>
+    {
+        public partial struct Countable
+        {
+            public global::Unity.Collections.NativeArray<int> Count;
+<# var list = new List<IFieldSymbol>();
+foreach (var member in TypeSymbol.GetMembers()) {
+    if (member.IsStatic) continue;
+    var fieldSymbol = member as IFieldSymbol;
+    if (fieldSymbol == null) continue;
+    var fieldSymbolType = fieldSymbol.Type as INamedTypeSymbol;
+    if (fieldSymbolType == null) continue;
+    list.Add(fieldSymbol); #>
+            public global::Unity.Collections.NativeArray<global::<#= fieldSymbolType.ContainingNamespace.ToDisplayString() #>.<#= fieldSymbolType.Name #>.Eight> <#= fieldSymbol.Name #>Array;
+<# } #>
+
+            public Countable(int count)
+            {
+                Count = new(1, global::Unity.Collections.Allocator.Persistent);
+                var capacity = ((count - 1) >> 3) + 1;
+<# foreach (var fieldSymbol in list) { #>
+                <#= fieldSymbol.Name #>Array = new(capacity, global::Unity.Collections.Allocator.Persistent);
+<# } #>
+            }
+<# var sortable = AttributeData.ConstructorArguments.Length != 0;
+  if (sortable) {
+    var additionalMemberTypes = AttributeData.ConstructorArguments[0].Values;
+    var additionalArgumentMemberNames = AttributeData.ConstructorArguments[1].Values;
+    var additionalFieldMemberNames = AttributeData.ConstructorArguments[2].Values;
+    var isAliveFunctionString = AttributeData.ConstructorArguments[3].Value as string; #>
+
+            public bool IsAlive(int index<# for (var i = 0; i < additionalArgumentMemberNames.Length; i++) { var paramType = additionalMemberTypes[i].Value as INamedTypeSymbol; var paramName = additionalArgumentMemberNames[i].Value as string; #>, global::<#= paramType.ToDisplayString() #> <#= paramName #><# } #>)
+            {
+                <#= isAliveFunctionString #>
+            }
+        }
+
+        [global::Unity.Burst.BurstCompile]
+        public partial struct SortJob : global::Unity.Jobs.IJob
+        {
+            public Countable This;
+<# for (var i = 0; i < additionalFieldMemberNames.Length; i++) { 
+      var fieldType = additionalMemberTypes[i].Value as INamedTypeSymbol;
+      var fieldName = additionalFieldMemberNames[i].Value as string; #>
+            public global::<#= fieldType.ToDisplayString() #> <#= fieldName #>;
+<# } #>
+
+            public void Execute()
+            {
+                var ____count = This.Count[0];
+                for (var ____index = 0; ____index < ____count; )
+                {
+                    if (This.IsAlive(____index<# for (var i = 0; i < additionalFieldMemberNames.Length; i++) { var fieldName = additionalFieldMemberNames[i].Value as string; #>, this.<#= fieldName #><# } #>))
+                    {
+                        ++____index;
+                        continue;
+                    }
+
+                    while (!This.IsAlive(--____count<# for (var i = 0; i < additionalFieldMemberNames.Length; i++) { var fieldName = additionalFieldMemberNames[i].Value as string; #>, this.<#= fieldName #><# } #>))
+                    {
+                        if (____index >= ____count)
+                        {
+                            goto END;
+                        }
+                    }
+
+                    var ____srcIndex = ____index >> 3;
+                    var ____srcColumn = (____index & 7) >> 2;
+                    var ____srcRow = ____index & 3;
+                    var ____dstIndex = ____count >> 3;
+                    var ____dstColumn = (____count & 7) >> 2;
+                    var ____dstRow = ____count & 3;
+
+<# foreach (var fieldSymbol in list) { #>
+                    {
+                        var ____dst = This.<#= fieldSymbol.Name #>Array[____dstIndex];
+                        var ____src = This.<#= fieldSymbol.Name #>Array[____srcIndex];
+                        ____src.CopyToDestination(____srcColumn, ____srcRow, ref ____dst, ____dstColumn, ____dstRow);
+                        This.<#= fieldSymbol.Name #>Array[____dstIndex] = ____dst;
+                    }
+<# } #>
+                }
+
+            END:
+                This.Count[0] = ____count;
+            }
+        }
+<# } else {#>
+        }
+<# } #>
+    }
+}

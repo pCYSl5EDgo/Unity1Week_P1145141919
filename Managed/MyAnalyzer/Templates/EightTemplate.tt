@@ -1,0 +1,45 @@
+﻿<#@ template language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="Microsoft.CodeAnalysis" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+namespace <#= TypeSymbol.ContainingNamespace.ToDisplayString() #>
+{
+    partial struct <#= TypeSymbol.Name #>
+    {
+        public partial struct Eight
+        {
+<# var list = new List<IFieldSymbol>();
+foreach (var member in TypeSymbol.GetMembers()) {
+    if (member.IsStatic) continue;
+    var fieldSymbol = member as IFieldSymbol;
+    if (fieldSymbol== null) continue;
+    var fieldSymbolType = fieldSymbol.Type as INamedTypeSymbol;
+    if (fieldSymbolType == null) continue;
+
+    if (fieldSymbolType.SpecialType == SpecialType.System_Int32
+        || fieldSymbolType.EnumUnderlyingType?.SpecialType == SpecialType.System_Int32) {
+        list.Add(fieldSymbol);#>
+            public global::Unity.Mathematics.int4x2 <#= fieldSymbol.Name #>;
+<#  } else if (fieldSymbolType.SpecialType == SpecialType.System_Single) {
+        list.Add(fieldSymbol);#>
+            public global::Unity.Mathematics.float4x2 <#= fieldSymbol.Name #>;
+<# } #>
+<# } #>
+
+            public void CopyToDestination(int srcColumn, int srcRow, ref Eight destination, int dstColumn, int dstRow)
+            {
+<# foreach (var fieldSymbol in list) { #>
+                {
+                    var temp = destination.<#= fieldSymbol.Name #>;
+                    var temp2 = temp[dstColumn];
+                    temp2[dstRow] = <#= fieldSymbol.Name #>[srcColumn][srcRow];
+                    temp[dstColumn] = temp2;
+                    destination.<#= fieldSymbol.Name #> = temp;
+                }
+<# } #>
+            }
+        }
+    }
+}

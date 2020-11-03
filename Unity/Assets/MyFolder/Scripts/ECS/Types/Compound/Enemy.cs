@@ -4,7 +4,7 @@ using Unity.Jobs;
 
 namespace MyFolder.Scripts.ECS.Types
 {
-    public struct Enemy
+    public partial struct Enemy
     {
         public NativeArray<int> Count;
 
@@ -16,9 +16,12 @@ namespace MyFolder.Scripts.ECS.Types
 
         public NativeArray<AliveState> AliveState;
 
+        [StringLiteral.Utf8Attribute("aαあ😊")]
+        public static partial System.ReadOnlySpan<byte> S();
+
         public Enemy(int capacity8)
         {
-            Count = new NativeArray<int>(1, Allocator.Persistent) { [0] = 0 };
+            Count = new(1, Allocator.Persistent);
 
             Position = new NativeArray<Position2D>(capacity8, Allocator.Persistent);
             Destination = new NativeArray<Destination2D>(capacity8, Allocator.Persistent);
