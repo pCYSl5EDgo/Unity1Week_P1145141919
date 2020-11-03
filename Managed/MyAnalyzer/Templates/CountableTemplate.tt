@@ -37,7 +37,10 @@ foreach (var member in TypeSymbol.GetMembers()) {
     var additionalFieldMemberNames = AttributeData.ConstructorArguments[2].Values;
     var isAliveFunctionString = AttributeData.ConstructorArguments[3].Value as string; #>
 
-            public bool IsAlive(int index<# for (var i = 0; i < additionalArgumentMemberNames.Length; i++) { var paramType = additionalMemberTypes[i].Value as INamedTypeSymbol; var paramName = additionalArgumentMemberNames[i].Value as string; #>, global::<#= paramType.ToDisplayString() #> <#= paramName #><# } #>)
+            public bool IsAlive(int index<# for (var i = 0; i < additionalArgumentMemberNames.Length; i++) { 
+        var paramType = additionalMemberTypes[i].Value as INamedTypeSymbol;
+        var paramName = additionalArgumentMemberNames[i].Value as string;
+        var isNotSpecial = paramType.SpecialType == SpecialType.None; #>, <# if (isNotSpecial){ #>global::<# } #><#= paramType.ToDisplayString() #> <#= paramName #><# } #>)
             {
                 <#= isAliveFunctionString #>
             }
@@ -49,8 +52,9 @@ foreach (var member in TypeSymbol.GetMembers()) {
             public Countable This;
 <# for (var i = 0; i < additionalFieldMemberNames.Length; i++) { 
       var fieldType = additionalMemberTypes[i].Value as INamedTypeSymbol;
-      var fieldName = additionalFieldMemberNames[i].Value as string; #>
-            public global::<#= fieldType.ToDisplayString() #> <#= fieldName #>;
+      var fieldName = additionalFieldMemberNames[i].Value as string;
+      var isNotSpecial = fieldType.SpecialType == SpecialType.None; #>
+            public <# if (isNotSpecial){ #>global::<# } #><#= fieldType.ToDisplayString() #> <#= fieldName #>;
 <# } #>
 
             public void Execute()

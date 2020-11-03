@@ -1,3 +1,4 @@
+using ComponentTypes;
 using MyFolder.Scripts.ECS.Types;
 using Unity.Burst;
 using Unity.Burst.Intrinsics;
@@ -10,8 +11,8 @@ namespace Unity1Week
     [BurstCompile]
     public struct MultiMoveJob : IJob
     {
-        public NativeArray<Position2D> Position;
-        [ReadOnly] public NativeArray<Speed2D> Speed;
+        public NativeArray<Position2D.Eight> Position;
+        [ReadOnly] public NativeArray<Speed2D.Eight> Speed;
         public float DeltaTime;
 
         public unsafe void Execute()
@@ -41,24 +42,12 @@ namespace Unity1Week
     {
         [ReadOnly] public NativeArray<float> SpeedSettings;
         [ReadOnly] public NativeArray<int> ChipKind;
-        [ReadOnly] public NativeArray<Position2D> Position;
-        public NativeArray<Speed2D> Speed;
-        private readonly int4x2 cellCountAdjustment;
-        private readonly int4x2 cellWidthCount;
-        private readonly int4 maxCellCountInclusive;
-        private readonly float4x2 rcpCellSize;
-
-        public CalculateMoveSpeedJob(NativeArray<float> speedSettings, NativeArray<int> chipKind, NativeArray<Position2D> position, NativeArray<Speed2D> speed, int cellWidthCount, int cellHeightCount, int cellCountAdjustment, float rcpCellSize)
-        {
-            SpeedSettings = speedSettings;
-            ChipKind = chipKind;
-            Position = position;
-            Speed = speed;
-            this.cellCountAdjustment = cellCountAdjustment;
-            this.cellWidthCount = cellWidthCount;
-            maxCellCountInclusive = cellWidthCount * cellHeightCount - 1;
-            this.rcpCellSize = rcpCellSize;
-        }
+        [ReadOnly] public NativeArray<Position2D.Eight> Position;
+        public NativeArray<Speed2D.Eight> Speed;
+        private int4x2 cellCountAdjustment;
+        private int4x2 cellWidthCount;
+        private int4 maxCellCountInclusive;
+        private float4x2 rcpCellSize;
 
         public void Execute()
         {
@@ -109,7 +98,7 @@ namespace Unity1Week
     [BurstCompile]
     public struct ChangeDestinationJob : IJob
     {
-        public NativeArray<Destination2D> Destination;
+        public NativeArray<Destination2D.Eight> Destination;
         public float TargetX;
         public float TargetY;
 
@@ -129,7 +118,7 @@ namespace Unity1Week
             }
 
             for (var index = 0; index < Destination.Length; index++)
-                Destination[index] = new Destination2D
+                Destination[index] = new Destination2D.Eight
                 {
                     X = TargetX,
                     Y = TargetY
@@ -140,7 +129,7 @@ namespace Unity1Week
     [BurstCompile]
     public struct RandomlyChangeDestinationJob : IJob
     {
-        public NativeArray<Destination2D> Destination;
+        public NativeArray<Destination2D.Eight> Destination;
         public NativeArray<Random> Random;
         public float MinInclusive;
         public float MaxExclusive;
@@ -149,7 +138,7 @@ namespace Unity1Week
         {
             var random = Random[0];
             for (var index = 0; index < Destination.Length; index++)
-                Destination[index] = new Destination2D
+                Destination[index] = new Destination2D.Eight
                 {
                     X = new float4x2(random.NextFloat4(MinInclusive, MaxExclusive), random.NextFloat4(MinInclusive, MaxExclusive)),
                     Y = new float4x2(random.NextFloat4(MinInclusive, MaxExclusive), random.NextFloat4(MinInclusive, MaxExclusive))
@@ -162,12 +151,12 @@ namespace Unity1Week
     [BurstCompile]
     public struct KillOutOfBoundsJob : IJob
     {
-        [ReadOnly] public NativeArray<Position2D> Position;
-        [ReadOnly] public NativeArray<AliveState> IsAlive;
+        [ReadOnly] public NativeArray<Position2D.Eight> Position;
+        [ReadOnly] public NativeArray<AliveState.Eight> IsAlive;
         private readonly float4x2 minInclusive;
         private readonly float4x2 maxExclusive;
 
-        public KillOutOfBoundsJob(NativeArray<Position2D> position, NativeArray<AliveState> isAlive, float minInclusive, float maxExclusive)
+        public KillOutOfBoundsJob(NativeArray<Position2D.Eight> position, NativeArray<AliveState.Eight> isAlive, float minInclusive, float maxExclusive)
         {
             Position = position;
             IsAlive = isAlive;

@@ -1,5 +1,7 @@
-﻿using MyFolder.Scripts.ECS.Types;
+﻿using ComponentTypes;
+using MyFolder.Scripts.ECS.Types;
 using Unity.Burst;
+using Unity.Burst.Intrinsics;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 using Unity.Jobs;
@@ -10,13 +12,13 @@ namespace Unity1Week.Hit
     [BurstCompile]
     public struct BulletEnemyHitJob : IJob
     {
-        [ReadOnly] public NativeArray<Position2D> BulletPositionArray;
-        public NativeArray<AliveState> BulletStateArray;
-        [ReadOnly] public NativeArray<Position2D> EnemyPositionArray;
-        [ReadOnly] public NativeArray<AliveState> EnemyAliveStateArray;
+        [ReadOnly] public NativeArray<Position2D.Eight> BulletPositionArray;
+        public NativeArray<AliveState.Eight> BulletStateArray;
+        [ReadOnly] public NativeArray<Position2D.Eight> EnemyPositionArray;
+        [ReadOnly] public NativeArray<AliveState.Eight> EnemyAliveStateArray;
 
-        public NativeArray<Position2D> FirePositionArray;
-        public NativeArray<FireStartTime> FireStartTimeArray;
+        public NativeArray<Position2D.Eight> FirePositionArray;
+        public NativeArray<FireStartTime.Eight> FireStartTimeArray;
         public NativeArray<int> FireCount;
 
         public float CollisionRadiusSquare;
@@ -33,7 +35,7 @@ namespace Unity1Week.Hit
             fireColumn -= fireRow;
             fireColumn >>= 2;
 
-            void AddFire(float x, float y, NativeArray<Position2D> firePositionArray)
+            void AddFire(float x, float y, NativeArray<Position2D.Eight> firePositionArray)
             {
                 if (fireIndex == firePositionArray.Length) return;
                 
@@ -70,11 +72,11 @@ namespace Unity1Week.Hit
                             RotateUtility.RotateHeadToTail<int4x2, int>(ref enemyAliveState4X2);
                         }
 
-                        var lengthSquared = Position2D.CalculateDistanceSquared(enemyPosition4X2, bulletPosition);
+                        var lengthSquared = Position2DHelper.CalculateDistanceSquared(enemyPosition4X2, bulletPosition);
                         var collision = lengthSquared <= CollisionRadiusSquare;
                         for (var columnIndex = 0; columnIndex < 2; columnIndex++)
                         for (var rowIndex = 0; rowIndex < 4; rowIndex++)
-                            if (collision[columnIndex][rowIndex] && enemyAliveState4X2[columnIndex][rowIndex] == (int)AliveState.State.Alive && (int)BulletState.State.Alive == bulletState.Value[columnIndex][rowIndex])
+                            if (collision[columnIndex][rowIndex] && enemyAliveState4X2[columnIndex][rowIndex] == (int)AliveState.State.Alive && (int)AliveState.State.Alive == bulletState.Value[columnIndex][rowIndex])
                                 bulletState.Value[columnIndex][rowIndex] = (int)AliveState.State.Dead;
                     }
                 }
@@ -139,8 +141,8 @@ namespace Unity1Week.Hit
     [BurstCompile]
     public struct PlayerEnemyHitJob : IJob
     {
-        [ReadOnly] public NativeArray<Position2D> EnemyPositionArray;
-        public NativeArray<AliveState> EnemyAliveStateArray;
+        [ReadOnly] public NativeArray<Position2D.Eight> EnemyPositionArray;
+        public NativeArray<AliveState.Eight> EnemyAliveStateArray;
         public NativeArray<int> CollisionCount;
         public float PlayerPositionX;
         public float PlayerPositionY;
@@ -148,7 +150,7 @@ namespace Unity1Week.Hit
 
         public void Execute()
         {
-            var playerPosition = new Position2D
+            var playerPosition = new Position2D.Eight
             {
                 X = PlayerPositionX,
                 Y = PlayerPositionY
@@ -160,7 +162,7 @@ namespace Unity1Week.Hit
             {
                 var enemyState = EnemyAliveStateArray[enemyIndex];
                 var enemyPosition = EnemyPositionArray[enemyIndex];
-                var isHit = (enemyState.Value == new int4x2()) & (Position2D.CalculateDistanceSquared(enemyPosition, playerPosition) <= collisionSquare);
+                var isHit = (enemyState.Value == new int4x2()) & (Position2DHelper.CalculateDistanceSquared(enemyPosition, playerPosition) <= collisionSquare);
                 enemyState.Value.c0 = math.select(enemyState.Value.c0, new int4(-1), isHit.c0);
                 enemyState.Value.c1 = math.select(enemyState.Value.c1, new int4(-1), isHit.c1);
                 EnemyAliveStateArray[enemyIndex] = enemyState;
@@ -177,10 +179,10 @@ namespace Unity1Week.Hit
     [BurstCompile]
     public struct PlayerFireEnemyHitJob : IJob
     {
-        [ReadOnly] public NativeArray<Position2D> FirePositionArray;
-        [ReadOnly] public NativeArray<FireStartTime> FireStartTimeArray;
-        [ReadOnly] public NativeArray<Position2D> EnemyPositionArray;
-        public NativeArray<AliveState> EnemyAliveStateArray;
+        [ReadOnly] public NativeArray<Position2D.Eight> FirePositionArray;
+        [ReadOnly] public NativeArray<FireStartTime.Eight> FireStartTimeArray;
+        [ReadOnly] public NativeArray<Position2D.Eight> EnemyPositionArray;
+        public NativeArray<AliveState.Eight> EnemyAliveStateArray;
         public NativeArray<int> EnemyKillCount;
         public float CollisionRadiusSquare;
         public float FireDeadTime;
@@ -197,9 +199,9 @@ namespace Unity1Week.Hit
                 {
                     var enemyState = EnemyAliveStateArray[enemyIndex];
                     var enemyPosition = EnemyPositionArray[enemyIndex];
-                    for (var i = 0; i < 8; RotateUtility.RotateHeadToTail<float4x2, float>(ref enemyPosition.X), RotateUtility.RotateHeadToTail<float4x2, float>(ref enemyPosition.Y), RotateUtility.RotateHeadToTail<AliveState, int>(ref enemyState), i++)
+                    for (var i = 0; i < 8; RotateUtility.RotateHeadToTail<float4x2, float>(ref enemyPosition.X), RotateUtility.RotateHeadToTail<float4x2, float>(ref enemyPosition.Y), RotateUtility.RotateHeadToTail<AliveState.Eight, int>(ref enemyState), i++)
                     {
-                        var lengthSquared = Position2D.CalculateDistanceSquared(enemyPosition, firePosition);
+                        var lengthSquared = Position2DHelper.CalculateDistanceSquared(enemyPosition, firePosition);
                         var collision = lengthSquared <= collisionRadiusSquare;
 
                         for (var column = 0; column < 2; column++)
@@ -223,8 +225,8 @@ namespace Unity1Week.Hit
     [BurstCompile]
     public struct EnemyAttackPlayerHitJob : IJob
     {
-        [ReadOnly] public NativeArray<Position2D> EnemyAttackPositionArray;
-        public NativeArray<AliveState> EnemyAttackAliveStateArray;
+        [ReadOnly] public NativeArray<Position2D.Eight> EnemyAttackPositionArray;
+        public NativeArray<AliveState.Eight> EnemyAttackAliveStateArray;
         public NativeArray<int> CollisionCount;
         public float CollisionRadiusSquare;
         public float PlayerPositionX;
@@ -233,7 +235,7 @@ namespace Unity1Week.Hit
         public void Execute()
         {
             var collisionCount = CollisionCount[0];
-            var playerPosition = new Position2D
+            var playerPosition = new Position2D.Eight
             {
                 X = PlayerPositionX,
                 Y = PlayerPositionY
@@ -244,7 +246,7 @@ namespace Unity1Week.Hit
             {
                 var attackAliveState = EnemyAttackAliveStateArray[attackIndex];
                 var attackPosition = EnemyAttackPositionArray[attackIndex];
-                var lengthSquared = Position2D.CalculateDistanceSquared(playerPosition, attackPosition);
+                var lengthSquared = Position2DHelper.CalculateDistanceSquared(playerPosition, attackPosition);
 
                 var isInRange = lengthSquared <= radiusSquare;
                 for (var column = 0; column < 2; column++)
@@ -260,6 +262,40 @@ namespace Unity1Week.Hit
             }
 
             CollisionCount[0] = collisionCount;
+        }
+    }
+
+    internal static class Position2DHelper
+    {
+        public static float4x2 CalculateDistanceSquared(in Position2D.Eight obj0, in Position2D.Eight obj1)
+        {
+            if (X86.Fma.IsFmaSupported)
+            {
+                unsafe
+                {
+                    fixed (void* ptr0 = &obj0)
+                    fixed (void* ptr1 = &obj1)
+                    {
+                        var x0 = X86.Avx.mm256_load_ps(ptr0);
+                        var x1 = X86.Avx.mm256_load_ps(ptr1);
+                        var diffX = X86.Avx.mm256_sub_ps(x0, x1);
+                        var lengthSquared = X86.Avx.mm256_mul_ps(diffX, diffX);
+
+                        var y0 = X86.Avx.mm256_load_ps((byte*)ptr0 + sizeof(v256));
+                        var y1 = X86.Avx.mm256_load_ps((byte*)ptr1 + sizeof(v256));
+                        var diffY = X86.Avx.mm256_sub_ps(y0, y1);
+                        lengthSquared = X86.Fma.mm256_fmadd_ps(diffY, diffY, lengthSquared);
+                            
+                        return *(float4x2*)&lengthSquared;
+                    }
+                }
+            }
+            
+            {
+                var diffX = obj0.X - obj1.X;
+                var diffY = obj0.Y - obj1.Y;
+                return diffX * diffX + diffY * diffY;
+            }
         }
     }
 }
