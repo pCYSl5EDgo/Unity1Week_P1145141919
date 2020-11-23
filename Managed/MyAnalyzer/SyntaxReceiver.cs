@@ -10,9 +10,8 @@ namespace MyAnalyzer
 
         public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
         {
-            if (!(syntaxNode is TypeDeclarationSyntax typeDeclarationSyntax) 
-                || typeDeclarationSyntax.AttributeLists.Count <= 0 
-                || typeDeclarationSyntax.Keyword.ValueText != "struct")
+            if (!(syntaxNode is TypeDeclarationSyntax typeDeclarationSyntax)
+                || typeDeclarationSyntax.AttributeLists.Count <= 0)
             {
                 return;
             }

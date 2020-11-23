@@ -2,7 +2,6 @@
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Text;
 using System.Collections.Generic;
-using System.Data;
 using System.Text;
 using MyAnalyzer.Templates;
 
@@ -19,26 +18,187 @@ namespace MyAnalyzer
             }
 
             var buffer = new StringBuilder();
-            buffer.AppendLine(@"namespace MyAttribute
-{
-    public class EightAttribute : global::System.Attribute { }
+            buffer.AppendLine(@"using System;
+using Unity.Burst.Intrinsics;
+using Unity.Mathematics;
 
-    public class CountableAttribute : global::System.Attribute
+namespace MyAttribute
+{
+    public static class RotateHelper
     {
-        public readonly global::System.Type[] AdditionalMemberTypes;
+        public static void Rotate(float4x2 value, out float4x2 value1, out float4x2 value2, out float4x2 value3, out float4x2 value4, out float4x2 value5, out float4x2 value6, out float4x2 value7)
+        {
+            var c0 = value.c0;
+            var c1 = value.c1;
+            value4 = new(c1, c0);
+            c0 = c0.wxyz;
+            c1 = c1.wxyz;
+            value1 = new(c0, c1);
+            value5 = new(c1, c0);
+            c0 = c0.wxyz;
+            c1 = c1.wxyz;
+            value2 = new(c0, c1);
+            value6 = new(c1, c0);
+            c0 = c0.wxyz;
+            c1 = c1.wxyz;
+            value3 = new(c0, c1);
+            value7 = new(c1, c0);
+        }
+
+        public static void RotateM1(ref float4x2 value1, ref float4x2 value2, ref float4x2 value3, ref float4x2 value4, ref float4x2 value5, ref float4x2 value6, ref float4x2 value7)
+        {
+            value1.c0 = value1.c0.yzwx;
+            value1.c1 = value1.c1.yzwx;
+            value2.c0 = value2.c0.zwxy;
+            value2.c1 = value2.c1.zwxy;
+            value3.c0 = value3.c0.wxyz;
+            value3.c1 = value3.c1.wxyz;
+            value4 = new(value4.c1, value4.c0);
+            value5 = new(value5.c1.yzwx, value5.c0.yzwx);
+            value6 = new(value6.c1.zwxy, value6.c0.zwxy);
+            value7 = new(value7.c1.wxyz, value7.c0.wxyz);
+        }
+
+        public static void Rotate(int4x2 value, out int4x2 value1, out int4x2 value2, out int4x2 value3, out int4x2 value4, out int4x2 value5, out int4x2 value6, out int4x2 value7)
+        {
+            var c0 = value.c0;
+            var c1 = value.c1;
+            value4 = new(c1, c0);
+            c0 = c0.wxyz;
+            c1 = c1.wxyz;
+            value1 = new(c0, c1);
+            value5 = new(c1, c0);
+            c0 = c0.wxyz;
+            c1 = c1.wxyz;
+            value2 = new(c0, c1);
+            value6 = new(c1, c0);
+            c0 = c0.wxyz;
+            c1 = c1.wxyz;
+            value3 = new(c0, c1);
+            value7 = new(c1, c0);
+        }
+
+        public static void RotateM1(ref int4x2 value1, ref int4x2 value2, ref int4x2 value3, ref int4x2 value4, ref int4x2 value5, ref int4x2 value6, ref int4x2 value7)
+        {
+            value1.c0 = value1.c0.yzwx;
+            value1.c1 = value1.c1.yzwx;
+            value2.c0 = value2.c0.zwxy;
+            value2.c1 = value2.c1.zwxy;
+            value3.c0 = value3.c0.wxyz;
+            value3.c1 = value3.c1.wxyz;
+            value4 = new(value4.c1, value4.c0);
+            value5 = new(value5.c1.yzwx, value5.c0.yzwx);
+            value6 = new(value6.c1.zwxy, value6.c0.zwxy);
+            value7 = new(value7.c1.wxyz, value7.c0.wxyz);
+        }
+
+        public static void Rotate(v256 value, out v256 value1, out v256 value2, out v256 value3, out v256 value4, out v256 value5, out v256 value6, out v256 value7)
+        {
+            value1 = X86.Avx.mm256_permute_ps(value, 0b00_11_10_01);
+            value2 = X86.Avx.mm256_permute_ps(value, 0b01_00_11_10);
+            value3 = X86.Avx.mm256_permute_ps(value, 0b10_01_00_11);
+            value4 = X86.Avx.mm256_permute2f128_ps(value, value, 0b0000_0001);
+            value5 = X86.Avx.mm256_permute_ps(value4, 0b00_11_10_01);
+            value6 = X86.Avx.mm256_permute_ps(value4, 0b01_00_11_10);
+            value7 = X86.Avx.mm256_permute_ps(value4, 0b10_01_00_11);
+        }
+
+        public static void RotateM1(ref v256 value1, ref v256 value2, ref v256 value3, ref v256 value4, ref v256 value5, ref v256 value6, ref v256 value7)
+        {
+            value1 = X86.Avx.mm256_permute_ps(value1, 0b10_01_00_11);
+            value2 = X86.Avx.mm256_permute_ps(value2, 0b01_00_11_10);
+            value3 = X86.Avx.mm256_permute_ps(value3, 0b00_11_10_01);
+            value4 = X86.Avx.mm256_permute2f128_ps(value4, value4, 0b0000_0001);
+            value5 = X86.Avx.mm256_permute_ps(X86.Avx.mm256_permute2f128_ps(value5, value5, 0b0000_0001), 0b10_01_00_11);
+            value6 = X86.Avx.mm256_permute_ps(X86.Avx.mm256_permute2f128_ps(value6, value6, 0b0000_0001), 0b01_00_11_10);
+            value7 = X86.Avx.mm256_permute_ps(X86.Avx.mm256_permute2f128_ps(value7, value7, 0b0000_0001), 0b00_11_10_01);
+        }
+    }
+
+    public enum CollisionIntrinsicsKind
+    {
+        None,
+        Fma,
+    }
+
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
+    public class CollisionTypeAttribute : Attribute
+    {
+        public readonly Type[] OuterLoopTypeArray;
+        public readonly bool[] OuterLoopIsReadOnlyArray;
+        public readonly Type[] InnerLoopTypeArray;
+        public readonly bool[] InnerLoopIsReadOnlyArray;
+
+        public CollisionTypeAttribute(Type[] outerLoopTypeArray, bool[] outerLoopIsReadOnlyArray, Type[] innerLoopTypeArray, bool[] innerLoopIsReadOnlyArray)
+        {
+            OuterLoopTypeArray = outerLoopTypeArray;
+            OuterLoopIsReadOnlyArray = outerLoopIsReadOnlyArray;
+            InnerLoopTypeArray = innerLoopTypeArray;
+            InnerLoopIsReadOnlyArray = innerLoopIsReadOnlyArray;
+        }
+    }
+
+    [AttributeUsage(AttributeTargets.Method)]
+    public class CollisionMethodAttribute : Attribute
+    {
+        public readonly CollisionIntrinsicsKind Kind;
+
+        public CollisionMethodAttribute(CollisionIntrinsicsKind kind)
+        {
+            Kind = kind;
+        }
+    }
+
+    [AttributeUsage(AttributeTargets.Method)]
+    public class CollisionCloseMethodAttribute : Attribute
+    {
+        public readonly CollisionIntrinsicsKind Kind;
+        public readonly bool IsOuter;
+        public readonly int FieldIndex;
+        public readonly string FieldName;
+
+        public CollisionCloseMethodAttribute(CollisionIntrinsicsKind kind, bool isOuter, int fieldIndex, string fieldName)
+        {
+            Kind = kind;
+            IsOuter = isOuter;
+            FieldIndex = fieldIndex;
+            FieldName = fieldName;
+        }
+    }
+
+    [AttributeUsage(AttributeTargets.Parameter)]
+    public class CollisionParameterAttribute : Attribute
+    {
+        public readonly bool IsOuter;
+        public readonly int FieldIndex;
+        public readonly string FieldName;
+
+        public CollisionParameterAttribute(bool isOuter, int fieldIndex, string fieldName)
+        {
+            IsOuter = isOuter;
+            FieldIndex = fieldIndex;
+            FieldName = fieldName;
+        }
+    }
+
+    public class EightAttribute : Attribute { }
+
+    public class CountableAttribute : Attribute
+    {
+        public readonly Type[] AdditionalMemberTypes;
         public readonly string[] AdditionalArgumentMemberNames;
         public readonly string[] AdditionalFieldMemberNames;
         public readonly string IsAliveFunctionString;
 
         public CountableAttribute()
         {
-            AdditionalMemberTypes = global::System.Array.Empty<global::System.Type>();
-            AdditionalArgumentMemberNames = global::System.Array.Empty<string>();
-            AdditionalFieldMemberNames = global::System.Array.Empty<string>();
+            AdditionalMemberTypes = Array.Empty<Type>();
+            AdditionalArgumentMemberNames = Array.Empty<string>();
+            AdditionalFieldMemberNames = Array.Empty<string>();
             IsAliveFunctionString = """";
         }
 
-        public CountableAttribute(global::System.Type[] additionalMemberTypes, string[] additionalArgumentMemberNames, string[] additionalFieldMemberNames, string isAliveFunctionString)
+        public CountableAttribute(Type[] additionalMemberTypes, string[] additionalArgumentMemberNames, string[] additionalFieldMemberNames, string isAliveFunctionString)
         {
             AdditionalMemberTypes = additionalMemberTypes;
             AdditionalArgumentMemberNames = additionalArgumentMemberNames;
@@ -58,10 +218,11 @@ namespace MyAnalyzer
             Compilation compilation = context.Compilation.AddSyntaxTrees(CSharpSyntaxTree.ParseText(attributeText, options));
 
             buffer.Clear();
-            ExtractTypeSymbols(receiver, compilation, out var eightBaseTypes, out var countableBaseTypes);
+            ExtractTypeSymbols(receiver, compilation, out var eightBaseTypes, out var countableBaseTypes, out var collisionTemplates);
 
             GenerateEight(eightBaseTypes, buffer);
             GenerateCountable(countableBaseTypes, buffer);
+            collisionTemplates.ForEach(template => buffer.AppendLine(template.TransformText()));
 
             string text = buffer.ToString();
             context.AddSource("MyAnalyzerResult.cs", SourceText.From(text, encoding));
@@ -71,7 +232,7 @@ namespace MyAnalyzer
         {
             foreach (var namedTypeSymbol in eightBaseTypes)
             {
-                var template = new EightTemplate { TypeSymbol = namedTypeSymbol };
+                var template = new EightTemplate(namedTypeSymbol);
                 buffer.AppendLine(template.TransformText());
             }
         }
@@ -85,41 +246,60 @@ namespace MyAnalyzer
             }
         }
 
-        private static void ExtractTypeSymbols(SyntaxReceiver receiver, Compilation compilation, out List<INamedTypeSymbol> eightBaseTypes, out List<(INamedTypeSymbol, AttributeData)> countableBaseTypes)
+        private static void ExtractTypeSymbols(SyntaxReceiver receiver, Compilation compilation, out List<INamedTypeSymbol> eightBaseTypes, out List<(INamedTypeSymbol, AttributeData)> countableBaseTypes, out List<CollisionTemplate> collisionTemplates)
         {
             var eight = compilation.GetTypeByMetadataName("MyAttribute.EightAttribute") ?? throw new System.NullReferenceException();
             var countable = compilation.GetTypeByMetadataName("MyAttribute.CountableAttribute") ?? throw new System.NullReferenceException();
+            var collisionType = compilation.GetTypeByMetadataName("MyAttribute.CollisionTypeAttribute") ?? throw new System.NullReferenceException();
+            var collisionMethod = compilation.GetTypeByMetadataName("MyAttribute.CollisionMethodAttribute") ?? throw new System.NullReferenceException();
+            var collisionCloseMethod = compilation.GetTypeByMetadataName("MyAttribute.CollisionCloseMethodAttribute") ?? throw new System.NullReferenceException();
+            var collisionParameter = compilation.GetTypeByMetadataName("MyAttribute.CollisionParameterAttribute") ?? throw new System.NullReferenceException();
 
-            eightBaseTypes = new(receiver.CandidateTypes.Count);
-            countableBaseTypes = new(receiver.CandidateTypes.Count);
+            var candidateTypesCount = receiver.CandidateTypes.Count;
+            eightBaseTypes = new(candidateTypesCount);
+            countableBaseTypes = new(candidateTypesCount);
+            collisionTemplates = new(candidateTypesCount);
             foreach (var candidate in receiver.CandidateTypes)
             {
                 var model = compilation.GetSemanticModel(candidate.SyntaxTree);
                 var type = model.GetDeclaredSymbol(candidate);
-                if (type is null || !type.IsUnmanagedType)
+                if (type is null)
                 {
                     continue;
                 }
 
-                foreach (var attributeData in type.GetAttributes())
+                if (type.IsUnmanagedType)
                 {
-                    var attributeClass = attributeData.AttributeClass;
-                    if (attributeClass is null)
+                    foreach (var attributeData in type.GetAttributes())
+                    {
+                        var attributeClass = attributeData.AttributeClass;
+                        if (attributeClass is null)
+                        {
+                            continue;
+                        }
+
+                        if (SymbolEqualityComparer.Default.Equals(attributeClass, eight))
+                        {
+                            eightBaseTypes.Add(type);
+                            break;
+                        }
+
+                        if (SymbolEqualityComparer.Default.Equals(attributeClass, countable))
+                        {
+                            countableBaseTypes.Add((type, attributeData));
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    var template = CollisionTemplate.TryCreate(collisionType, collisionMethod, collisionCloseMethod, collisionParameter, type);
+                    if (template is null)
                     {
                         continue;
                     }
 
-                    if (SymbolEqualityComparer.Default.Equals(attributeClass, eight))
-                    {
-                        eightBaseTypes.Add(type);
-                        break;
-                    }
-
-                    if (SymbolEqualityComparer.Default.Equals(attributeClass, countable))
-                    {
-                        countableBaseTypes.Add((type, attributeData));
-                        break;
-                    }
+                    collisionTemplates.Add(template);
                 }
             }
         }

@@ -4,6 +4,11 @@ namespace MyAnalyzer.Templates
 {
     public partial class EightTemplate
     {
-        public INamedTypeSymbol TypeSymbol;
+        public readonly INamedTypeSymbol TypeSymbol;
+
+        public EightTemplate(INamedTypeSymbol typeSymbol)
+        {
+            TypeSymbol = typeSymbol;
+        }
     }
 }

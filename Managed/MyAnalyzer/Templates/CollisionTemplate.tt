@@ -1,0 +1,235 @@
+﻿<#@ template language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+/*
+[CollisionType(new Type[] {
+    typeof(Position2D),
+}, new bool[] {
+    false,
+}, new Type[] {
+    typeof(Position2D),
+}, new bool[] {
+    true,
+})]
+public partial static class CK
+{
+    [CollisionMethod(CollisionIntrinsicsKind.Fma)]
+    private static void Collide(
+      [CollisionParameter(true, 0, nameof(Position2D.X))] ref v256 enemyX,
+      [CollisionParameter(true, 0, nameof(Position2D.Y))] ref v256 enemyY,
+      [CollisionParameter(false, 0, nameof(Position2D.X))] ref v256 playerX,
+      [CollisionParameter(false, 0, nameof(Position2D.Y))] ref v256 playerY
+    );
+
+    [CollisionCloseMethod(CollisionIntrinsicsKind.Fma, true, 0, nameof(Position2D.X))]
+    private static v256 CollideClose1(
+      v256 enemyX0,
+      v256 enemyX1,
+      v256 enemyX2,
+      v256 enemyX3,
+      v256 enemyX4,
+      v256 enemyX5,
+      v256 enemyX6,
+      v256 enemyX7
+    );
+
+    public unsafe struct CollisionJob : global::Unity.Jobs.IJob
+    {
+        public global::Unity.Collections.NativeArray<Position2D.Eight> Outer0;
+        [global::Unity.Collections.ReadOnly] public global::Unity.Collections.NativeArray<Position2D.Eight> PlayerPositionArray;
+
+        public void Execute()
+        {
+            if (global::Unity.Burst.Intrinsics.X86.Fma.IsFmaSupported)
+            {
+                Execute0();
+                return;
+            }
+
+            ExecuteOrdinal();
+        }
+
+        public void Execute0()
+        {
+            for (var outerIndex = 0; outerIndex < Outer0.Length; ++outerIndex)
+            {
+                var outer0 = Outer0[outerIndex];
+                
+                var outer0_X_0 = *(v256*)&(outer0.X);
+                global::MyAttribute.RotateHelper.Rotate(outer0_X_0, out var outer0_X_1, out var outer0_X_2, out var outer0_X_3, out var outer0_X_4, out var outer0_X_5, out var outer0_X_6, out var outer0_X_7);
+                
+                var outer0_Y_0 = *(v256*)&(outer0.Y);
+                global::MyAttribute.RotateHelper.Rotate(outer0_Y_0, out var outer0_Y_1, out var outer0_Y_2, out var outer0_Y_3, out var outer0_Y_4, out var outer0_Y_5, out var outer0_Y_6, out var outer0_Y_7);
+
+                for (var innerIndex = 0; innerIndex < PlayerPositionArray.Length; ++innerIndex)
+                {
+                    var inner0 = PlayerPositionArray[innerIndex];
+                    var inner0_X = *(v256*)&(inner0.X);
+                    var inner0_Y = *(v256*)&(inner0.Y);
+
+                    Collide(ref outer0_X_0, ref outer0_Y_0, ref inner0_X, ref inner0_Y);
+                    Collide(ref outer0_X_1, ref outer0_Y_1, ref inner0_X, ref inner0_Y);
+                    Collide(ref outer0_X_2, ref outer0_Y_2, ref inner0_X, ref inner0_Y);
+                    Collide(ref outer0_X_3, ref outer0_Y_3, ref inner0_X, ref inner0_Y);
+                    Collide(ref outer0_X_4, ref outer0_Y_4, ref inner0_X, ref inner0_Y);
+                    Collide(ref outer0_X_5, ref outer0_Y_5, ref inner0_X, ref inner0_Y);
+                    Collide(ref outer0_X_6, ref outer0_Y_6, ref inner0_X, ref inner0_Y);
+                    Collide(ref outer0_X_7, ref outer0_Y_7, ref inner0_X, ref inner0_Y);
+                }
+
+                global::MyAttribute.RotateHelper.RotateM1(ref outer0_X_1, ref outer0_X_2, ref outer0_X_3, ref outer0_X_4, ref outer0_X_5, ref outer0_X_6, outer0_X_7);
+                *(v256)&(outer0.X) = CollideClose(outer0_X_0, outer0_X_1, outer0_X_2, outer0_X_3, outer0_X_4, outer0_X_5, outer0_X_6, outer0_X_7);
+                Outer0[outerIndex] = outer0;
+            }
+        }
+
+        public void ExecuteOrdinal()
+        {
+        }
+    }
+}
+*/
+namespace <#= TypeSymbol.ContainingNamespace.ToDisplayString() #>
+{
+    <#= TypeSymbol.IsStatic ? "static " : "" #>partial <#= TypeSymbol.IsValueType ? "struct " : "class " #> <#= TypeSymbol.Name #>
+    {
+        [global::Unity.Burst.BurstCompile]
+        public unsafe struct CollisionJob : global::Unity.Jobs.IJob
+        {
+<# for (var index = 0; index < Outers.Length; ++index) { var item = Outers[index]; #>
+            <# if (item.IsReadOnly) { #>[global::Unity.Collections.ReadOnly] <# } #>public global::Unity.Collections.NativeArray<<#= item.Symbol.ToDisplayString() #>.Eight> Outer<#= index #>;
+<# } #>
+
+<# for (var index = 0; index < Inners.Length; ++index) { var item = Inners[index]; #>
+            <# if (item.IsReadOnly) { #>[global::Unity.Collections.ReadOnly] <# } #>public global::Unity.Collections.NativeArray<<#= item.Symbol.ToDisplayString() #>.Eight> Inner<#= index #>;
+<# } #>
+
+            public void Execute()
+            {
+<# if (Fma.HasValue) { #>
+                if (global::Unity.Burst.Intrinsics.X86.Fma.IsFmaSupported)
+                {
+                    ExecuteFma();
+                    return;
+                }
+
+<# } #>
+                ExecuteOrdinal();
+            }
+<# if (Fma.HasValue) { var method = Fma.Value; #>
+
+            public void ExecuteFma()
+            {
+                for (var outerIndex = 0; outerIndex < Outer0.Length; ++outerIndex)
+                {
+<# for (var index = 0; index < Outers.Length; ++index) {
+    var item = Outers[index]; #>
+                    var outer<#= index #> = Outer<#= index #>[outerIndex];
+<# } #>
+<# for (var index = 0; index < method.OuterLoopParameters.Length; ++index) {
+    var item = method.OuterLoopParameters[index];
+    var name = "outer" + item.Index + "_" + item.Name; #>
+                    var <#= name #>0 = *(v256*)&(outer<#= item.Index #>.<#= item.Name #>);
+                    global::MyAttribute.RotateHelper.Rotate(<#= name #>0, out var <#= name #>1, out var <#= name #>2, out var <#= name #>3, out var <#= name #>4, out var <#= name #>5, out var <#= name #>6, out var <#= name #>7);
+<# } #>
+
+                    for (var innerIndex = 0; innerIndex < Inner0.Length; ++innerIndex)
+                    {
+<# for (var index = 0; index < Inners.Length; ++index) {
+    var item = Inners[index]; #>
+                        var inner<#= index #> = Inner<#= index #>[innerIndex];
+<# } #>
+<# for (var index = 0; index < method.InnerLoopParameters.Length; ++index) {
+    var item = method.InnerLoopParameters[index];
+    var name = "inner" + item.Index + "_" + item.Name; #>
+                        var <#= name #> = *(v256*)&(inner<#= item.Index #>.<#= item.Name #>);
+<# } #>
+
+<# var parameters = method.OuterLoopParameters.Concat(method.InnerLoopParameters).OrderBy(x => x.Symbol.Ordinal);
+for (var counter = 0; counter < 8; ++counter) { #>
+                        <#= method.Symbol.Name #>(<# bool first = true; foreach (var parameter in parameters) { if (!first) { #>, <# } first = false; #>ref <#= parameter.IsOuter ? "outer" : "inner" #><#= parameter.Index #>_<#= parameter.Name #><#= parameter.IsOuter ? counter : "" #><# } #>);
+<# } #>
+<# for (var index = 0; index < method.InnerLoopParameters.Length; ++index) {
+    var item = method.InnerLoopParameters[index];
+    if (Inners[item.Index].IsReadOnly) continue;
+    var name = "inner" + item.Index + "_" + item.Name; #>
+                        *(v256*)&(inner<#= item.Index #>.<#= item.Name #>) = <#= name #>;
+<# } #>
+<# for (var index = 0; index < Inners.Length; ++index) {
+    var item = Inners[index];
+    if (item.IsReadOnly) { continue; } #>
+                        Inner<#= index #>[innerIndex] = inner<#= index #>;
+<# } #>
+                    }
+
+<# foreach (var item in method.Closers) {
+    var name = "outer" + item.Index + "_" + item.Name; #>
+                    global::MyAttribute.RotateHelper.RotateM1(ref <#= name #>1, ref <#= name #>2, ref <#= name #>3, ref <#= name #>4, ref <#= name #>5, ref <#= name #>6, ref <#= name #>7);
+                    *(v256)&(outer<#= item.Index #>.<#= item.Name #>) = <#= item.Symbol.Name #>(<#= name #>0, <#= name #>1, <#= name #>2, <#= name #>3, <#= name #>4, <#= name #>5, <#= name #>6, <#= name #>7);
+<# } #>
+<# for (var index = 0; index < Outers.Length; ++index) {
+    var item = Outers[index];
+    if (item.IsReadOnly) { continue; } #>
+                    Outer<#= index #>[outerIndex] = outer<#= index #>;
+<# } #>
+                }
+            }
+<# } #>
+
+<# { var method = Ordinal; #>
+            public void ExecuteOrdinal()
+            {
+                for (var outerIndex = 0; outerIndex < Outer0.Length; ++outerIndex)
+                {
+<# for (var index = 0; index < Outers.Length; ++index) {
+    var item = Outers[index]; #>
+                    var outer<#= index #> = Outer<#= index #>[outerIndex];
+<# } #>
+<# for (var index = 0; index < method.OuterLoopParameters.Length; ++index) {
+    var item = method.OuterLoopParameters[index];
+    var name = "outer" + item.Index + "_" + item.Name; #>
+                    var <#= name #>0 = outer<#= item.Index #>.<#= item.Name #>;
+                    global::MyAttribute.RotateHelper.Rotate(<#= name #>0, out var <#= name #>1, out var <#= name #>2, out var <#= name #>3, out var <#= name #>4, out var <#= name #>5, out var <#= name #>6, out var <#= name #>7);
+<# } #>
+
+                    for (var innerIndex = 0; innerIndex < Inner0.Length; ++innerIndex)
+                    {
+<# for (var index = 0; index < Inners.Length; ++index) {
+    var item = Inners[index]; #>
+                        var inner<#= index #> = Inner<#= index #>[innerIndex];
+<# } #>
+<# for (var index = 0; index < method.InnerLoopParameters.Length; ++index) {
+    var item = method.InnerLoopParameters[index];
+    var name = "inner" + item.Index + "_" + item.Name; #>
+                        ref var <#= name #> = ref inner<#= item.Index #>.<#= item.Name #>;
+<# } #>
+
+<# var parameters = method.OuterLoopParameters.Concat(method.InnerLoopParameters).OrderBy(x => x.Symbol.Ordinal);
+    for (var counter = 0; counter < 8; ++counter) { #>
+                        <#= method.Symbol.Name #>(<# bool first = true; foreach (var parameter in parameters) { if (!first) { #>, <# } first = false; #>ref <#= parameter.IsOuter ? "outer" : "inner" #><#= parameter.Index #>_<#= parameter.Name #><#= parameter.IsOuter ? counter : "" #><# } #>);
+<# } #>
+<# for (var index = 0; index < Inners.Length; ++index) {
+    var item = Inners[index];
+    if (item.IsReadOnly) { continue; } #>
+                        Inner<#= index #>[innerIndex] = inner<#= index #>;
+<# } #>
+                    }
+
+<# foreach (var item in method.Closers) {
+    var name = "outer" + item.Index + "_" + item.Name; #>
+                    global::MyAttribute.RotateHelper.RotateM1(ref <#= name #>1, ref <#= name #>2, ref <#= name #>3, ref <#= name #>4, ref <#= name #>5, ref <#= name #>6, ref <#= name #>7);
+                    outer<#= item.Index #>.<#= item.Name #> = <#= item.Symbol.Name #>(<#= name #>0, <#= name #>1, <#= name #>2, <#= name #>3, <#= name #>4, <#= name #>5, <#= name #>6, <#= name #>7);
+<# } #>
+<# for (var index = 0; index < Outers.Length; ++index) {
+    var item = Outers[index];
+    if (item.IsReadOnly) { continue; } #>
+                    Outer<#= index #>[outerIndex] = outer<#= index #>;
+<# } #>
+<# } #>
+                }
+            }
+        }
+    }
+}
