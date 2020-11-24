@@ -115,6 +115,10 @@ namespace MyAttribute
             InnerCount = innerCount;
             OtherCount = otherCount;
         }
+
+        public CollisionMethodAttribute(CollisionIntrinsicsKind kind, int outerCount, int innerCount) : this(kind, outerCount, innerCount, 0) { }
+
+        public CollisionMethodAttribute(CollisionIntrinsicsKind kind, int outerCount) : this(kind, outerCount, 0, 0) { }
     }
 
     public enum CollisionFieldKind

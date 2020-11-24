@@ -9,11 +9,12 @@ namespace Workflow
     [CollisionType(
         new[] { typeof(Position2D), typeof(AliveState) }, new[] { true, false },
         new[] { typeof(Position2D) }, new[] { true },
-        new[] { typeof(float), typeof(int) }, new[] { true, false }
+        new[] { typeof(float), typeof(int) }, new[] { true, false },
+        new[] { typeof(AliveState.Eight) }, new[] { false }
     )]
     public static partial class CollisionHolder
     {
-        [CollisionMethod(CollisionIntrinsicsKind.Fma, 3, 2, 2)]
+        [CollisionMethod(CollisionIntrinsicsKind.Fma, 3, 2)]
         private static void Exe2(
             [CollisionParameter(0, nameof(Position2D.X))] ref v256 enemyX,
             [CollisionParameter(0, nameof(Position2D.Y))] ref v256 enemyY,
@@ -39,7 +40,7 @@ namespace Workflow
             enemyAliveState = newState;
         }
 
-        [CollisionMethod(CollisionIntrinsicsKind.Ordinal, 3, 2, 2)]
+        [CollisionMethod(CollisionIntrinsicsKind.Ordinal, 3, 2)]
         private static void Exe(
             [CollisionParameter(0, nameof(Position2D.X))] ref float4 enemyX,
             [CollisionParameter(0, nameof(Position2D.Y))] ref float4 enemyY,

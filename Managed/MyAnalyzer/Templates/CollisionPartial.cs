@@ -90,10 +90,32 @@ namespace MyAnalyzer.Templates
                     continue;
                 }
 
-                if (array[2].Value is not int innerCount || array[3].Value is not int otherCount)
+                var parameters = methodSymbol.Parameters;
+                var innerCount = parameters.Length - outerCount;
+                var otherCount = 0;
+
+                if (array.Length >= 3)
                 {
-                    continue;
+                    if (array[2].Value is not int x)
+                    {
+                        return false;
+                    }
+
+                    innerCount = x;
+                    otherCount = parameters.Length - outerCount - innerCount;
+
+                    if (array.Length >= 4)
+                    {
+                        if (array[3].Value is not int y)
+                        {
+                            return false;
+                        }
+
+                        otherCount = y;
+                    }
                 }
+
+                var tableCount = parameters.Length - outerCount - innerCount - otherCount;
 
                 var collisionIntrinsicsKind = (CollisionIntrinsicsKind)kind;
                 switch (collisionIntrinsicsKind)
@@ -106,7 +128,6 @@ namespace MyAnalyzer.Templates
                 }
 
                 parameterOuters = new ParameterStruct[outerCount];
-                var parameters = methodSymbol.Parameters;
                 for (var i = 0; i < parameterOuters.Length; i++)
                 {
                     var parameter = parameters[i];
@@ -136,7 +157,6 @@ namespace MyAnalyzer.Templates
                     }
                 }
 
-                var tableCount = parameters.Length - parameterOuters.Length - parameterInners.Length - parameterOthers.Length;
                 parameterTables = tableCount == 0 ? Array.Empty<ParameterStruct>() : new ParameterStruct[tableCount];
                 for (var i = 0; i < parameterTables.Length; i++)
                 {
