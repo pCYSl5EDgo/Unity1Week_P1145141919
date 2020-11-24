@@ -91,28 +91,6 @@ namespace MyAttribute
             value6 = new(value6.c1.zwxy, value6.c0.zwxy);
             value7 = new(value7.c1.wxyz, value7.c0.wxyz);
         }
-
-        public static void Rotate(v256 value, out v256 value1, out v256 value2, out v256 value3, out v256 value4, out v256 value5, out v256 value6, out v256 value7)
-        {
-            value1 = X86.Avx.mm256_permute_ps(value, 0b00_11_10_01);
-            value2 = X86.Avx.mm256_permute_ps(value, 0b01_00_11_10);
-            value3 = X86.Avx.mm256_permute_ps(value, 0b10_01_00_11);
-            value4 = X86.Avx.mm256_permute2f128_ps(value, value, 0b0000_0001);
-            value5 = X86.Avx.mm256_permute_ps(value4, 0b00_11_10_01);
-            value6 = X86.Avx.mm256_permute_ps(value4, 0b01_00_11_10);
-            value7 = X86.Avx.mm256_permute_ps(value4, 0b10_01_00_11);
-        }
-
-        public static void RotateM1(ref v256 value1, ref v256 value2, ref v256 value3, ref v256 value4, ref v256 value5, ref v256 value6, ref v256 value7)
-        {
-            value1 = X86.Avx.mm256_permute_ps(value1, 0b10_01_00_11);
-            value2 = X86.Avx.mm256_permute_ps(value2, 0b01_00_11_10);
-            value3 = X86.Avx.mm256_permute_ps(value3, 0b00_11_10_01);
-            value4 = X86.Avx.mm256_permute2f128_ps(value4, value4, 0b0000_0001);
-            value5 = X86.Avx.mm256_permute_ps(X86.Avx.mm256_permute2f128_ps(value5, value5, 0b0000_0001), 0b10_01_00_11);
-            value6 = X86.Avx.mm256_permute_ps(X86.Avx.mm256_permute2f128_ps(value6, value6, 0b0000_0001), 0b01_00_11_10);
-            value7 = X86.Avx.mm256_permute_ps(X86.Avx.mm256_permute2f128_ps(value7, value7, 0b0000_0001), 0b00_11_10_01);
-        }
     }
 
     public enum CollisionIntrinsicsKind
