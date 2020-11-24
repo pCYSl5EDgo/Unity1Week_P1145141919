@@ -24,10 +24,10 @@ foreach (var member in TypeSymbol.GetMembers()) {
 
             public Countable(int count)
             {
-                Count = new(1, global::Unity.Collections.Allocator.Persistent);
+                Count = new global::Unity.Collections.NativeArray<int>(1, global::Unity.Collections.Allocator.Persistent);
                 var capacity = ((count - 1) >> 3) + 1;
 <# foreach (var fieldSymbol in list) { #>
-                <#= fieldSymbol.Name #>Array = new(capacity, global::Unity.Collections.Allocator.Persistent);
+                <#= fieldSymbol.Name #>Array = new global::Unity.Collections.NativeArray<global::<#= fieldSymbol.Type.ContainingNamespace.ToDisplayString() #>.<#= fieldSymbol.Type.Name #>.Eight>(capacity, global::Unity.Collections.Allocator.Persistent);
 <# } #>
             }
 <# var sortable = AttributeData.ConstructorArguments.Length != 0;

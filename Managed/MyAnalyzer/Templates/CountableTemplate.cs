@@ -87,8 +87,8 @@ foreach (var member in TypeSymbol.GetMembers()) {
             #line default
             #line hidden
             this.Write("\r\n            public Countable(int count)\r\n            {\r\n                Count =" +
-                    " new(1, global::Unity.Collections.Allocator.Persistent);\r\n                var ca" +
-                    "pacity = ((count - 1) >> 3) + 1;\r\n");
+                    " new global::Unity.Collections.NativeArray<int>(1, global::Unity.Collections.All" +
+                    "ocator.Persistent);\r\n                var capacity = ((count - 1) >> 3) + 1;\r\n");
             
             #line 29 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
  foreach (var fieldSymbol in list) { 
@@ -102,7 +102,21 @@ foreach (var member in TypeSymbol.GetMembers()) {
             
             #line default
             #line hidden
-            this.Write("Array = new(capacity, global::Unity.Collections.Allocator.Persistent);\r\n");
+            this.Write("Array = new global::Unity.Collections.NativeArray<global::");
+            
+            #line 30 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(fieldSymbol.Type.ContainingNamespace.ToDisplayString()));
+            
+            #line default
+            #line hidden
+            this.Write(".");
+            
+            #line 30 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(fieldSymbol.Type.Name));
+            
+            #line default
+            #line hidden
+            this.Write(".Eight>(capacity, global::Unity.Collections.Allocator.Persistent);\r\n");
             
             #line 31 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
  } 

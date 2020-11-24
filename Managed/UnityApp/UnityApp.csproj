@@ -22,8 +22,8 @@
     </Reference>
   </ItemGroup>
 
-  <!-- <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Copy SourceFiles="$(TargetPath)" DestinationFolder="../../Unity/Assets/Plugins/" />
-  </Target> -->
+  </Target>
 
 </Project>
