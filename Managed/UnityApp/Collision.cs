@@ -9,18 +9,19 @@ namespace Workflow
     [CollisionType(
         new[] { typeof(Position2D), typeof(AliveState) }, new[] { true, false },
         new[] { typeof(Position2D) }, new[] { true },
-        new[] { typeof(float) }
+        new[] { typeof(float), typeof(int) }, new[] { true, false }
     )]
     public static partial class CollisionHolder
     {
-        [CollisionMethod(CollisionIntrinsicsKind.Fma, 3, 2)]
+        [CollisionMethod(CollisionIntrinsicsKind.Fma, 3, 2, 2)]
         private static void Exe2(
             [CollisionParameter(0, nameof(Position2D.X))] ref v256 enemyX,
             [CollisionParameter(0, nameof(Position2D.Y))] ref v256 enemyY,
             [CollisionParameter(1, nameof(AliveState.Value))] ref v256 enemyAliveState,
             [CollisionParameter(0, nameof(Position2D.X))] ref v256 playerX,
             [CollisionParameter(0, nameof(Position2D.Y))] ref v256 playerY,
-            [CollisionParameter(0)] ref v256 radius
+            [CollisionParameter(0)] ref v256 radius,
+            [CollisionParameter(1)] ref int count
         )
         {
             if (!X86.Fma.IsFmaSupported)
@@ -33,39 +34,46 @@ namespace Workflow
             var diffY = X86.Avx.mm256_sub_ps(enemyY, playerY);
             var len = X86.Fma.mm256_fmadd_ps(diffY, diffY, square);
             var cmp = X86.Avx.mm256_cmp_ps(len, radius, (int)X86.Avx.CMP.LT_OQ);
-            enemyAliveState = X86.Avx.mm256_or_ps(enemyAliveState, cmp);
+            var newState = X86.Avx.mm256_or_ps(enemyAliveState, cmp);
+            count += math.countbits(X86.Avx.mm256_movemask_ps(X86.Avx.mm256_xor_ps(enemyAliveState, newState)));
+            enemyAliveState = newState;
         }
 
-        [CollisionMethod(CollisionIntrinsicsKind.Ordinal, 3, 2)]
+        [CollisionMethod(CollisionIntrinsicsKind.Ordinal, 3, 2, 2)]
         private static void Exe(
-            [CollisionParameter(0, nameof(Position2D.X))] ref float4x2 enemyX,
-            [CollisionParameter(0, nameof(Position2D.Y))] ref float4x2 enemyY,
-            [CollisionParameter(1, nameof(AliveState.Value))] ref int4x2 enemyAliveState,
-            [CollisionParameter(0, nameof(Position2D.X))] ref float4x2 playerX,
-            [CollisionParameter(0, nameof(Position2D.Y))] ref float4x2 playerY,
-            [CollisionParameter(0)] ref float4x2 radius
+            [CollisionParameter(0, nameof(Position2D.X))] ref float4 enemyX,
+            [CollisionParameter(0, nameof(Position2D.Y))] ref float4 enemyY,
+            [CollisionParameter(1, nameof(AliveState.Value))] ref int4 enemyAliveState,
+            [CollisionParameter(0, nameof(Position2D.X))] ref float4 playerX,
+            [CollisionParameter(0, nameof(Position2D.Y))] ref float4 playerY,
+            [CollisionParameter(0)] ref float4 radius,
+            [CollisionParameter(1)] ref int count
         )
         {
-            var x0 = enemyX.c0 - playerX.c0;
-            var y0 = enemyY.c0 - playerY.c0;
-            var len0 = x0 * x0 + y0 * y0 < radius.c0;
-            enemyAliveState.c0 = math.select(-1, enemyAliveState.c0, len0);
-            var x1 = enemyX.c1 - playerX.c1;
-            var y1 = enemyY.c1 - playerY.c1;
-            var len1 = x1 * x1 + y1 * y1 < radius.c1;
-            enemyAliveState.c1 = math.select(-1, enemyAliveState.c1, len1);
+            var x0 = enemyX - playerX;
+            var y0 = enemyY - playerY;
+            var len0 = x0 * x0 + y0 * y0 < radius;
+            var newState = math.select(-1, enemyAliveState, len0);
+            var change = enemyAliveState != newState;
+            for (var i = 0; i < 4; ++i)
+            {
+                if (change[i])
+                {
+                    ++count;
+                }
+            }
         }
 
-        [CollisionCloseMethod(CollisionIntrinsicsKind.Ordinal, true, 1, nameof(AliveState.Value))]
-        private static int4x2 Close(int4x2 a0, int4x2 a1, int4x2 a2, int4x2 a3, int4x2 a4, int4x2 a5, int4x2 a6, int4x2 a7)
+        [CollisionCloseMethod(CollisionIntrinsicsKind.Ordinal, CollisionFieldKind.Outer, 1, nameof(AliveState.Value))]
+        private static int4x2 Close(int4x2 a0, int4x2 a1, int4x2 a2, int4x2 a3)
         {
             return new int4x2(
-                a0.c0 & a1.c0 & a2.c0 & a3.c0 & a4.c0 & a5.c0 & a6.c0 & a7.c0,
-                a0.c1 & a1.c1 & a2.c1 & a3.c1 & a4.c1 & a5.c1 & a6.c1 & a7.c1
+                a0.c0 & a1.c0 & a2.c0 & a3.c0,
+                a0.c1 & a1.c1 & a2.c1 & a3.c1
             );
         }
 
-        [CollisionCloseMethod(CollisionIntrinsicsKind.Fma, true, 1, nameof(AliveState.Value))]
+        [CollisionCloseMethod(CollisionIntrinsicsKind.Fma, CollisionFieldKind.Outer, 1, nameof(AliveState.Value))]
         private static v256 Close2(v256 a0, v256 a1, v256 a2, v256 a3, v256 a4, v256 a5, v256 a6, v256 a7)
         {
             if (!X86.Fma.IsFmaSupported)

@@ -11,35 +11,57 @@ namespace MyAnalyzer.Templates
         public readonly INamedTypeSymbol TypeSymbol;
         public readonly TypeStruct[] Outers;
         public readonly TypeStruct[] Inners;
-        public readonly TypeStruct[] Constants;
+        public readonly TypeStruct[] Others;
+        public readonly TypeStruct[] Tables;
 
         public readonly MethodStruct Ordinal;
         public readonly MethodStruct? Fma;
 
-        public CollisionTemplate(INamedTypeSymbol typeSymbol, TypeStruct[] outers, TypeStruct[] inners, TypeStruct[] constants, MethodStruct ordinal, MethodStruct? fma)
+        public CollisionTemplate(INamedTypeSymbol typeSymbol, TypeStruct[] outers, TypeStruct[] inners, TypeStruct[] others, TypeStruct[] tables, MethodStruct ordinal, MethodStruct? fma)
         {
             TypeSymbol = typeSymbol;
             Outers = outers;
             Inners = inners;
+            Others = others;
+            Tables = tables;
             Ordinal = ordinal;
             Fma = fma;
-            Constants = constants;
         }
 
         public static CollisionTemplate? TryCreate(ISymbol collisionType, ISymbol collisionMethod, ISymbol collisionCloseMethod, ISymbol collisionParameter, INamedTypeSymbol typeSymbol)
         {
             var comparer = SymbolEqualityComparer.Default;
-            if (!InterpretCollisionType(collisionType, typeSymbol, comparer, out var outers, out var inners, out var constants))
+            TypeStruct[]? outers;
+            TypeStruct[]? inners;
+            TypeStruct[]? others;
+            TypeStruct[]? tables;
+            try
             {
-                return default;
+                if (!InterpretCollisionType(collisionType, typeSymbol, comparer, out outers, out inners, out others, out tables))
+                {
+                    return default;
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
             }
 
-            if (!CollectCollisionMethodAndCollisionCloseMethod(collisionMethod, collisionCloseMethod, collisionParameter, typeSymbol, comparer, out var ordinal, out var fma))
+            MethodStruct ordinal;
+            MethodStruct? fma;
+            try
             {
-                return default;
+                if (!CollectCollisionMethodAndCollisionCloseMethod(collisionMethod, collisionCloseMethod, collisionParameter, typeSymbol, comparer, out ordinal, out fma))
+                {
+                    return default;
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
             }
 
-            return new(typeSymbol, outers, inners, constants, ordinal, fma);
+            return new(typeSymbol, outers, inners, others, tables, ordinal, fma);
         }
 
         private static bool CollectCollisionMethodAndCollisionCloseMethod(ISymbol collisionMethod, ISymbol collisionCloseMethod, ISymbol collisionParameter, INamedTypeSymbol typeSymbol, SymbolEqualityComparer comparer, out MethodStruct ordinal, out MethodStruct? fma)
@@ -51,75 +73,24 @@ namespace MyAnalyzer.Templates
 
             foreach (var member in typeSymbol.GetMembers())
             {
-                if (member is not IMethodSymbol { IsStatic: true } methodSymbol)
-                {
-                    continue;
-                }
-
-                var attributes = methodSymbol.GetAttributes();
-                if (attributes.IsDefaultOrEmpty)
-                {
-                    continue;
-                }
-
-                if (methodSymbol.ReturnsVoid)
-                {
-                    if (methodSymbol.Parameters.Any(x => x.RefKind != RefKind.Ref))
-                    {
-                        continue;
-                    }
-
-                    var attr = attributes.SingleOrDefault(x => comparer.Equals(x.AttributeClass, collisionMethod));
-                    if (attr is null)
-                    {
-                        continue;
-                    }
-
-                    executeCandidates.Add((methodSymbol, attr));
-                }
-                else if (methodSymbol.Parameters.Length == 8)
-                {
-                    if (methodSymbol.Parameters.Any(x => !comparer.Equals(x.Type, methodSymbol.ReturnType)))
-                    {
-                        continue;
-                    }
-
-                    var attr = attributes.SingleOrDefault(x => comparer.Equals(x.AttributeClass, collisionCloseMethod));
-                    if (attr is null)
-                    {
-                        continue;
-                    }
-
-                    var arguments = attr.ConstructorArguments;
-                    if (arguments[0].Value is not int kind || arguments[1].Value is not bool isOuter || arguments[2].Value is not int index || arguments[3].Value is not string name)
-                    {
-                        continue;
-                    }
-
-                    var collisionIntrinsicsKind = (CollisionIntrinsicsKind)kind;
-                    switch (collisionIntrinsicsKind)
-                    {
-                        case CollisionIntrinsicsKind.Ordinal:
-                            ordinalCloses.Add(new(collisionIntrinsicsKind, methodSymbol, isOuter, index, name));
-                            break;
-                        case CollisionIntrinsicsKind.Fma:
-                            fmaCloses.Add(new(collisionIntrinsicsKind, methodSymbol, isOuter, index, name));
-                            break;
-                        default:
-                            continue;
-                    }
-                }
+                CollectCollisionCloseMethod(collisionMethod, collisionCloseMethod, comparer, member, executeCandidates, ordinalCloses, fmaCloses);
             }
 
             var isOrdinalInitialized = false;
             fma = default;
             ParameterStruct[] parameterOuters;
             ParameterStruct[] parameterInners;
-            ParameterStruct[] parameterConstants;
+            ParameterStruct[] parameterOthers;
+            ParameterStruct[] parameterTables;
             foreach (var (methodSymbol, attributeData) in executeCandidates)
             {
                 var array = attributeData.ConstructorArguments;
-                if (array[0].Value is not int kind || array[1].Value is not int outerCount || outerCount == 0 || array[2].Value is not int innerCount || innerCount == 0)
+                if (array[0].Value is not int kind || array[1].Value is not int outerCount || outerCount == 0)
+                {
+                    continue;
+                }
+
+                if (array[2].Value is not int innerCount || array[3].Value is not int otherCount)
                 {
                     continue;
                 }
@@ -135,9 +106,10 @@ namespace MyAnalyzer.Templates
                 }
 
                 parameterOuters = new ParameterStruct[outerCount];
+                var parameters = methodSymbol.Parameters;
                 for (var i = 0; i < parameterOuters.Length; i++)
                 {
-                    var parameter = methodSymbol.Parameters[i];
+                    var parameter = parameters[i];
                     if (!InterpretCollisionParameter(collisionParameter, comparer, parameter, out parameterOuters[i]))
                     {
                         return false;
@@ -147,18 +119,29 @@ namespace MyAnalyzer.Templates
                 parameterInners = new ParameterStruct[innerCount];
                 for (var i = 0; i < parameterInners.Length; i++)
                 {
-                    var parameter = methodSymbol.Parameters[i + outerCount];
+                    var parameter = parameters[i + outerCount];
                     if (!InterpretCollisionParameter(collisionParameter, comparer, parameter, out parameterInners[i]))
                     {
                         return false;
                     }
                 }
 
-                parameterConstants = new ParameterStruct[methodSymbol.Parameters.Length - outerCount - innerCount];
-                for (var i = 0; i < parameterConstants.Length; i++)
+                parameterOthers = otherCount == 0 ? Array.Empty<ParameterStruct>() : new ParameterStruct[otherCount];
+                for (var i = 0; i < parameterOthers.Length; i++)
                 {
-                    var parameter = methodSymbol.Parameters[i + outerCount + innerCount];
-                    if (!InterpretCollisionParameter(collisionParameter, comparer, parameter, out parameterConstants[i]))
+                    var parameter = parameters[i + outerCount + parameterInners.Length];
+                    if (!InterpretCollisionParameter(collisionParameter, comparer, parameter, out parameterOthers[i]))
+                    {
+                        return false;
+                    }
+                }
+
+                var tableCount = parameters.Length - parameterOuters.Length - parameterInners.Length - parameterOthers.Length;
+                parameterTables = tableCount == 0 ? Array.Empty<ParameterStruct>() : new ParameterStruct[tableCount];
+                for (var i = 0; i < parameterTables.Length; i++)
+                {
+                    var parameter = parameters[i + outerCount + parameterInners.Length + parameterOthers.Length];
+                    if (!InterpretCollisionParameter(collisionParameter, comparer, parameter, out parameterTables[i]))
                     {
                         return false;
                     }
@@ -168,15 +151,78 @@ namespace MyAnalyzer.Templates
                 {
                     case CollisionIntrinsicsKind.Ordinal:
                         isOrdinalInitialized = true;
-                        ordinal = new MethodStruct(methodSymbol, parameterOuters, parameterInners, parameterConstants, ordinalCloses.ToArray());
+                        ordinal = new MethodStruct(methodSymbol, parameterOuters, parameterInners, parameterOthers, parameterTables, ordinalCloses.ToArray());
                         break;
                     case CollisionIntrinsicsKind.Fma:
-                        fma = new MethodStruct(methodSymbol, parameterOuters, parameterInners, parameterConstants, fmaCloses.ToArray());
+                        fma = new MethodStruct(methodSymbol, parameterOuters, parameterInners, parameterOthers, parameterTables, fmaCloses.ToArray());
                         break;
                 }
             }
 
             return isOrdinalInitialized;
+        }
+
+        private static void CollectCollisionCloseMethod(ISymbol collisionMethod, ISymbol collisionCloseMethod, SymbolEqualityComparer comparer, ISymbol member, List<(IMethodSymbol, AttributeData)> executeCandidates, List<CloseMethodStruct> ordinalCloses, List<CloseMethodStruct> fmaCloses)
+        {
+            if (member is not IMethodSymbol { IsStatic: true } methodSymbol)
+            {
+                return;
+            }
+
+            var attributes = methodSymbol.GetAttributes();
+            if (attributes.IsDefaultOrEmpty)
+            {
+                return;
+            }
+
+            if (methodSymbol.ReturnsVoid)
+            {
+                if (methodSymbol.Parameters.Any(x => x.RefKind != RefKind.Ref))
+                {
+                    return;
+                }
+
+                var attr = attributes.SingleOrDefault(x => comparer.Equals(x.AttributeClass, collisionMethod));
+                if (attr is null)
+                {
+                    return;
+                }
+
+                executeCandidates.Add((methodSymbol, attr));
+            }
+            else
+            {
+                if (methodSymbol.Parameters.Any(x => !comparer.Equals(x.Type, methodSymbol.ReturnType)))
+                {
+                    return;
+                }
+
+                var attr = attributes.SingleOrDefault(x => comparer.Equals(x.AttributeClass, collisionCloseMethod));
+                if (attr is null)
+                {
+                    return;
+                }
+
+                var arguments = attr.ConstructorArguments;
+                if (arguments[0].Value is not int kind || arguments[1].Value is not int fieldKind || arguments[2].Value is not int index || arguments[3].Value is not string name)
+                {
+                    return;
+                }
+
+                var collisionIntrinsicsKind = (CollisionIntrinsicsKind)kind;
+                var collisionFieldKind = (CollisionFieldKind)fieldKind;
+                switch (collisionIntrinsicsKind)
+                {
+                    case CollisionIntrinsicsKind.Ordinal:
+                        ordinalCloses.Add(new(methodSymbol, collisionIntrinsicsKind, collisionFieldKind, index, name));
+                        break;
+                    case CollisionIntrinsicsKind.Fma:
+                        fmaCloses.Add(new(methodSymbol, collisionIntrinsicsKind, collisionFieldKind, index, name));
+                        break;
+                    default:
+                        return;
+                }
+            }
         }
 
         private static bool InterpretCollisionParameter(ISymbol collisionParameter, SymbolEqualityComparer comparer, IParameterSymbol parameter, out ParameterStruct answer)
@@ -199,43 +245,57 @@ namespace MyAnalyzer.Templates
             return true;
         }
 
-        private static bool InterpretCollisionType(ISymbol collisionType, ISymbol typeSymbol, SymbolEqualityComparer comparer, out TypeStruct[] outers, out TypeStruct[] inners, out TypeStruct[] constants)
+        private static bool InterpretCollisionType(ISymbol collisionType, ISymbol typeSymbol, SymbolEqualityComparer comparer, out TypeStruct[] outers, out TypeStruct[] inners, out TypeStruct[] others, out TypeStruct[] tables)
         {
             outers = Array.Empty<TypeStruct>();
             inners = Array.Empty<TypeStruct>();
-            constants = Array.Empty<TypeStruct>();
+            others = Array.Empty<TypeStruct>();
+            tables = Array.Empty<TypeStruct>();
             var typeAttr = typeSymbol.GetAttributes().SingleOrDefault(x => comparer.Equals(x.AttributeClass, collisionType));
             if (typeAttr is null)
             {
                 return false;
             }
 
-            var typeAttrConstructorArguments = typeAttr.ConstructorArguments;
-            return typeAttrConstructorArguments.Length == 5
-                   && InterpretCollisionTypeLoopFields(typeAttrConstructorArguments[0].Values, typeAttrConstructorArguments[1].Values, out outers)
-                   && InterpretCollisionTypeLoopFields(typeAttrConstructorArguments[2].Values, typeAttrConstructorArguments[3].Values, out inners)
-                   && InterpretCollisionTypeConstantFields(typeAttrConstructorArguments[4].Values, ref constants);
-        }
+            var arguments = typeAttr.ConstructorArguments;
+            var length = arguments.Length;
+            if (length < 4)
+            {
+                return false;
+            }
 
-        private static bool InterpretCollisionTypeConstantFields(ImmutableArray<TypedConstant> typedConstants, ref TypeStruct[] constants)
-        {
-            if (typedConstants.Length == 0)
+            if (!InterpretCollisionTypeLoopFields(arguments[0].Values, arguments[1].Values, out outers)
+                || !InterpretCollisionTypeLoopFields(arguments[2].Values, arguments[3].Values, out inners))
+            {
+                return false;
+            }
+
+            if (length == 4)
             {
                 return true;
             }
 
-            constants = new TypeStruct[typedConstants.Length];
-            for (var i = 0; i < constants.Length; i++)
+            if (length < 6)
             {
-                if (typedConstants[i].Value is not INamedTypeSymbol namedTypeSymbol)
-                {
-                    return false;
-                }
-
-                constants[i] = new TypeStruct(namedTypeSymbol, true);
+                return false;
             }
 
-            return true;
+            if (!InterpretCollisionTypeLoopFields(arguments[4].Values, arguments[5].Values, out others))
+            {
+                return false;
+            }
+
+            if (length == 6)
+            {
+                return true;
+            }
+
+            if (length < 8)
+            {
+                return false;
+            }
+
+            return InterpretCollisionTypeLoopFields(arguments[6].Values, arguments[7].Values, out tables);
         }
 
         private static bool InterpretCollisionTypeLoopFields(ImmutableArray<TypedConstant> types, ImmutableArray<TypedConstant> bools, out TypeStruct[] answer)
@@ -247,7 +307,6 @@ namespace MyAnalyzer.Templates
             }
 
             answer = new TypeStruct[types.Length];
-
             for (var i = 0; i < answer.Length; i++)
             {
                 if (types[i].Value is not ITypeSymbol typeSymbol || bools[i].Value is not bool boolValue)
@@ -280,40 +339,50 @@ namespace MyAnalyzer.Templates
         Fma,
     }
 
+    public enum CollisionFieldKind
+    {
+        Outer,
+        Inner,
+        Other,
+        Table,
+    }
+
     public readonly struct MethodStruct
     {
         public readonly IMethodSymbol Symbol;
         public readonly ParameterStruct[] OuterLoopParameters;
         public readonly ParameterStruct[] InnerLoopParameters;
-        public readonly ParameterStruct[] ConstantParameters;
+        public readonly ParameterStruct[] OtherParameters;
+        public readonly ParameterStruct[] TableParameters;
 
         public readonly CloseMethodStruct[] Closers;
 
-        public MethodStruct(IMethodSymbol symbol, ParameterStruct[] outerLoopParameters, ParameterStruct[] innerLoopParameters, ParameterStruct[] constantParameters, CloseMethodStruct[] closers)
+        public MethodStruct(IMethodSymbol symbol, ParameterStruct[] outerLoopParameters, ParameterStruct[] innerLoopParameters, ParameterStruct[] otherParameters, ParameterStruct[] tableParameters, CloseMethodStruct[] closers)
         {
             Symbol = symbol;
             OuterLoopParameters = outerLoopParameters;
             InnerLoopParameters = innerLoopParameters;
+            TableParameters = tableParameters;
+            OtherParameters = otherParameters;
             Closers = closers;
-            ConstantParameters = constantParameters;
         }
     }
 
     public readonly struct CloseMethodStruct
     {
-        public readonly CollisionIntrinsicsKind Kind;
         public readonly IMethodSymbol Symbol;
-        public readonly bool IsOuter;
+        public readonly CollisionIntrinsicsKind Kind;
+        public readonly CollisionFieldKind FieldKind;
         public readonly int Index;
         public readonly string Name;
 
-        public CloseMethodStruct(CollisionIntrinsicsKind kind, IMethodSymbol symbol, bool isOuter, int index, string name)
+        public CloseMethodStruct(IMethodSymbol symbol, CollisionIntrinsicsKind kind, CollisionFieldKind fieldKind, int index, string name)
         {
             Kind = kind;
             Symbol = symbol;
-            IsOuter = isOuter;
             Index = index;
             Name = name;
+            FieldKind = fieldKind;
         }
     }
 

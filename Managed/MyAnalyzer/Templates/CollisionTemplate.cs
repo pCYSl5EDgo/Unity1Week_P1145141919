@@ -60,118 +60,189 @@ namespace MyAnalyzer.Templates
                     " CollisionJob : global::Unity.Jobs.IJob\r\n        {\r\n");
             
             #line 13 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
- for (var index = 0; index < Outers.Length; ++index) { var item = Outers[index]; 
+ for (var index = 0; index < Outers.Length; ++index) {
+    var item = Outers[index]; 
             
             #line default
             #line hidden
             this.Write("            ");
             
-            #line 14 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 15 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
  if (item.IsReadOnly) { 
             
             #line default
             #line hidden
             this.Write("[global::Unity.Collections.ReadOnly] ");
-            
-            #line 14 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
- } 
-            
-            #line default
-            #line hidden
-            this.Write("public global::Unity.Collections.NativeArray<");
-            
-            #line 14 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(item.Symbol.ToDisplayString()));
-            
-            #line default
-            #line hidden
-            this.Write(".Eight> Outer");
-            
-            #line 14 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(index));
-            
-            #line default
-            #line hidden
-            this.Write(";\r\n");
             
             #line 15 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
  } 
             
             #line default
             #line hidden
-            this.Write("\r\n");
+            this.Write("public global::Unity.Collections.NativeArray<");
+            
+            #line 15 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Symbol.ToDisplayString()));
+            
+            #line default
+            #line hidden
+            this.Write(".Eight> Outer");
+            
+            #line 15 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            
+            #line default
+            #line hidden
+            this.Write(";\r\n");
+            
+            #line 16 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+ } 
+            
+            #line default
+            #line hidden
             
             #line 17 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
- for (var index = 0; index < Inners.Length; ++index) { var item = Inners[index]; 
+ for (var index = 0; index < Inners.Length; ++index) {
+    var item = Inners[index]; 
             
             #line default
             #line hidden
             this.Write("            ");
             
-            #line 18 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 19 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
  if (item.IsReadOnly) { 
             
             #line default
             #line hidden
             this.Write("[global::Unity.Collections.ReadOnly] ");
             
-            #line 18 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 19 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
  } 
             
             #line default
             #line hidden
             this.Write("public global::Unity.Collections.NativeArray<");
             
-            #line 18 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 19 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(item.Symbol.ToDisplayString()));
             
             #line default
             #line hidden
             this.Write(".Eight> Inner");
             
-            #line 18 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 19 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(index));
             
             #line default
             #line hidden
             this.Write(";\r\n");
             
-            #line 19 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 20 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
  } 
             
             #line default
             #line hidden
-            this.Write("\r\n");
             
             #line 21 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
- for (var index = 0; index < Constants.Length; ++index) { var item = Constants[index]; 
+ for (var index = 0; index < Others.Length; ++index) {
+    var item = Others[index]; 
+    if (item.IsReadOnly) { 
             
             #line default
             #line hidden
             this.Write("            public ");
             
-            #line 22 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 24 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(item.Symbol.ToDisplayString()));
             
             #line default
             #line hidden
-            this.Write(" Constant");
+            this.Write(" Other");
             
-            #line 22 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 24 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(index));
             
             #line default
             #line hidden
             this.Write(";\r\n");
             
-            #line 23 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 25 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+ } else { 
+            
+            #line default
+            #line hidden
+            this.Write("            public global::Unity.Collections.NativeArray<");
+            
+            #line 26 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Symbol.ToDisplayString()));
+            
+            #line default
+            #line hidden
+            this.Write("> Other");
+            
+            #line 26 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            
+            #line default
+            #line hidden
+            this.Write(";\r\n");
+            
+            #line 27 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+ } 
+            
+            #line default
+            #line hidden
+            
+            #line 28 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+ } 
+            
+            #line default
+            #line hidden
+            
+            #line 29 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+ for (var index = 0; index < Tables.Length; ++index) {
+    var item = Tables[index]; 
+            
+            #line default
+            #line hidden
+            this.Write("            ");
+            
+            #line 31 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+ if (item.IsReadOnly) { 
+            
+            #line default
+            #line hidden
+            this.Write("[global::Unity.Collections.ReadOnly] ");
+            
+            #line 31 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+ } 
+            
+            #line default
+            #line hidden
+            this.Write("public global::Unity.Collections.NativeArray<");
+            
+            #line 31 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Symbol.ToDisplayString()));
+            
+            #line default
+            #line hidden
+            this.Write("> Table");
+            
+            #line 31 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            
+            #line default
+            #line hidden
+            this.Write(";\r\n");
+            
+            #line 32 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
  } 
             
             #line default
             #line hidden
             this.Write("\r\n            public void Execute()\r\n            {\r\n");
             
-            #line 27 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 36 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
  if (Fma.HasValue) { var method = Fma.Value; 
             
             #line default
@@ -179,77 +250,106 @@ namespace MyAnalyzer.Templates
             this.Write("                if (global::Unity.Burst.Intrinsics.X86.Fma.IsFmaSupported)\r\n     " +
                     "           {\r\n");
             
-            #line 30 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
- for (var index = 0; index < Constants.Length; ++index) { var item = Constants[index]; 
+            #line 39 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+ for (var index = 0; index < Others.Length; ++index) {
+    var item = Others[index];
+    if (item.IsReadOnly) { 
             
             #line default
             #line hidden
-            this.Write("                    var constant");
+            this.Write("                    var other");
             
-            #line 31 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 42 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(index));
             
             #line default
             #line hidden
-            this.Write(" = new global::Unity.Burst.Intrinsics.v256(Constant");
+            this.Write(" = new global::Unity.Burst.Intrinsics.v256(Other");
             
-            #line 31 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 42 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(index));
             
             #line default
             #line hidden
-            this.Write(", Constant");
+            this.Write(", Other");
             
-            #line 31 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 42 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(index));
             
             #line default
             #line hidden
-            this.Write(", Constant");
+            this.Write(", Other");
             
-            #line 31 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 42 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(index));
             
             #line default
             #line hidden
-            this.Write(", Constant");
+            this.Write(", Other");
             
-            #line 31 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 42 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(index));
             
             #line default
             #line hidden
-            this.Write(", Constant");
+            this.Write(", Other");
             
-            #line 31 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 42 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(index));
             
             #line default
             #line hidden
-            this.Write(", Constant");
+            this.Write(", Other");
             
-            #line 31 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 42 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(index));
             
             #line default
             #line hidden
-            this.Write(", Constant");
+            this.Write(", Other");
             
-            #line 31 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 42 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(index));
             
             #line default
             #line hidden
-            this.Write(", Constant");
+            this.Write(", Other");
             
-            #line 31 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 42 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(index));
             
             #line default
             #line hidden
             this.Write(");\r\n");
             
-            #line 32 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 43 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+ } else { 
+            
+            #line default
+            #line hidden
+            this.Write("                    var other");
+            
+            #line 44 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            
+            #line default
+            #line hidden
+            this.Write(" = Other");
+            
+            #line 44 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            
+            #line default
+            #line hidden
+            this.Write("[0];\r\n");
+            
+            #line 45 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+ } 
+            
+            #line default
+            #line hidden
+            
+            #line 46 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
  } 
             
             #line default
@@ -257,7 +357,7 @@ namespace MyAnalyzer.Templates
             this.Write("                    for (var outerIndex = 0; outerIndex < Outer0.Length; ++outerI" +
                     "ndex)\r\n                    {\r\n");
             
-            #line 35 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 49 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
  for (var index = 0; index < Outers.Length; ++index) {
     var item = Outers[index]; 
             
@@ -265,27 +365,27 @@ namespace MyAnalyzer.Templates
             #line hidden
             this.Write("                        var outer");
             
-            #line 37 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 51 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(index));
             
             #line default
             #line hidden
             this.Write(" = Outer");
             
-            #line 37 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 51 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(index));
             
             #line default
             #line hidden
             this.Write("[outerIndex];\r\n");
             
-            #line 38 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 52 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
  } 
             
             #line default
             #line hidden
             
-            #line 39 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 53 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
  for (var index = 0; index < method.OuterLoopParameters.Length; ++index) {
     var item = method.OuterLoopParameters[index];
     var name = "outer" + item.Index + "_" + item.Name; 
@@ -294,133 +394,133 @@ namespace MyAnalyzer.Templates
             #line hidden
             this.Write("                        var ");
             
-            #line 42 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 56 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
             this.Write("0 = *(global::Unity.Burst.Intrinsics.v256*)&(outer");
             
-            #line 42 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 56 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(item.Index));
             
             #line default
             #line hidden
             this.Write(".");
             
-            #line 42 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 56 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(item.Name));
             
             #line default
             #line hidden
             this.Write(");\r\n                        var ");
             
-            #line 43 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 57 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
             this.Write("1 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(");
             
-            #line 43 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 57 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
             this.Write("0, 0b00_11_10_01);\r\n                        var ");
             
-            #line 44 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 58 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
             this.Write("2 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(");
             
-            #line 44 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 58 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
             this.Write("0, 0b01_00_11_10);\r\n                        var ");
             
-            #line 45 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 59 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
             this.Write("3 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(");
             
-            #line 45 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 59 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
             this.Write("0, 0b10_01_00_11);\r\n                        var ");
             
-            #line 46 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 60 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
             this.Write("4 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute2f128_ps(");
             
-            #line 46 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 60 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
             this.Write("0, ");
             
-            #line 46 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 60 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
             this.Write("0, 0b0000_0001);\r\n                        var ");
             
-            #line 47 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 61 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
             this.Write("5 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(");
             
-            #line 47 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 61 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
             this.Write("4, 0b00_11_10_01);\r\n                        var ");
             
-            #line 48 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 62 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
             this.Write("6 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(");
             
-            #line 48 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 62 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
             this.Write("4, 0b01_00_11_10);\r\n                        var ");
             
-            #line 49 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 63 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
             this.Write("7 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(");
             
-            #line 49 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 63 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
             this.Write("4, 0b10_01_00_11);\r\n");
             
-            #line 50 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 64 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
  } 
             
             #line default
@@ -428,7 +528,7 @@ namespace MyAnalyzer.Templates
             this.Write("                        for (var innerIndex = 0; innerIndex < Inner0.Length; ++in" +
                     "nerIndex)\r\n                        {\r\n");
             
-            #line 53 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 67 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
  for (var index = 0; index < Inners.Length; ++index) {
     var item = Inners[index]; 
             
@@ -436,27 +536,27 @@ namespace MyAnalyzer.Templates
             #line hidden
             this.Write("                            var inner");
             
-            #line 55 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 69 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(index));
             
             #line default
             #line hidden
             this.Write(" = Inner");
             
-            #line 55 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 69 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(index));
             
             #line default
             #line hidden
             this.Write("[innerIndex];\r\n");
             
-            #line 56 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 70 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
  } 
             
             #line default
             #line hidden
             
-            #line 57 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 71 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
  for (var index = 0; index < method.InnerLoopParameters.Length; ++index) {
     var item = method.InnerLoopParameters[index];
     var name = "inner" + item.Index + "_" + item.Name; 
@@ -465,146 +565,154 @@ namespace MyAnalyzer.Templates
             #line hidden
             this.Write("                            var ");
             
-            #line 60 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 74 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
             this.Write(" = *(global::Unity.Burst.Intrinsics.v256*)&(inner");
             
-            #line 60 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 74 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(item.Index));
             
             #line default
             #line hidden
             this.Write(".");
             
-            #line 60 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 74 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(item.Name));
             
             #line default
             #line hidden
             this.Write(");\r\n");
             
-            #line 61 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 75 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
  } 
             
             #line default
             #line hidden
             this.Write("\r\n");
             
-            #line 63 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
- for (var counter = 0; counter < 8; ++counter) { 
+            #line 77 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+ for (var counter = 0; counter < 8; ++counter) {
+    var parameter = method.OuterLoopParameters[0]; 
             
             #line default
             #line hidden
             this.Write("                            ");
             
-            #line 64 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 79 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(method.Symbol.Name));
             
             #line default
             #line hidden
             this.Write("(ref outer");
             
-            #line 64 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(method.OuterLoopParameters[0].Index));
+            #line 79 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(parameter.Index));
             
             #line default
             #line hidden
             this.Write("_");
             
-            #line 64 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(method.OuterLoopParameters[0].Name));
+            #line 79 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(parameter.Name));
             
             #line default
             #line hidden
             
-            #line 64 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 79 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(counter));
             
             #line default
             #line hidden
             
-            #line 64 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
- for (var index = 1; index < method.OuterLoopParameters.Length; ++index) { 
+            #line 79 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+ for (var index = 1; index < method.OuterLoopParameters.Length; ++index) { parameter = method.OuterLoopParameters[index]; 
             
             #line default
             #line hidden
             this.Write(", ref outer");
             
-            #line 64 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(method.OuterLoopParameters[index].Index));
+            #line 79 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(parameter.Index));
             
             #line default
             #line hidden
             this.Write("_");
             
-            #line 64 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(method.OuterLoopParameters[index].Name));
+            #line 79 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(parameter.Name));
             
             #line default
             #line hidden
             
-            #line 64 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 79 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(counter));
             
             #line default
             #line hidden
             
-            #line 64 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
- } 
-            
-            #line default
-            #line hidden
-            
-            #line 64 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-for (var index = 0; index < method.InnerLoopParameters.Length; ++index) { 
+            #line 79 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+ } for (var index = 0; index < method.InnerLoopParameters.Length; ++index) { parameter = method.InnerLoopParameters[index]; 
             
             #line default
             #line hidden
             this.Write(", ref inner");
             
-            #line 64 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(method.InnerLoopParameters[index].Index));
+            #line 79 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(parameter.Index));
             
             #line default
             #line hidden
             this.Write("_");
             
-            #line 64 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(method.InnerLoopParameters[index].Name));
+            #line 79 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(parameter.Name));
             
             #line default
             #line hidden
             
-            #line 64 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
- } for (var index = 0; index < method.ConstantParameters.Length; ++index) { 
+            #line 79 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+ } for (var index = 0; index < method.OtherParameters.Length; ++index) { parameter = method.OtherParameters[index]; 
             
             #line default
             #line hidden
-            this.Write(", ref constant");
+            this.Write(", ref other");
             
-            #line 64 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(method.ConstantParameters[index].Index));
+            #line 79 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(parameter.Index));
             
             #line default
             #line hidden
             
-            #line 64 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 79 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+ } for (var index = 0; index < method.TableParameters.Length; ++index) { parameter = method.TableParameters[index]; 
+            
+            #line default
+            #line hidden
+            this.Write(", ref Table");
+            
+            #line 79 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(parameter.Index));
+            
+            #line default
+            #line hidden
+            
+            #line 79 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
  } 
             
             #line default
             #line hidden
             this.Write(");\r\n");
             
-            #line 65 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 80 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
  } 
             
             #line default
             #line hidden
             
-            #line 66 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 81 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
  for (var index = 0; index < method.InnerLoopParameters.Length; ++index) {
     var item = method.InnerLoopParameters[index];
     if (Inners[item.Index].IsReadOnly) continue;
@@ -614,34 +722,34 @@ for (var index = 0; index < method.InnerLoopParameters.Length; ++index) {
             #line hidden
             this.Write("                            *(global::Unity.Burst.Intrinsics.v256*)&(inner");
             
-            #line 70 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 85 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(item.Index));
             
             #line default
             #line hidden
             this.Write(".");
             
-            #line 70 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 85 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(item.Name));
             
             #line default
             #line hidden
             this.Write(") = ");
             
-            #line 70 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 85 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
             this.Write(";\r\n");
             
-            #line 71 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 86 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
  } 
             
             #line default
             #line hidden
             
-            #line 72 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 87 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
  for (var index = 0; index < Inners.Length; ++index) {
     var item = Inners[index];
     if (item.IsReadOnly) { continue; } 
@@ -650,99 +758,100 @@ for (var index = 0; index < method.InnerLoopParameters.Length; ++index) {
             #line hidden
             this.Write("                            Inner");
             
-            #line 75 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 90 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(index));
             
             #line default
             #line hidden
             this.Write("[innerIndex] = inner");
             
-            #line 75 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 90 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(index));
             
             #line default
             #line hidden
             this.Write(";\r\n");
             
-            #line 76 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 91 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
  } 
             
             #line default
             #line hidden
             this.Write("                        }\r\n\r\n");
             
-            #line 79 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 94 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
  foreach (var item in method.Closers) {
+    if (item.FieldKind != CollisionFieldKind.Outer) continue;
     var name = "outer" + item.Index + "_" + item.Name; 
             
             #line default
             #line hidden
             this.Write("                        ");
             
-            #line 81 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 97 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
             this.Write("1 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(");
             
-            #line 81 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 97 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
             this.Write("1, 0b10_01_00_11);\r\n                        ");
             
-            #line 82 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 98 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
             this.Write("2 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(");
             
-            #line 82 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 98 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
             this.Write("2, 0b01_00_11_10);\r\n                        ");
             
-            #line 83 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 99 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
             this.Write("3 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(");
             
-            #line 83 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 99 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
             this.Write("3, 0b00_11_10_01);\r\n                        ");
             
-            #line 84 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 100 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
             this.Write("4 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute2f128_ps(");
             
-            #line 84 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 100 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
             this.Write("4, ");
             
-            #line 84 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 100 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
             this.Write("4, 0b0000_0001);\r\n                        ");
             
-            #line 85 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 101 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
@@ -750,21 +859,21 @@ for (var index = 0; index < method.InnerLoopParameters.Length; ++index) {
             this.Write("5 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(global::Unity.Burst.I" +
                     "ntrinsics.X86.Avx.mm256_permute2f128_ps(");
             
-            #line 85 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 101 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
             this.Write("5, ");
             
-            #line 85 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 101 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
             this.Write("5, 0b0000_0001), 0b10_01_00_11);\r\n                        ");
             
-            #line 86 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 102 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
@@ -772,21 +881,21 @@ for (var index = 0; index < method.InnerLoopParameters.Length; ++index) {
             this.Write("6 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(global::Unity.Burst.I" +
                     "ntrinsics.X86.Avx.mm256_permute2f128_ps(");
             
-            #line 86 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 102 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
             this.Write("6, ");
             
-            #line 86 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 102 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
             this.Write("6, 0b0000_0001), 0b01_00_11_10);\r\n                        ");
             
-            #line 87 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 103 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
@@ -794,14 +903,14 @@ for (var index = 0; index < method.InnerLoopParameters.Length; ++index) {
             this.Write("7 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(global::Unity.Burst.I" +
                     "ntrinsics.X86.Avx.mm256_permute2f128_ps(");
             
-            #line 87 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 103 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
             this.Write("7, ");
             
-            #line 87 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 103 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
@@ -809,90 +918,90 @@ for (var index = 0; index < method.InnerLoopParameters.Length; ++index) {
             this.Write("7, 0b0000_0001), 0b00_11_10_01);\r\n                        *(global::Unity.Burst.I" +
                     "ntrinsics.v256*)&(outer");
             
-            #line 88 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 104 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(item.Index));
             
             #line default
             #line hidden
             this.Write(".");
             
-            #line 88 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 104 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(item.Name));
             
             #line default
             #line hidden
             this.Write(") = ");
             
-            #line 88 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 104 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(item.Symbol.Name));
             
             #line default
             #line hidden
             this.Write("(");
             
-            #line 88 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 104 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
             this.Write("0, ");
             
-            #line 88 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 104 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
             this.Write("1, ");
             
-            #line 88 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 104 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
             this.Write("2, ");
             
-            #line 88 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 104 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
             this.Write("3, ");
             
-            #line 88 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 104 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
             this.Write("4, ");
             
-            #line 88 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 104 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
             this.Write("5, ");
             
-            #line 88 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 104 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
             this.Write("6, ");
             
-            #line 88 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 104 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
             this.Write("7);\r\n");
             
-            #line 89 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 105 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
  } 
             
             #line default
             #line hidden
             
-            #line 90 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 106 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
  for (var index = 0; index < Outers.Length; ++index) {
     var item = Outers[index];
     if (item.IsReadOnly) { continue; } 
@@ -901,119 +1010,149 @@ for (var index = 0; index < method.InnerLoopParameters.Length; ++index) {
             #line hidden
             this.Write("                        Outer");
             
-            #line 93 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 109 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(index));
             
             #line default
             #line hidden
             this.Write("[outerIndex] = outer");
             
-            #line 93 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 109 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(index));
             
             #line default
             #line hidden
             this.Write(";\r\n");
             
-            #line 94 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 110 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
  } 
             
             #line default
             #line hidden
-            this.Write("                    }\r\n                    \r\n                    return;\r\n       " +
-                    "         }\r\n\r\n");
+            this.Write("                    }\r\n\r\n");
             
-            #line 100 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 113 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+ for (var index = 0; index < Others.Length; ++index) {
+    var item = Others[index];
+    if (item.IsReadOnly) { continue; } 
+            
+            #line default
+            #line hidden
+            this.Write("                    Other");
+            
+            #line 116 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            
+            #line default
+            #line hidden
+            this.Write("[0] = other");
+            
+            #line 116 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            
+            #line default
+            #line hidden
+            this.Write(";\r\n");
+            
+            #line 117 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+ } 
+            
+            #line default
+            #line hidden
+            this.Write("                    return;\r\n                }\r\n\r\n");
+            
+            #line 121 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
  } 
             
             #line default
             #line hidden
             
-            #line 101 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 122 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
  { var method = Ordinal; 
             
             #line default
             #line hidden
             this.Write("                {\r\n");
             
-            #line 103 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
- for (var index = 0; index < Constants.Length; ++index) { var item = Constants[index]; 
+            #line 124 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+ for (var index = 0; index < Others.Length; ++index) {
+    var item = Others[index];
+    if (item.IsReadOnly) { 
             
             #line default
             #line hidden
-            this.Write("                    var constant");
+            this.Write("                    var other");
             
-            #line 104 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 127 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(index));
             
             #line default
             #line hidden
             this.Write(" = new global::Unity.Mathematics.");
             
-            #line 104 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 127 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(item.Symbol.ToDisplayString()));
             
             #line default
             #line hidden
-            this.Write("4x2(Constant");
+            this.Write("4(Other");
             
-            #line 104 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 127 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(index));
             
             #line default
             #line hidden
-            this.Write(", Constant");
+            this.Write(", Other");
             
-            #line 104 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 127 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(index));
             
             #line default
             #line hidden
-            this.Write(", Constant");
+            this.Write(", Other");
             
-            #line 104 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 127 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(index));
             
             #line default
             #line hidden
-            this.Write(", Constant");
+            this.Write(", Other");
             
-            #line 104 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(index));
-            
-            #line default
-            #line hidden
-            this.Write(", Constant");
-            
-            #line 104 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(index));
-            
-            #line default
-            #line hidden
-            this.Write(", Constant");
-            
-            #line 104 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(index));
-            
-            #line default
-            #line hidden
-            this.Write(", Constant");
-            
-            #line 104 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(index));
-            
-            #line default
-            #line hidden
-            this.Write(", Constant");
-            
-            #line 104 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 127 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(index));
             
             #line default
             #line hidden
             this.Write(");\r\n");
             
-            #line 105 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 128 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+ } else { 
+            
+            #line default
+            #line hidden
+            this.Write("                    var other");
+            
+            #line 129 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            
+            #line default
+            #line hidden
+            this.Write(" = Other");
+            
+            #line 129 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            
+            #line default
+            #line hidden
+            this.Write("[0];\r\n");
+            
+            #line 130 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+ } 
+            
+            #line default
+            #line hidden
+            
+            #line 131 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
  } 
             
             #line default
@@ -1021,7 +1160,7 @@ for (var index = 0; index < method.InnerLoopParameters.Length; ++index) {
             this.Write("                    for (var outerIndex = 0; outerIndex < Outer0.Length; ++outerI" +
                     "ndex)\r\n                    {\r\n");
             
-            #line 108 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 134 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
  for (var index = 0; index < Outers.Length; ++index) {
     var item = Outers[index]; 
             
@@ -1029,27 +1168,27 @@ for (var index = 0; index < method.InnerLoopParameters.Length; ++index) {
             #line hidden
             this.Write("                        var outer");
             
-            #line 110 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 136 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(index));
             
             #line default
             #line hidden
             this.Write(" = Outer");
             
-            #line 110 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 136 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(index));
             
             #line default
             #line hidden
             this.Write("[outerIndex];\r\n");
             
-            #line 111 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 137 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
  } 
             
             #line default
             #line hidden
             
-            #line 112 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 138 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
  for (var index = 0; index < method.OuterLoopParameters.Length; ++index) {
     var item = method.OuterLoopParameters[index];
     var name = "outer" + item.Index + "_" + item.Name; 
@@ -1058,84 +1197,56 @@ for (var index = 0; index < method.InnerLoopParameters.Length; ++index) {
             #line hidden
             this.Write("                        var ");
             
-            #line 115 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 141 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
             this.Write("0 = outer");
             
-            #line 115 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 141 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(item.Index));
             
             #line default
             #line hidden
             this.Write(".");
             
-            #line 115 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 141 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(item.Name));
             
             #line default
             #line hidden
             this.Write(";\r\n                        global::MyAttribute.RotateHelper.Rotate(");
             
-            #line 116 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 142 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
             this.Write("0, out var ");
             
-            #line 116 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 142 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
             this.Write("1, out var ");
             
-            #line 116 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 142 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
             this.Write("2, out var ");
             
-            #line 116 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 142 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
-            this.Write("3, out var ");
+            this.Write("3);\r\n");
             
-            #line 116 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(name));
-            
-            #line default
-            #line hidden
-            this.Write("4, out var ");
-            
-            #line 116 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(name));
-            
-            #line default
-            #line hidden
-            this.Write("5, out var ");
-            
-            #line 116 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(name));
-            
-            #line default
-            #line hidden
-            this.Write("6, out var ");
-            
-            #line 116 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(name));
-            
-            #line default
-            #line hidden
-            this.Write("7);\r\n");
-            
-            #line 117 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 143 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
  } 
             
             #line default
@@ -1143,7 +1254,7 @@ for (var index = 0; index < method.InnerLoopParameters.Length; ++index) {
             this.Write("                        for (var innerIndex = 0; innerIndex < Inner0.Length; ++in" +
                     "nerIndex)\r\n                        {\r\n");
             
-            #line 120 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 146 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
  for (var index = 0; index < Inners.Length; ++index) {
     var item = Inners[index]; 
             
@@ -1151,366 +1262,19 @@ for (var index = 0; index < method.InnerLoopParameters.Length; ++index) {
             #line hidden
             this.Write("                            var inner");
             
-            #line 122 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 148 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(index));
             
             #line default
             #line hidden
             this.Write(" = Inner");
             
-            #line 122 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 148 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(index));
             
             #line default
             #line hidden
             this.Write("[innerIndex];\r\n");
-            
-            #line 123 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
- } 
-            
-            #line default
-            #line hidden
-            
-            #line 124 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
- for (var index = 0; index < method.InnerLoopParameters.Length; ++index) {
-    var item = method.InnerLoopParameters[index];
-    var name = "inner" + item.Index + "_" + item.Name; 
-            
-            #line default
-            #line hidden
-            this.Write("                            ref var ");
-            
-            #line 127 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(name));
-            
-            #line default
-            #line hidden
-            this.Write(" = ref inner");
-            
-            #line 127 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(item.Index));
-            
-            #line default
-            #line hidden
-            this.Write(".");
-            
-            #line 127 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(item.Name));
-            
-            #line default
-            #line hidden
-            this.Write(";\r\n");
-            
-            #line 128 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
- } 
-            
-            #line default
-            #line hidden
-            this.Write("\r\n");
-            
-            #line 130 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
- for (var counter = 0; counter < 8; ++counter) { 
-            
-            #line default
-            #line hidden
-            this.Write("                            ");
-            
-            #line 131 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(method.Symbol.Name));
-            
-            #line default
-            #line hidden
-            this.Write("(ref outer");
-            
-            #line 131 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(method.OuterLoopParameters[0].Index));
-            
-            #line default
-            #line hidden
-            this.Write("_");
-            
-            #line 131 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(method.OuterLoopParameters[0].Name));
-            
-            #line default
-            #line hidden
-            
-            #line 131 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(counter));
-            
-            #line default
-            #line hidden
-            
-            #line 131 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
- for (var index = 1; index < method.OuterLoopParameters.Length; ++index) { 
-            
-            #line default
-            #line hidden
-            this.Write(", ref outer");
-            
-            #line 131 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(method.OuterLoopParameters[index].Index));
-            
-            #line default
-            #line hidden
-            this.Write("_");
-            
-            #line 131 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(method.OuterLoopParameters[index].Name));
-            
-            #line default
-            #line hidden
-            
-            #line 131 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(counter));
-            
-            #line default
-            #line hidden
-            
-            #line 131 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
- } 
-            
-            #line default
-            #line hidden
-            
-            #line 131 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-for (var index = 0; index < method.InnerLoopParameters.Length; ++index) { 
-            
-            #line default
-            #line hidden
-            this.Write(", ref inner");
-            
-            #line 131 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(method.InnerLoopParameters[index].Index));
-            
-            #line default
-            #line hidden
-            this.Write("_");
-            
-            #line 131 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(method.InnerLoopParameters[index].Name));
-            
-            #line default
-            #line hidden
-            
-            #line 131 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
- } for (var index = 0; index < method.ConstantParameters.Length; ++index) { 
-            
-            #line default
-            #line hidden
-            this.Write(", ref constant");
-            
-            #line 131 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(method.ConstantParameters[index].Index));
-            
-            #line default
-            #line hidden
-            
-            #line 131 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
- } 
-            
-            #line default
-            #line hidden
-            this.Write(");\r\n");
-            
-            #line 132 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
- } 
-            
-            #line default
-            #line hidden
-            
-            #line 133 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
- for (var index = 0; index < Inners.Length; ++index) {
-    var item = Inners[index];
-    if (item.IsReadOnly) { continue; } 
-            
-            #line default
-            #line hidden
-            this.Write("                            Inner");
-            
-            #line 136 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(index));
-            
-            #line default
-            #line hidden
-            this.Write("[innerIndex] = inner");
-            
-            #line 136 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(index));
-            
-            #line default
-            #line hidden
-            this.Write(";\r\n");
-            
-            #line 137 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
- } 
-            
-            #line default
-            #line hidden
-            this.Write("                        }\r\n\r\n");
-            
-            #line 140 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
- foreach (var item in method.Closers) {
-    var name = "outer" + item.Index + "_" + item.Name; 
-            
-            #line default
-            #line hidden
-            this.Write("                        global::MyAttribute.RotateHelper.RotateM1(ref ");
-            
-            #line 142 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(name));
-            
-            #line default
-            #line hidden
-            this.Write("1, ref ");
-            
-            #line 142 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(name));
-            
-            #line default
-            #line hidden
-            this.Write("2, ref ");
-            
-            #line 142 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(name));
-            
-            #line default
-            #line hidden
-            this.Write("3, ref ");
-            
-            #line 142 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(name));
-            
-            #line default
-            #line hidden
-            this.Write("4, ref ");
-            
-            #line 142 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(name));
-            
-            #line default
-            #line hidden
-            this.Write("5, ref ");
-            
-            #line 142 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(name));
-            
-            #line default
-            #line hidden
-            this.Write("6, ref ");
-            
-            #line 142 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(name));
-            
-            #line default
-            #line hidden
-            this.Write("7);\r\n                        outer");
-            
-            #line 143 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(item.Index));
-            
-            #line default
-            #line hidden
-            this.Write(".");
-            
-            #line 143 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(item.Name));
-            
-            #line default
-            #line hidden
-            this.Write(" = ");
-            
-            #line 143 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(item.Symbol.Name));
-            
-            #line default
-            #line hidden
-            this.Write("(");
-            
-            #line 143 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(name));
-            
-            #line default
-            #line hidden
-            this.Write("0, ");
-            
-            #line 143 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(name));
-            
-            #line default
-            #line hidden
-            this.Write("1, ");
-            
-            #line 143 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(name));
-            
-            #line default
-            #line hidden
-            this.Write("2, ");
-            
-            #line 143 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(name));
-            
-            #line default
-            #line hidden
-            this.Write("3, ");
-            
-            #line 143 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(name));
-            
-            #line default
-            #line hidden
-            this.Write("4, ");
-            
-            #line 143 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(name));
-            
-            #line default
-            #line hidden
-            this.Write("5, ");
-            
-            #line 143 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(name));
-            
-            #line default
-            #line hidden
-            this.Write("6, ");
-            
-            #line 143 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(name));
-            
-            #line default
-            #line hidden
-            this.Write("7);\r\n");
-            
-            #line 144 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
- } 
-            
-            #line default
-            #line hidden
-            
-            #line 145 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
- for (var index = 0; index < Outers.Length; ++index) {
-    var item = Outers[index];
-    if (item.IsReadOnly) { continue; } 
-            
-            #line default
-            #line hidden
-            this.Write("                        Outer");
-            
-            #line 148 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(index));
-            
-            #line default
-            #line hidden
-            this.Write("[outerIndex] = outer");
-            
-            #line 148 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(index));
-            
-            #line default
-            #line hidden
-            this.Write(";\r\n");
             
             #line 149 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
  } 
@@ -1519,11 +1283,376 @@ for (var index = 0; index < method.InnerLoopParameters.Length; ++index) {
             #line hidden
             
             #line 150 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+ for (var index = 0; index < method.InnerLoopParameters.Length; ++index) {
+    var item = method.InnerLoopParameters[index];
+    var name = "inner" + item.Index + "_" + item.Name; 
+            
+            #line default
+            #line hidden
+            this.Write("                            ref var ");
+            
+            #line 153 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(name));
+            
+            #line default
+            #line hidden
+            this.Write(" = ref inner");
+            
+            #line 153 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Index));
+            
+            #line default
+            #line hidden
+            this.Write(".");
+            
+            #line 153 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Name));
+            
+            #line default
+            #line hidden
+            this.Write(";\r\n");
+            
+            #line 154 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
  } 
             
             #line default
             #line hidden
-            this.Write("                    }\r\n                }\r\n            }\r\n        }\r\n    }\r\n}\r\n");
+            this.Write("\r\n");
+            
+            #line 156 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+ for (var counter = 0; counter < 4; ++counter) {
+    for (var cIndex0 = 0; cIndex0 < 2; ++cIndex0) {
+      for (var cIndex1 = 0; cIndex1 < 2; ++cIndex1) {
+        var parameter = method.OuterLoopParameters[0]; 
+            
+            #line default
+            #line hidden
+            this.Write("                            ");
+            
+            #line 160 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(method.Symbol.Name));
+            
+            #line default
+            #line hidden
+            this.Write("(ref outer");
+            
+            #line 160 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(parameter.Index));
+            
+            #line default
+            #line hidden
+            this.Write("_");
+            
+            #line 160 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(parameter.Name));
+            
+            #line default
+            #line hidden
+            
+            #line 160 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(counter));
+            
+            #line default
+            #line hidden
+            this.Write(".c");
+            
+            #line 160 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(cIndex0));
+            
+            #line default
+            #line hidden
+            
+            #line 160 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+ for (var index = 1; index < method.OuterLoopParameters.Length; ++index) { parameter = method.OuterLoopParameters[index]; 
+            
+            #line default
+            #line hidden
+            this.Write(", ref outer");
+            
+            #line 160 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(parameter.Index));
+            
+            #line default
+            #line hidden
+            this.Write("_");
+            
+            #line 160 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(parameter.Name));
+            
+            #line default
+            #line hidden
+            
+            #line 160 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(counter));
+            
+            #line default
+            #line hidden
+            this.Write(".c");
+            
+            #line 160 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(cIndex0));
+            
+            #line default
+            #line hidden
+            
+            #line 160 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+ } for (var index = 0; index < method.InnerLoopParameters.Length; ++index) { parameter = method.InnerLoopParameters[index]; 
+            
+            #line default
+            #line hidden
+            this.Write(", ref inner");
+            
+            #line 160 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(parameter.Index));
+            
+            #line default
+            #line hidden
+            this.Write("_");
+            
+            #line 160 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(parameter.Name));
+            
+            #line default
+            #line hidden
+            this.Write(".c");
+            
+            #line 160 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(cIndex1));
+            
+            #line default
+            #line hidden
+            
+            #line 160 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+ } for (var index = 0; index < method.OtherParameters.Length; ++index) { parameter = method.OtherParameters[index]; 
+            
+            #line default
+            #line hidden
+            this.Write(", ref other");
+            
+            #line 160 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(parameter.Index));
+            
+            #line default
+            #line hidden
+            
+            #line 160 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+ } for (var index = 0; index < method.TableParameters.Length; ++index) { parameter = method.TableParameters[index]; 
+            
+            #line default
+            #line hidden
+            this.Write(", ref Table");
+            
+            #line 160 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(parameter.Index));
+            
+            #line default
+            #line hidden
+            
+            #line 160 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+ } 
+            
+            #line default
+            #line hidden
+            this.Write(");\r\n");
+            
+            #line 161 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+ } 
+            
+            #line default
+            #line hidden
+            
+            #line 162 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+ } 
+            
+            #line default
+            #line hidden
+            
+            #line 163 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+ } 
+            
+            #line default
+            #line hidden
+            
+            #line 164 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+ for (var index = 0; index < Inners.Length; ++index) {
+    var item = Inners[index];
+    if (item.IsReadOnly) { continue; } 
+            
+            #line default
+            #line hidden
+            this.Write("                            Inner");
+            
+            #line 167 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            
+            #line default
+            #line hidden
+            this.Write("[innerIndex] = inner");
+            
+            #line 167 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            
+            #line default
+            #line hidden
+            this.Write(";\r\n");
+            
+            #line 168 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+ } 
+            
+            #line default
+            #line hidden
+            this.Write("                        }\r\n\r\n");
+            
+            #line 171 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+ foreach (var item in method.Closers) {
+    if (item.FieldKind != CollisionFieldKind.Outer) continue;
+    var name = "outer" + item.Index + "_" + item.Name; 
+            
+            #line default
+            #line hidden
+            this.Write("                        global::MyAttribute.RotateHelper.RotateM1(ref ");
+            
+            #line 174 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(name));
+            
+            #line default
+            #line hidden
+            this.Write("1, ref ");
+            
+            #line 174 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(name));
+            
+            #line default
+            #line hidden
+            this.Write("2, ref ");
+            
+            #line 174 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(name));
+            
+            #line default
+            #line hidden
+            this.Write("3);\r\n                        outer");
+            
+            #line 175 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Index));
+            
+            #line default
+            #line hidden
+            this.Write(".");
+            
+            #line 175 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Name));
+            
+            #line default
+            #line hidden
+            this.Write(" = ");
+            
+            #line 175 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Symbol.Name));
+            
+            #line default
+            #line hidden
+            this.Write("(");
+            
+            #line 175 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(name));
+            
+            #line default
+            #line hidden
+            this.Write("0, ");
+            
+            #line 175 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(name));
+            
+            #line default
+            #line hidden
+            this.Write("1, ");
+            
+            #line 175 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(name));
+            
+            #line default
+            #line hidden
+            this.Write("2, ");
+            
+            #line 175 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(name));
+            
+            #line default
+            #line hidden
+            this.Write("3);\r\n");
+            
+            #line 176 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+ } 
+            
+            #line default
+            #line hidden
+            
+            #line 177 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+ for (var index = 0; index < Outers.Length; ++index) {
+    var item = Outers[index];
+    if (item.IsReadOnly) { continue; } 
+            
+            #line default
+            #line hidden
+            this.Write("                        Outer");
+            
+            #line 180 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            
+            #line default
+            #line hidden
+            this.Write("[outerIndex] = outer");
+            
+            #line 180 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            
+            #line default
+            #line hidden
+            this.Write(";\r\n");
+            
+            #line 181 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+ } 
+            
+            #line default
+            #line hidden
+            
+            #line 182 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+ } 
+            
+            #line default
+            #line hidden
+            this.Write("                    }\r\n\r\n");
+            
+            #line 185 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+ for (var index = 0; index < Others.Length; ++index) {
+    var item = Others[index];
+    if (item.IsReadOnly) { continue; } 
+            
+            #line default
+            #line hidden
+            this.Write("                    Other");
+            
+            #line 188 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            
+            #line default
+            #line hidden
+            this.Write("[0] = other");
+            
+            #line 188 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            
+            #line default
+            #line hidden
+            this.Write(";\r\n");
+            
+            #line 189 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+ } 
+            
+            #line default
+            #line hidden
+            this.Write("                }\r\n            }\r\n        }\r\n    }\r\n}\r\n");
             return this.GenerationEnvironment.ToString();
         }
     }

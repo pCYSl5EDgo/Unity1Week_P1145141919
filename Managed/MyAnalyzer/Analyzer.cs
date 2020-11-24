@@ -26,26 +26,16 @@ namespace MyAttribute
 {
     public static class RotateHelper
     {
-        public static void Rotate(float4x2 value, out float4x2 value1, out float4x2 value2, out float4x2 value3, out float4x2 value4, out float4x2 value5, out float4x2 value6, out float4x2 value7)
+        public static void Rotate(float4x2 value, out float4x2 value1, out float4x2 value2, out float4x2 value3)
         {
             var c0 = value.c0;
             var c1 = value.c1;
-            value4 = new float4x2(c1, c0);
-            c0 = c0.wxyz;
-            c1 = c1.wxyz;
-            value1 = new float4x2(c0, c1);
-            value5 = new float4x2(c1, c0);
-            c0 = c0.wxyz;
-            c1 = c1.wxyz;
-            value2 = new float4x2(c0, c1);
-            value6 = new float4x2(c1, c0);
-            c0 = c0.wxyz;
-            c1 = c1.wxyz;
-            value3 = new float4x2(c0, c1);
-            value7 = new float4x2(c1, c0);
+            value1 = new float4x2(c0.wxyz, c1.wxyz);
+            value2 = new float4x2(c0.zwxy, c1.zwxy);
+            value3 = new float4x2(c0.yzwx, c1.yzwx);
         }
 
-        public static void RotateM1(ref float4x2 value1, ref float4x2 value2, ref float4x2 value3, ref float4x2 value4, ref float4x2 value5, ref float4x2 value6, ref float4x2 value7)
+        public static void RotateM1(ref float4x2 value1, ref float4x2 value2, ref float4x2 value3)
         {
             value1.c0 = value1.c0.yzwx;
             value1.c1 = value1.c1.yzwx;
@@ -53,32 +43,18 @@ namespace MyAttribute
             value2.c1 = value2.c1.zwxy;
             value3.c0 = value3.c0.wxyz;
             value3.c1 = value3.c1.wxyz;
-            value4 = new float4x2(value4.c1, value4.c0);
-            value5 = new float4x2(value5.c1.yzwx, value5.c0.yzwx);
-            value6 = new float4x2(value6.c1.zwxy, value6.c0.zwxy);
-            value7 = new float4x2(value7.c1.wxyz, value7.c0.wxyz);
         }
 
-        public static void Rotate(int4x2 value, out int4x2 value1, out int4x2 value2, out int4x2 value3, out int4x2 value4, out int4x2 value5, out int4x2 value6, out int4x2 value7)
+        public static void Rotate(int4x2 value, out int4x2 value1, out int4x2 value2, out int4x2 value3)
         {
             var c0 = value.c0;
             var c1 = value.c1;
-            value4 = new int4x2(c1, c0);
-            c0 = c0.wxyz;
-            c1 = c1.wxyz;
-            value1 = new int4x2(c0, c1);
-            value5 = new int4x2(c1, c0);
-            c0 = c0.wxyz;
-            c1 = c1.wxyz;
-            value2 = new int4x2(c0, c1);
-            value6 = new int4x2(c1, c0);
-            c0 = c0.wxyz;
-            c1 = c1.wxyz;
-            value3 = new int4x2(c0, c1);
-            value7 = new int4x2(c1, c0);
+            value1 = new int4x2(c0.wxyz, c1.wxyz);
+            value2 = new int4x2(c0.zwxy, c1.zwxy);
+            value3 = new int4x2(c0.yzwx, c1.yzwx);
         }
 
-        public static void RotateM1(ref int4x2 value1, ref int4x2 value2, ref int4x2 value3, ref int4x2 value4, ref int4x2 value5, ref int4x2 value6, ref int4x2 value7)
+        public static void RotateM1(ref int4x2 value1, ref int4x2 value2, ref int4x2 value3)
         {
             value1.c0 = value1.c0.yzwx;
             value1.c1 = value1.c1.yzwx;
@@ -86,10 +62,6 @@ namespace MyAttribute
             value2.c1 = value2.c1.zwxy;
             value3.c0 = value3.c0.wxyz;
             value3.c1 = value3.c1.wxyz;
-            value4 = new int4x2(value4.c1, value4.c0);
-            value5 = new int4x2(value5.c1.yzwx, value5.c0.yzwx);
-            value6 = new int4x2(value6.c1.zwxy, value6.c0.zwxy);
-            value7 = new int4x2(value7.c1.wxyz, value7.c0.wxyz);
         }
     }
 
@@ -102,19 +74,29 @@ namespace MyAttribute
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
     public class CollisionTypeAttribute : Attribute
     {
-        public readonly Type[] OuterLoopTypeArray;
-        public readonly bool[] OuterLoopIsReadOnlyArray;
-        public readonly Type[] InnerLoopTypeArray;
-        public readonly bool[] InnerLoopIsReadOnlyArray;
-        public readonly Type[] ConstantTypeArray;
+        public readonly Type[] OuterTypeArray;
+        public readonly bool[] OuterIsReadOnlyArray;
+        public readonly Type[] InnerTypeArray;
+        public readonly bool[] InnerIsReadOnlyArray;
+        public readonly Type[] OtherTypeArray;
+        public readonly bool[] OtherIsReadOnlyArray;
+        public readonly Type[] TableTypeArray;
+        public readonly bool[] TableIsReadOnlyArray;
 
-        public CollisionTypeAttribute(Type[] outerLoopTypeArray, bool[] outerLoopIsReadOnlyArray, Type[] innerLoopTypeArray, bool[] innerLoopIsReadOnlyArray, Type[] constantTypeArray)
+        public CollisionTypeAttribute(Type[] outerTypeArray, bool[] outerIsReadOnlyArray, Type[] innerTypeArray, bool[] innerIsReadOnlyArray) : this(outerTypeArray, outerIsReadOnlyArray, innerTypeArray, innerIsReadOnlyArray, Array.Empty<Type>(), Array.Empty<bool>(), Array.Empty<Type>(), Array.Empty<bool>()) { }
+
+        public CollisionTypeAttribute(Type[] outerTypeArray, bool[] outerIsReadOnlyArray, Type[] innerTypeArray, bool[] innerIsReadOnlyArray, Type[] otherTypeArray, bool[] otherIsReadOnlyArray) : this(outerTypeArray, outerIsReadOnlyArray, innerTypeArray, innerIsReadOnlyArray, otherTypeArray, otherIsReadOnlyArray, Array.Empty<Type>(), Array.Empty<bool>()) { }
+
+        public CollisionTypeAttribute(Type[] outerTypeArray, bool[] outerIsReadOnlyArray, Type[] innerTypeArray, bool[] innerIsReadOnlyArray, Type[] otherTypeArray, bool[] otherIsReadOnlyArray, Type[] tableTypeArray, bool[] tableIsReadOnlyArray)
         {
-            OuterLoopTypeArray = outerLoopTypeArray;
-            OuterLoopIsReadOnlyArray = outerLoopIsReadOnlyArray;
-            InnerLoopTypeArray = innerLoopTypeArray;
-            InnerLoopIsReadOnlyArray = innerLoopIsReadOnlyArray;
-            ConstantTypeArray = constantTypeArray;
+            OuterTypeArray = outerTypeArray;
+            OuterIsReadOnlyArray = outerIsReadOnlyArray;
+            InnerTypeArray = innerTypeArray;
+            InnerIsReadOnlyArray = innerIsReadOnlyArray;
+            OtherTypeArray = otherTypeArray;
+            OtherIsReadOnlyArray = otherIsReadOnlyArray;
+            TableTypeArray = tableTypeArray;
+            TableIsReadOnlyArray = tableIsReadOnlyArray;
         }
     }
 
@@ -124,27 +106,37 @@ namespace MyAttribute
         public readonly CollisionIntrinsicsKind Kind;
         public readonly int OuterCount;
         public readonly int InnerCount;
+        public readonly int OtherCount;
 
-        public CollisionMethodAttribute(CollisionIntrinsicsKind kind, int outerCount, int innerCount)
+        public CollisionMethodAttribute(CollisionIntrinsicsKind kind, int outerCount, int innerCount, int otherCount)
         {
             Kind = kind;
             OuterCount = outerCount;
             InnerCount = innerCount;
+            OtherCount = otherCount;
         }
+    }
+
+    public enum CollisionFieldKind
+    {
+        Outer,
+        Inner,
+        Other,
+        Table,
     }
 
     [AttributeUsage(AttributeTargets.Method)]
     public class CollisionCloseMethodAttribute : Attribute
     {
         public readonly CollisionIntrinsicsKind Kind;
-        public readonly bool IsOuter;
+        public readonly CollisionFieldKind FieldKind;
         public readonly int FieldIndex;
         public readonly string FieldName;
 
-        public CollisionCloseMethodAttribute(CollisionIntrinsicsKind kind, bool isOuter, int fieldIndex, string fieldName)
+        public CollisionCloseMethodAttribute(CollisionIntrinsicsKind kind, CollisionFieldKind fieldKind, int fieldIndex, string fieldName)
         {
             Kind = kind;
-            IsOuter = isOuter;
+            FieldKind = fieldKind;
             FieldIndex = fieldIndex;
             FieldName = fieldName;
         }

@@ -10,16 +10,25 @@ namespace <#= TypeSymbol.ContainingNamespace.ToDisplayString() #>
         [global::Unity.Burst.BurstCompile]
         public unsafe struct CollisionJob : global::Unity.Jobs.IJob
         {
-<# for (var index = 0; index < Outers.Length; ++index) { var item = Outers[index]; #>
+<# for (var index = 0; index < Outers.Length; ++index) {
+    var item = Outers[index]; #>
             <# if (item.IsReadOnly) { #>[global::Unity.Collections.ReadOnly] <# } #>public global::Unity.Collections.NativeArray<<#= item.Symbol.ToDisplayString() #>.Eight> Outer<#= index #>;
 <# } #>
-
-<# for (var index = 0; index < Inners.Length; ++index) { var item = Inners[index]; #>
+<# for (var index = 0; index < Inners.Length; ++index) {
+    var item = Inners[index]; #>
             <# if (item.IsReadOnly) { #>[global::Unity.Collections.ReadOnly] <# } #>public global::Unity.Collections.NativeArray<<#= item.Symbol.ToDisplayString() #>.Eight> Inner<#= index #>;
 <# } #>
-
-<# for (var index = 0; index < Constants.Length; ++index) { var item = Constants[index]; #>
-            public <#= item.Symbol.ToDisplayString() #> Constant<#= index #>;
+<# for (var index = 0; index < Others.Length; ++index) {
+    var item = Others[index]; 
+    if (item.IsReadOnly) { #>
+            public <#= item.Symbol.ToDisplayString() #> Other<#= index #>;
+<# } else { #>
+            public global::Unity.Collections.NativeArray<<#= item.Symbol.ToDisplayString() #>> Other<#= index #>;
+<# } #>
+<# } #>
+<# for (var index = 0; index < Tables.Length; ++index) {
+    var item = Tables[index]; #>
+            <# if (item.IsReadOnly) { #>[global::Unity.Collections.ReadOnly] <# } #>public global::Unity.Collections.NativeArray<<#= item.Symbol.ToDisplayString() #>> Table<#= index #>;
 <# } #>
 
             public void Execute()
@@ -27,8 +36,13 @@ namespace <#= TypeSymbol.ContainingNamespace.ToDisplayString() #>
 <# if (Fma.HasValue) { var method = Fma.Value; #>
                 if (global::Unity.Burst.Intrinsics.X86.Fma.IsFmaSupported)
                 {
-<# for (var index = 0; index < Constants.Length; ++index) { var item = Constants[index]; #>
-                    var constant<#= index #> = new global::Unity.Burst.Intrinsics.v256(Constant<#= index #>, Constant<#= index #>, Constant<#= index #>, Constant<#= index #>, Constant<#= index #>, Constant<#= index #>, Constant<#= index #>, Constant<#= index #>);
+<# for (var index = 0; index < Others.Length; ++index) {
+    var item = Others[index];
+    if (item.IsReadOnly) { #>
+                    var other<#= index #> = new global::Unity.Burst.Intrinsics.v256(Other<#= index #>, Other<#= index #>, Other<#= index #>, Other<#= index #>, Other<#= index #>, Other<#= index #>, Other<#= index #>, Other<#= index #>);
+<# } else { #>
+                    var other<#= index #> = Other<#= index #>[0];
+<# } #>
 <# } #>
                     for (var outerIndex = 0; outerIndex < Outer0.Length; ++outerIndex)
                     {
@@ -60,8 +74,9 @@ namespace <#= TypeSymbol.ContainingNamespace.ToDisplayString() #>
                             var <#= name #> = *(global::Unity.Burst.Intrinsics.v256*)&(inner<#= item.Index #>.<#= item.Name #>);
 <# } #>
 
-<# for (var counter = 0; counter < 8; ++counter) { #>
-                            <#= method.Symbol.Name #>(ref outer<#= method.OuterLoopParameters[0].Index #>_<#= method.OuterLoopParameters[0].Name #><#= counter #><# for (var index = 1; index < method.OuterLoopParameters.Length; ++index) { #>, ref outer<#= method.OuterLoopParameters[index].Index #>_<#= method.OuterLoopParameters[index].Name #><#= counter #><# } #><#for (var index = 0; index < method.InnerLoopParameters.Length; ++index) { #>, ref inner<#= method.InnerLoopParameters[index].Index #>_<#= method.InnerLoopParameters[index].Name #><# } for (var index = 0; index < method.ConstantParameters.Length; ++index) { #>, ref constant<#= method.ConstantParameters[index].Index #><# } #>);
+<# for (var counter = 0; counter < 8; ++counter) {
+    var parameter = method.OuterLoopParameters[0]; #>
+                            <#= method.Symbol.Name #>(ref outer<#= parameter.Index #>_<#= parameter.Name #><#= counter #><# for (var index = 1; index < method.OuterLoopParameters.Length; ++index) { parameter = method.OuterLoopParameters[index]; #>, ref outer<#= parameter.Index #>_<#= parameter.Name #><#= counter #><# } for (var index = 0; index < method.InnerLoopParameters.Length; ++index) { parameter = method.InnerLoopParameters[index]; #>, ref inner<#= parameter.Index #>_<#= parameter.Name #><# } for (var index = 0; index < method.OtherParameters.Length; ++index) { parameter = method.OtherParameters[index]; #>, ref other<#= parameter.Index #><# } for (var index = 0; index < method.TableParameters.Length; ++index) { parameter = method.TableParameters[index]; #>, ref Table<#= parameter.Index #><# } #>);
 <# } #>
 <# for (var index = 0; index < method.InnerLoopParameters.Length; ++index) {
     var item = method.InnerLoopParameters[index];
@@ -77,6 +92,7 @@ namespace <#= TypeSymbol.ContainingNamespace.ToDisplayString() #>
                         }
 
 <# foreach (var item in method.Closers) {
+    if (item.FieldKind != CollisionFieldKind.Outer) continue;
     var name = "outer" + item.Index + "_" + item.Name; #>
                         <#= name #>1 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(<#= name #>1, 0b10_01_00_11);
                         <#= name #>2 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(<#= name #>2, 0b01_00_11_10);
@@ -93,15 +109,25 @@ namespace <#= TypeSymbol.ContainingNamespace.ToDisplayString() #>
                         Outer<#= index #>[outerIndex] = outer<#= index #>;
 <# } #>
                     }
-                    
+
+<# for (var index = 0; index < Others.Length; ++index) {
+    var item = Others[index];
+    if (item.IsReadOnly) { continue; } #>
+                    Other<#= index #>[0] = other<#= index #>;
+<# } #>
                     return;
                 }
 
 <# } #>
 <# { var method = Ordinal; #>
                 {
-<# for (var index = 0; index < Constants.Length; ++index) { var item = Constants[index]; #>
-                    var constant<#= index #> = new global::Unity.Mathematics.<#= item.Symbol.ToDisplayString() #>4x2(Constant<#= index #>, Constant<#= index #>, Constant<#= index #>, Constant<#= index #>, Constant<#= index #>, Constant<#= index #>, Constant<#= index #>, Constant<#= index #>);
+<# for (var index = 0; index < Others.Length; ++index) {
+    var item = Others[index];
+    if (item.IsReadOnly) { #>
+                    var other<#= index #> = new global::Unity.Mathematics.<#= item.Symbol.ToDisplayString() #>4(Other<#= index #>, Other<#= index #>, Other<#= index #>, Other<#= index #>);
+<# } else { #>
+                    var other<#= index #> = Other<#= index #>[0];
+<# } #>
 <# } #>
                     for (var outerIndex = 0; outerIndex < Outer0.Length; ++outerIndex)
                     {
@@ -113,7 +139,7 @@ namespace <#= TypeSymbol.ContainingNamespace.ToDisplayString() #>
     var item = method.OuterLoopParameters[index];
     var name = "outer" + item.Index + "_" + item.Name; #>
                         var <#= name #>0 = outer<#= item.Index #>.<#= item.Name #>;
-                        global::MyAttribute.RotateHelper.Rotate(<#= name #>0, out var <#= name #>1, out var <#= name #>2, out var <#= name #>3, out var <#= name #>4, out var <#= name #>5, out var <#= name #>6, out var <#= name #>7);
+                        global::MyAttribute.RotateHelper.Rotate(<#= name #>0, out var <#= name #>1, out var <#= name #>2, out var <#= name #>3);
 <# } #>
                         for (var innerIndex = 0; innerIndex < Inner0.Length; ++innerIndex)
                         {
@@ -127,8 +153,13 @@ namespace <#= TypeSymbol.ContainingNamespace.ToDisplayString() #>
                             ref var <#= name #> = ref inner<#= item.Index #>.<#= item.Name #>;
 <# } #>
 
-<# for (var counter = 0; counter < 8; ++counter) { #>
-                            <#= method.Symbol.Name #>(ref outer<#= method.OuterLoopParameters[0].Index #>_<#= method.OuterLoopParameters[0].Name #><#= counter #><# for (var index = 1; index < method.OuterLoopParameters.Length; ++index) { #>, ref outer<#= method.OuterLoopParameters[index].Index #>_<#= method.OuterLoopParameters[index].Name #><#= counter #><# } #><#for (var index = 0; index < method.InnerLoopParameters.Length; ++index) { #>, ref inner<#= method.InnerLoopParameters[index].Index #>_<#= method.InnerLoopParameters[index].Name #><# } for (var index = 0; index < method.ConstantParameters.Length; ++index) { #>, ref constant<#= method.ConstantParameters[index].Index #><# } #>);
+<# for (var counter = 0; counter < 4; ++counter) {
+    for (var cIndex0 = 0; cIndex0 < 2; ++cIndex0) {
+      for (var cIndex1 = 0; cIndex1 < 2; ++cIndex1) {
+        var parameter = method.OuterLoopParameters[0]; #>
+                            <#= method.Symbol.Name #>(ref outer<#= parameter.Index #>_<#= parameter.Name #><#= counter #>.c<#= cIndex0 #><# for (var index = 1; index < method.OuterLoopParameters.Length; ++index) { parameter = method.OuterLoopParameters[index]; #>, ref outer<#= parameter.Index #>_<#= parameter.Name #><#= counter #>.c<#= cIndex0 #><# } for (var index = 0; index < method.InnerLoopParameters.Length; ++index) { parameter = method.InnerLoopParameters[index]; #>, ref inner<#= parameter.Index #>_<#= parameter.Name #>.c<#= cIndex1 #><# } for (var index = 0; index < method.OtherParameters.Length; ++index) { parameter = method.OtherParameters[index]; #>, ref other<#= parameter.Index #><# } for (var index = 0; index < method.TableParameters.Length; ++index) { parameter = method.TableParameters[index]; #>, ref Table<#= parameter.Index #><# } #>);
+<# } #>
+<# } #>
 <# } #>
 <# for (var index = 0; index < Inners.Length; ++index) {
     var item = Inners[index];
@@ -138,9 +169,10 @@ namespace <#= TypeSymbol.ContainingNamespace.ToDisplayString() #>
                         }
 
 <# foreach (var item in method.Closers) {
+    if (item.FieldKind != CollisionFieldKind.Outer) continue;
     var name = "outer" + item.Index + "_" + item.Name; #>
-                        global::MyAttribute.RotateHelper.RotateM1(ref <#= name #>1, ref <#= name #>2, ref <#= name #>3, ref <#= name #>4, ref <#= name #>5, ref <#= name #>6, ref <#= name #>7);
-                        outer<#= item.Index #>.<#= item.Name #> = <#= item.Symbol.Name #>(<#= name #>0, <#= name #>1, <#= name #>2, <#= name #>3, <#= name #>4, <#= name #>5, <#= name #>6, <#= name #>7);
+                        global::MyAttribute.RotateHelper.RotateM1(ref <#= name #>1, ref <#= name #>2, ref <#= name #>3);
+                        outer<#= item.Index #>.<#= item.Name #> = <#= item.Symbol.Name #>(<#= name #>0, <#= name #>1, <#= name #>2, <#= name #>3);
 <# } #>
 <# for (var index = 0; index < Outers.Length; ++index) {
     var item = Outers[index];
@@ -149,6 +181,12 @@ namespace <#= TypeSymbol.ContainingNamespace.ToDisplayString() #>
 <# } #>
 <# } #>
                     }
+
+<# for (var index = 0; index < Others.Length; ++index) {
+    var item = Others[index];
+    if (item.IsReadOnly) { continue; } #>
+                    Other<#= index #>[0] = other<#= index #>;
+<# } #>
                 }
             }
         }
