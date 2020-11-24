@@ -18,11 +18,18 @@ namespace <#= TypeSymbol.ContainingNamespace.ToDisplayString() #>
             <# if (item.IsReadOnly) { #>[global::Unity.Collections.ReadOnly] <# } #>public global::Unity.Collections.NativeArray<<#= item.Symbol.ToDisplayString() #>.Eight> Inner<#= index #>;
 <# } #>
 
+<# for (var index = 0; index < Constants.Length; ++index) { var item = Constants[index]; #>
+            public <#= item.Symbol.ToDisplayString() #> Constant<#= index #>;
+<# } #>
+
             public void Execute()
             {
 <# if (Fma.HasValue) { var method = Fma.Value; #>
                 if (global::Unity.Burst.Intrinsics.X86.Fma.IsFmaSupported)
                 {
+<# for (var index = 0; index < Constants.Length; ++index) { var item = Constants[index]; #>
+                    var constant<#= index #> = new global::Unity.Burst.Intrinsics.v256(Constant<#= index #>, Constant<#= index #>, Constant<#= index #>, Constant<#= index #>, Constant<#= index #>, Constant<#= index #>, Constant<#= index #>, Constant<#= index #>);
+<# } #>
                     for (var outerIndex = 0; outerIndex < Outer0.Length; ++outerIndex)
                     {
 <# for (var index = 0; index < Outers.Length; ++index) {
@@ -41,7 +48,6 @@ namespace <#= TypeSymbol.ContainingNamespace.ToDisplayString() #>
                         var <#= name #>6 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(<#= name #>4, 0b01_00_11_10);
                         var <#= name #>7 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(<#= name #>4, 0b10_01_00_11);
 <# } #>
-
                         for (var innerIndex = 0; innerIndex < Inner0.Length; ++innerIndex)
                         {
 <# for (var index = 0; index < Inners.Length; ++index) {
@@ -54,9 +60,8 @@ namespace <#= TypeSymbol.ContainingNamespace.ToDisplayString() #>
                             var <#= name #> = *(global::Unity.Burst.Intrinsics.v256*)&(inner<#= item.Index #>.<#= item.Name #>);
 <# } #>
 
-<# var parameters = method.OuterLoopParameters.Concat(method.InnerLoopParameters).OrderBy(x => x.Symbol.Ordinal);
-for (var counter = 0; counter < 8; ++counter) { #>
-                           <#= method.Symbol.Name #>(<# bool first = true; foreach (var parameter in parameters) { if (!first) { #>, <# } first = false; #>ref <#= parameter.IsOuter ? "outer" : "inner" #><#= parameter.Index #>_<#= parameter.Name #><#= parameter.IsOuter ? counter : "" #><# } #>);
+<# for (var counter = 0; counter < 8; ++counter) { #>
+                            <#= method.Symbol.Name #>(ref outer<#= method.OuterLoopParameters[0].Index #>_<#= method.OuterLoopParameters[0].Name #><#= counter #><# for (var index = 1; index < method.OuterLoopParameters.Length; ++index) { #>, ref outer<#= method.OuterLoopParameters[index].Index #>_<#= method.OuterLoopParameters[index].Name #><#= counter #><# } #><#for (var index = 0; index < method.InnerLoopParameters.Length; ++index) { #>, ref inner<#= method.InnerLoopParameters[index].Index #>_<#= method.InnerLoopParameters[index].Name #><# } for (var index = 0; index < method.ConstantParameters.Length; ++index) { #>, ref constant<#= method.ConstantParameters[index].Index #><# } #>);
 <# } #>
 <# for (var index = 0; index < method.InnerLoopParameters.Length; ++index) {
     var item = method.InnerLoopParameters[index];
@@ -91,9 +96,13 @@ for (var counter = 0; counter < 8; ++counter) { #>
                     
                     return;
                 }
+
 <# } #>
 <# { var method = Ordinal; #>
                 {
+<# for (var index = 0; index < Constants.Length; ++index) { var item = Constants[index]; #>
+                    var constant<#= index #> = new global::Unity.Mathematics.<#= item.Symbol.ToDisplayString() #>4x2(Constant<#= index #>, Constant<#= index #>, Constant<#= index #>, Constant<#= index #>, Constant<#= index #>, Constant<#= index #>, Constant<#= index #>, Constant<#= index #>);
+<# } #>
                     for (var outerIndex = 0; outerIndex < Outer0.Length; ++outerIndex)
                     {
 <# for (var index = 0; index < Outers.Length; ++index) {
@@ -106,7 +115,6 @@ for (var counter = 0; counter < 8; ++counter) { #>
                         var <#= name #>0 = outer<#= item.Index #>.<#= item.Name #>;
                         global::MyAttribute.RotateHelper.Rotate(<#= name #>0, out var <#= name #>1, out var <#= name #>2, out var <#= name #>3, out var <#= name #>4, out var <#= name #>5, out var <#= name #>6, out var <#= name #>7);
 <# } #>
-
                         for (var innerIndex = 0; innerIndex < Inner0.Length; ++innerIndex)
                         {
 <# for (var index = 0; index < Inners.Length; ++index) {
@@ -119,9 +127,8 @@ for (var counter = 0; counter < 8; ++counter) { #>
                             ref var <#= name #> = ref inner<#= item.Index #>.<#= item.Name #>;
 <# } #>
 
-<# var parameters = method.OuterLoopParameters.Concat(method.InnerLoopParameters).OrderBy(x => x.Symbol.Ordinal);
-    for (var counter = 0; counter < 8; ++counter) { #>
-                            <#= method.Symbol.Name #>(<# bool first = true; foreach (var parameter in parameters) { if (!first) { #>, <# } first = false; #>ref <#= parameter.IsOuter ? "outer" : "inner" #><#= parameter.Index #>_<#= parameter.Name #><#= parameter.IsOuter ? counter : "" #><# } #>);
+<# for (var counter = 0; counter < 8; ++counter) { #>
+                            <#= method.Symbol.Name #>(ref outer<#= method.OuterLoopParameters[0].Index #>_<#= method.OuterLoopParameters[0].Name #><#= counter #><# for (var index = 1; index < method.OuterLoopParameters.Length; ++index) { #>, ref outer<#= method.OuterLoopParameters[index].Index #>_<#= method.OuterLoopParameters[index].Name #><#= counter #><# } #><#for (var index = 0; index < method.InnerLoopParameters.Length; ++index) { #>, ref inner<#= method.InnerLoopParameters[index].Index #>_<#= method.InnerLoopParameters[index].Name #><# } for (var index = 0; index < method.ConstantParameters.Length; ++index) { #>, ref constant<#= method.ConstantParameters[index].Index #><# } #>);
 <# } #>
 <# for (var index = 0; index < Inners.Length; ++index) {
     var item = Inners[index];

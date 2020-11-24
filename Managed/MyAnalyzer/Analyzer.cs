@@ -30,19 +30,19 @@ namespace MyAttribute
         {
             var c0 = value.c0;
             var c1 = value.c1;
-            value4 = new(c1, c0);
+            value4 = new float4x2(c1, c0);
             c0 = c0.wxyz;
             c1 = c1.wxyz;
-            value1 = new(c0, c1);
-            value5 = new(c1, c0);
+            value1 = new float4x2(c0, c1);
+            value5 = new float4x2(c1, c0);
             c0 = c0.wxyz;
             c1 = c1.wxyz;
-            value2 = new(c0, c1);
-            value6 = new(c1, c0);
+            value2 = new float4x2(c0, c1);
+            value6 = new float4x2(c1, c0);
             c0 = c0.wxyz;
             c1 = c1.wxyz;
-            value3 = new(c0, c1);
-            value7 = new(c1, c0);
+            value3 = new float4x2(c0, c1);
+            value7 = new float4x2(c1, c0);
         }
 
         public static void RotateM1(ref float4x2 value1, ref float4x2 value2, ref float4x2 value3, ref float4x2 value4, ref float4x2 value5, ref float4x2 value6, ref float4x2 value7)
@@ -53,29 +53,29 @@ namespace MyAttribute
             value2.c1 = value2.c1.zwxy;
             value3.c0 = value3.c0.wxyz;
             value3.c1 = value3.c1.wxyz;
-            value4 = new(value4.c1, value4.c0);
-            value5 = new(value5.c1.yzwx, value5.c0.yzwx);
-            value6 = new(value6.c1.zwxy, value6.c0.zwxy);
-            value7 = new(value7.c1.wxyz, value7.c0.wxyz);
+            value4 = new float4x2(value4.c1, value4.c0);
+            value5 = new float4x2(value5.c1.yzwx, value5.c0.yzwx);
+            value6 = new float4x2(value6.c1.zwxy, value6.c0.zwxy);
+            value7 = new float4x2(value7.c1.wxyz, value7.c0.wxyz);
         }
 
         public static void Rotate(int4x2 value, out int4x2 value1, out int4x2 value2, out int4x2 value3, out int4x2 value4, out int4x2 value5, out int4x2 value6, out int4x2 value7)
         {
             var c0 = value.c0;
             var c1 = value.c1;
-            value4 = new(c1, c0);
+            value4 = new int4x2(c1, c0);
             c0 = c0.wxyz;
             c1 = c1.wxyz;
-            value1 = new(c0, c1);
-            value5 = new(c1, c0);
+            value1 = new int4x2(c0, c1);
+            value5 = new int4x2(c1, c0);
             c0 = c0.wxyz;
             c1 = c1.wxyz;
-            value2 = new(c0, c1);
-            value6 = new(c1, c0);
+            value2 = new int4x2(c0, c1);
+            value6 = new int4x2(c1, c0);
             c0 = c0.wxyz;
             c1 = c1.wxyz;
-            value3 = new(c0, c1);
-            value7 = new(c1, c0);
+            value3 = new int4x2(c0, c1);
+            value7 = new int4x2(c1, c0);
         }
 
         public static void RotateM1(ref int4x2 value1, ref int4x2 value2, ref int4x2 value3, ref int4x2 value4, ref int4x2 value5, ref int4x2 value6, ref int4x2 value7)
@@ -86,16 +86,16 @@ namespace MyAttribute
             value2.c1 = value2.c1.zwxy;
             value3.c0 = value3.c0.wxyz;
             value3.c1 = value3.c1.wxyz;
-            value4 = new(value4.c1, value4.c0);
-            value5 = new(value5.c1.yzwx, value5.c0.yzwx);
-            value6 = new(value6.c1.zwxy, value6.c0.zwxy);
-            value7 = new(value7.c1.wxyz, value7.c0.wxyz);
+            value4 = new int4x2(value4.c1, value4.c0);
+            value5 = new int4x2(value5.c1.yzwx, value5.c0.yzwx);
+            value6 = new int4x2(value6.c1.zwxy, value6.c0.zwxy);
+            value7 = new int4x2(value7.c1.wxyz, value7.c0.wxyz);
         }
     }
 
     public enum CollisionIntrinsicsKind
     {
-        None,
+        Ordinal,
         Fma,
     }
 
@@ -106,13 +106,15 @@ namespace MyAttribute
         public readonly bool[] OuterLoopIsReadOnlyArray;
         public readonly Type[] InnerLoopTypeArray;
         public readonly bool[] InnerLoopIsReadOnlyArray;
+        public readonly Type[] ConstantTypeArray;
 
-        public CollisionTypeAttribute(Type[] outerLoopTypeArray, bool[] outerLoopIsReadOnlyArray, Type[] innerLoopTypeArray, bool[] innerLoopIsReadOnlyArray)
+        public CollisionTypeAttribute(Type[] outerLoopTypeArray, bool[] outerLoopIsReadOnlyArray, Type[] innerLoopTypeArray, bool[] innerLoopIsReadOnlyArray, Type[] constantTypeArray)
         {
             OuterLoopTypeArray = outerLoopTypeArray;
             OuterLoopIsReadOnlyArray = outerLoopIsReadOnlyArray;
             InnerLoopTypeArray = innerLoopTypeArray;
             InnerLoopIsReadOnlyArray = innerLoopIsReadOnlyArray;
+            ConstantTypeArray = constantTypeArray;
         }
     }
 
@@ -120,10 +122,14 @@ namespace MyAttribute
     public class CollisionMethodAttribute : Attribute
     {
         public readonly CollisionIntrinsicsKind Kind;
+        public readonly int OuterCount;
+        public readonly int InnerCount;
 
-        public CollisionMethodAttribute(CollisionIntrinsicsKind kind)
+        public CollisionMethodAttribute(CollisionIntrinsicsKind kind, int outerCount, int innerCount)
         {
             Kind = kind;
+            OuterCount = outerCount;
+            InnerCount = innerCount;
         }
     }
 
@@ -147,13 +153,11 @@ namespace MyAttribute
     [AttributeUsage(AttributeTargets.Parameter)]
     public class CollisionParameterAttribute : Attribute
     {
-        public readonly bool IsOuter;
         public readonly int FieldIndex;
         public readonly string FieldName;
 
-        public CollisionParameterAttribute(bool isOuter, int fieldIndex, string fieldName)
+        public CollisionParameterAttribute(int fieldIndex, string fieldName = """")
         {
-            IsOuter = isOuter;
             FieldIndex = fieldIndex;
             FieldName = fieldName;
         }
