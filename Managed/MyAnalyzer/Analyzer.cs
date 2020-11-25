@@ -24,51 +24,52 @@ using Unity.Mathematics;
 
 namespace MyAttribute
 {
-    public static class RotateHelper
-    {
-        public static void Rotate(float4x2 value, out float4x2 value1, out float4x2 value2, out float4x2 value3)
-        {
-            var c0 = value.c0;
-            var c1 = value.c1;
-            value1 = new float4x2(c0.wxyz, c1.wxyz);
-            value2 = new float4x2(c0.zwxy, c1.zwxy);
-            value3 = new float4x2(c0.yzwx, c1.yzwx);
-        }
-
-        public static void RotateM1(ref float4x2 value1, ref float4x2 value2, ref float4x2 value3)
-        {
-            value1.c0 = value1.c0.yzwx;
-            value1.c1 = value1.c1.yzwx;
-            value2.c0 = value2.c0.zwxy;
-            value2.c1 = value2.c1.zwxy;
-            value3.c0 = value3.c0.wxyz;
-            value3.c1 = value3.c1.wxyz;
-        }
-
-        public static void Rotate(int4x2 value, out int4x2 value1, out int4x2 value2, out int4x2 value3)
-        {
-            var c0 = value.c0;
-            var c1 = value.c1;
-            value1 = new int4x2(c0.wxyz, c1.wxyz);
-            value2 = new int4x2(c0.zwxy, c1.zwxy);
-            value3 = new int4x2(c0.yzwx, c1.yzwx);
-        }
-
-        public static void RotateM1(ref int4x2 value1, ref int4x2 value2, ref int4x2 value3)
-        {
-            value1.c0 = value1.c0.yzwx;
-            value1.c1 = value1.c1.yzwx;
-            value2.c0 = value2.c0.zwxy;
-            value2.c1 = value2.c1.zwxy;
-            value3.c0 = value3.c0.wxyz;
-            value3.c1 = value3.c1.wxyz;
-        }
-    }
-
-    public enum CollisionIntrinsicsKind
+    public enum IntrinsicsKind
     {
         Ordinal,
         Fma,
+    }
+
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
+    public class SingleLoopTypeAttribute : Attribute
+    {
+        public readonly Type[] TypeArray;
+        public readonly bool[] IsReadOnlyArray;
+        public readonly Type[] OtherTypeArray;
+        public readonly bool[] OtherIsReadOnlyArray;
+        public readonly Type[] TableTypeArray;
+        public readonly bool[] TableIsReadOnlyArray;
+
+        public SingleLoopTypeAttribute(Type[] typeArray, bool[] isReadOnlyArray) : this(typeArray, isReadOnlyArray, Array.Empty<Type>(), Array.Empty<bool>(), Array.Empty<Type>(), Array.Empty<bool>()) { }
+
+        public SingleLoopTypeAttribute(Type[] typeArray, bool[] isReadOnlyArray, Type[] otherTypeArray, bool[] otherIsReadOnlyArray) : this(typeArray, isReadOnlyArray, otherTypeArray, otherIsReadOnlyArray, Array.Empty<Type>(), Array.Empty<bool>()) { }
+
+        public SingleLoopTypeAttribute(Type[] typeArray, bool[] isReadOnlyArray, Type[] otherTypeArray, bool[] otherIsReadOnlyArray, Type[] tableTypeArray, bool[] tableIsReadOnlyArray)
+        {
+            TypeArray = typeArray;
+            IsReadOnlyArray = isReadOnlyArray;
+            OtherTypeArray = otherTypeArray;
+            OtherIsReadOnlyArray = otherIsReadOnlyArray;
+            TableTypeArray = tableTypeArray;
+            TableIsReadOnlyArray = tableIsReadOnlyArray;
+        }
+    }
+
+    [AttributeUsage(AttributeTargets.Method)]
+    public class SingleLoopMethodAttribute : Attribute
+    {
+        public readonly IntrinsicsKind Intrinsics;
+        public readonly int OuterCount;
+        public readonly int OtherCount;
+
+        public SingleLoopMethodAttribute(IntrinsicsKind intrinsics, int outerCount, int otherCount)
+        {
+            Intrinsics = intrinsics;
+            OuterCount = outerCount;
+            OtherCount = otherCount;
+        }
+
+        public SingleLoopMethodAttribute(IntrinsicsKind kind, int outerCount) : this(kind, outerCount, 0) { }
     }
 
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
@@ -103,22 +104,22 @@ namespace MyAttribute
     [AttributeUsage(AttributeTargets.Method)]
     public class CollisionMethodAttribute : Attribute
     {
-        public readonly CollisionIntrinsicsKind Kind;
+        public readonly IntrinsicsKind Intrinsics;
         public readonly int OuterCount;
         public readonly int InnerCount;
         public readonly int OtherCount;
 
-        public CollisionMethodAttribute(CollisionIntrinsicsKind kind, int outerCount, int innerCount, int otherCount)
+        public CollisionMethodAttribute(IntrinsicsKind intrinsics, int outerCount, int innerCount, int otherCount)
         {
-            Kind = kind;
+            Intrinsics = intrinsics;
             OuterCount = outerCount;
             InnerCount = innerCount;
             OtherCount = otherCount;
         }
 
-        public CollisionMethodAttribute(CollisionIntrinsicsKind kind, int outerCount, int innerCount) : this(kind, outerCount, innerCount, 0) { }
+        public CollisionMethodAttribute(IntrinsicsKind kind, int outerCount, int innerCount) : this(kind, outerCount, innerCount, 0) { }
 
-        public CollisionMethodAttribute(CollisionIntrinsicsKind kind, int outerCount) : this(kind, outerCount, 0, 0) { }
+        public CollisionMethodAttribute(IntrinsicsKind kind, int outerCount) : this(kind, outerCount, 0, 0) { }
     }
 
     public enum CollisionFieldKind
@@ -132,14 +133,14 @@ namespace MyAttribute
     [AttributeUsage(AttributeTargets.Method)]
     public class CollisionCloseMethodAttribute : Attribute
     {
-        public readonly CollisionIntrinsicsKind Kind;
+        public readonly IntrinsicsKind Intrinsics;
         public readonly CollisionFieldKind FieldKind;
         public readonly int FieldIndex;
         public readonly string FieldName;
 
-        public CollisionCloseMethodAttribute(CollisionIntrinsicsKind kind, CollisionFieldKind fieldKind, int fieldIndex, string fieldName)
+        public CollisionCloseMethodAttribute(IntrinsicsKind intrinsics, CollisionFieldKind fieldKind, int fieldIndex, string fieldName)
         {
-            Kind = kind;
+            Intrinsics = intrinsics;
             FieldKind = fieldKind;
             FieldIndex = fieldIndex;
             FieldName = fieldName;
@@ -147,12 +148,12 @@ namespace MyAttribute
     }
 
     [AttributeUsage(AttributeTargets.Parameter)]
-    public class CollisionParameterAttribute : Attribute
+    public class LoopParameterAttribute : Attribute
     {
         public readonly int FieldIndex;
         public readonly string FieldName;
 
-        public CollisionParameterAttribute(int fieldIndex, string fieldName = """")
+        public LoopParameterAttribute(int fieldIndex, string fieldName = """")
         {
             FieldIndex = fieldIndex;
             FieldName = fieldName;
@@ -231,7 +232,7 @@ namespace MyAttribute
             var collisionType = compilation.GetTypeByMetadataName("MyAttribute.CollisionTypeAttribute") ?? throw new System.NullReferenceException();
             var collisionMethod = compilation.GetTypeByMetadataName("MyAttribute.CollisionMethodAttribute") ?? throw new System.NullReferenceException();
             var collisionCloseMethod = compilation.GetTypeByMetadataName("MyAttribute.CollisionCloseMethodAttribute") ?? throw new System.NullReferenceException();
-            var collisionParameter = compilation.GetTypeByMetadataName("MyAttribute.CollisionParameterAttribute") ?? throw new System.NullReferenceException();
+            var loopParameter = compilation.GetTypeByMetadataName("MyAttribute.LoopParameterAttribute") ?? throw new System.NullReferenceException();
 
             var candidateTypesCount = receiver.CandidateTypes.Count;
             eightBaseTypes = new(candidateTypesCount);
@@ -271,7 +272,7 @@ namespace MyAttribute
                 }
                 else
                 {
-                    var template = CollisionTemplate.TryCreate(collisionType, collisionMethod, collisionCloseMethod, collisionParameter, type);
+                    var template = CollisionTemplate.TryCreate(collisionType, collisionMethod, collisionCloseMethod, loopParameter, type);
                     if (template is null)
                     {
                         continue;

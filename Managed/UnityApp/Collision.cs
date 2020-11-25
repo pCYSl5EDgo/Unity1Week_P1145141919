@@ -24,19 +24,19 @@ namespace Unity1Week.Hit
     )]
     public static partial class BulletEnemyHit
     {
-        [CollisionMethod(CollisionIntrinsicsKind.Ordinal, 3, 3, 3), SkipLocalsInit]
+        [CollisionMethod(IntrinsicsKind.Ordinal, 3, 3, 3), SkipLocalsInit]
         public static void Exe(
-            [CollisionParameter(0, nameof(Position2D.X))] ref float4 bulletX,
-            [CollisionParameter(0, nameof(Position2D.Y))] ref float4 bulletY,
-            [CollisionParameter(1, nameof(AliveState.Value))] ref int4 bulletAliveState,
-            [CollisionParameter(0, nameof(Position2D.X))] ref float4 enemyX,
-            [CollisionParameter(0, nameof(Position2D.Y))] ref float4 enemyY,
-            [CollisionParameter(1, nameof(AliveState.Value))] ref int4 enemyAliveState,
-            [CollisionParameter(0)] ref float4 collisionRadiusSquare,
-            [CollisionParameter(1)] ref float currentTime,
-            [CollisionParameter(2)] ref int fireCount,
-            [CollisionParameter(0)] ref NativeArray<Position2D> firePositionArray,
-            [CollisionParameter(1)] ref NativeArray<FireStartTime> fireStartTimeArray
+            [LoopParameter(0, nameof(Position2D.X))] ref float4 bulletX,
+            [LoopParameter(0, nameof(Position2D.Y))] ref float4 bulletY,
+            [LoopParameter(1, nameof(AliveState.Value))] ref int4 bulletAliveState,
+            [LoopParameter(0, nameof(Position2D.X))] ref float4 enemyX,
+            [LoopParameter(0, nameof(Position2D.Y))] ref float4 enemyY,
+            [LoopParameter(1, nameof(AliveState.Value))] ref int4 enemyAliveState,
+            [LoopParameter(0)] ref float4 collisionRadiusSquare,
+            [LoopParameter(1)] ref float currentTime,
+            [LoopParameter(2)] ref int fireCount,
+            [LoopParameter(0)] ref NativeArray<Position2D> firePositionArray,
+            [LoopParameter(1)] ref NativeArray<FireStartTime> fireStartTimeArray
         )
         {
             var diffX = bulletX - enemyX;
@@ -57,19 +57,19 @@ namespace Unity1Week.Hit
             }
         }
 
-        [CollisionMethod(CollisionIntrinsicsKind.Fma, 3, 3, 3), SkipLocalsInit]
+        [CollisionMethod(IntrinsicsKind.Fma, 3, 3, 3), SkipLocalsInit]
         public static void Exe2(
-            [CollisionParameter(0, nameof(Position2D.X))] ref v256 bulletX,
-            [CollisionParameter(0, nameof(Position2D.Y))] ref v256 bulletY,
-            [CollisionParameter(1, nameof(AliveState.Value))] ref v256 bulletAliveState,
-            [CollisionParameter(0, nameof(Position2D.X))] ref v256 enemyX,
-            [CollisionParameter(0, nameof(Position2D.Y))] ref v256 enemyY,
-            [CollisionParameter(1, nameof(AliveState.Value))] ref v256 enemyAliveState,
-            [CollisionParameter(0)] ref v256 collisionRadiusSquare,
-            [CollisionParameter(1)] ref float currentTime,
-            [CollisionParameter(2)] ref int fireCount,
-            [CollisionParameter(0)] ref NativeArray<Position2D> firePositionArray,
-            [CollisionParameter(1)] ref NativeArray<FireStartTime> fireStartTimeArray
+            [LoopParameter(0, nameof(Position2D.X))] ref v256 bulletX,
+            [LoopParameter(0, nameof(Position2D.Y))] ref v256 bulletY,
+            [LoopParameter(1, nameof(AliveState.Value))] ref v256 bulletAliveState,
+            [LoopParameter(0, nameof(Position2D.X))] ref v256 enemyX,
+            [LoopParameter(0, nameof(Position2D.Y))] ref v256 enemyY,
+            [LoopParameter(1, nameof(AliveState.Value))] ref v256 enemyAliveState,
+            [LoopParameter(0)] ref v256 collisionRadiusSquare,
+            [LoopParameter(1)] ref float currentTime,
+            [LoopParameter(2)] ref int fireCount,
+            [LoopParameter(0)] ref NativeArray<Position2D> firePositionArray,
+            [LoopParameter(1)] ref NativeArray<FireStartTime> fireStartTimeArray
         )
         {
             if (!X86.Fma.IsFmaSupported) return;
@@ -176,15 +176,15 @@ namespace Unity1Week.Hit
     )]
     public static partial class CollisionHolder
     {
-        [CollisionMethod(CollisionIntrinsicsKind.Fma, 3, 2)]
+        [CollisionMethod(IntrinsicsKind.Fma, 3, 2)]
         private static void Exe2(
-            [CollisionParameter(0, nameof(Position2D.X))] ref v256 enemyX,
-            [CollisionParameter(0, nameof(Position2D.Y))] ref v256 enemyY,
-            [CollisionParameter(1, nameof(AliveState.Value))] ref v256 enemyAliveState,
-            [CollisionParameter(0, nameof(Position2D.X))] ref v256 playerX,
-            [CollisionParameter(0, nameof(Position2D.Y))] ref v256 playerY,
-            [CollisionParameter(0)] ref v256 radius,
-            [CollisionParameter(1)] ref int count
+            [LoopParameter(0, nameof(Position2D.X))] ref v256 enemyX,
+            [LoopParameter(0, nameof(Position2D.Y))] ref v256 enemyY,
+            [LoopParameter(1, nameof(AliveState.Value))] ref v256 enemyAliveState,
+            [LoopParameter(0, nameof(Position2D.X))] ref v256 playerX,
+            [LoopParameter(0, nameof(Position2D.Y))] ref v256 playerY,
+            [LoopParameter(0)] ref v256 radius,
+            [LoopParameter(1)] ref int count
         )
         {
             if (!X86.Fma.IsFmaSupported)
@@ -202,15 +202,15 @@ namespace Unity1Week.Hit
             enemyAliveState = newState;
         }
 
-        [CollisionMethod(CollisionIntrinsicsKind.Ordinal, 3, 2)]
+        [CollisionMethod(IntrinsicsKind.Ordinal, 3, 2)]
         private static void Exe(
-            [CollisionParameter(0, nameof(Position2D.X))] ref float4 enemyX,
-            [CollisionParameter(0, nameof(Position2D.Y))] ref float4 enemyY,
-            [CollisionParameter(1, nameof(AliveState.Value))] ref int4 enemyAliveState,
-            [CollisionParameter(0, nameof(Position2D.X))] ref float4 playerX,
-            [CollisionParameter(0, nameof(Position2D.Y))] ref float4 playerY,
-            [CollisionParameter(0)] ref float4 radius,
-            [CollisionParameter(1)] ref int count
+            [LoopParameter(0, nameof(Position2D.X))] ref float4 enemyX,
+            [LoopParameter(0, nameof(Position2D.Y))] ref float4 enemyY,
+            [LoopParameter(1, nameof(AliveState.Value))] ref int4 enemyAliveState,
+            [LoopParameter(0, nameof(Position2D.X))] ref float4 playerX,
+            [LoopParameter(0, nameof(Position2D.Y))] ref float4 playerY,
+            [LoopParameter(0)] ref float4 radius,
+            [LoopParameter(1)] ref int count
         )
         {
             var x0 = enemyX - playerX;
@@ -227,16 +227,13 @@ namespace Unity1Week.Hit
             }
         }
 
-        [CollisionCloseMethod(CollisionIntrinsicsKind.Ordinal, CollisionFieldKind.Outer, 1, nameof(AliveState.Value))]
-        private static int4x2 Close(int4x2 a0, int4x2 a1, int4x2 a2, int4x2 a3)
+        [CollisionCloseMethod(IntrinsicsKind.Ordinal, CollisionFieldKind.Outer, 1, nameof(AliveState.Value))]
+        private static int4 Close(int4 a0, int4 a1, int4 a2, int4 a3)
         {
-            return new int4x2(
-                a0.c0 & a1.c0 & a2.c0 & a3.c0,
-                a0.c1 & a1.c1 & a2.c1 & a3.c1
-            );
+            return a0 & a1 & a2 & a3;
         }
 
-        [CollisionCloseMethod(CollisionIntrinsicsKind.Fma, CollisionFieldKind.Outer, 1, nameof(AliveState.Value))]
+        [CollisionCloseMethod(IntrinsicsKind.Fma, CollisionFieldKind.Outer, 1, nameof(AliveState.Value))]
         private static v256 Close2(v256 a0, v256 a1, v256 a2, v256 a3, v256 a4, v256 a5, v256 a6, v256 a7)
         {
             if (!X86.Fma.IsFmaSupported)

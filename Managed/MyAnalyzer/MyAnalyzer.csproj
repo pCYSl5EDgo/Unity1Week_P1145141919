@@ -24,6 +24,10 @@
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>EightTemplate.cs</LastGenOutput>
     </None>
+    <None Update="Templates\SingleLoopTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>SingleLoopTemplate.cs</LastGenOutput>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
@@ -45,6 +49,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>EightTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Templates\SingleLoopTemplate.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SingleLoopTemplate.tt</DependentUpon>
     </Compile>
   </ItemGroup>
 
