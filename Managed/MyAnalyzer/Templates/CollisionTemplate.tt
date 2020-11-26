@@ -44,44 +44,115 @@ namespace <#= TypeSymbol.ContainingNamespace.ToDisplayString() #>
                     var other<#= index #> = Other<#= index #>[0];
 <# } #>
 <# } #>
-                    for (var outerIndex = 0; outerIndex < Outer0.Length; ++outerIndex)
-                    {
 <# for (var index = 0; index < Outers.Length; ++index) {
     var item = Outers[index]; #>
-                        var outer<#= index #> = Outer<#= index #>[outerIndex];
+                    var outerPointer<#= index #> = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(Outer<#= index #>);
 <# } #>
-<# for (var index = 0; index < method.Outers.Length; ++index) {
-    var item = method.Outers[index];
-    var name = "outer" + item.Index + "_" + item.Name; #>
-                        ref var <#= name #>0 = ref *(global::Unity.Burst.Intrinsics.v256*)&(outer<#= item.Index #>.<#= item.Name #>);
-                        var <#= name #>1 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(<#= name #>0, 0b00_11_10_01);
-                        var <#= name #>2 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(<#= name #>0, 0b01_00_11_10);
-                        var <#= name #>3 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(<#= name #>0, 0b10_01_00_11);
-                        var <#= name #>4 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute2f128_ps(<#= name #>0, <#= name #>0, 0b0000_0001);
-                        var <#= name #>5 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(<#= name #>4, 0b00_11_10_01);
-                        var <#= name #>6 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(<#= name #>4, 0b01_00_11_10);
-                        var <#= name #>7 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(<#= name #>4, 0b10_01_00_11);
-<# } #>
-                        for (var innerIndex = 0; innerIndex < Inner0.Length; ++innerIndex)
-                        {
 <# for (var index = 0; index < Inners.Length; ++index) {
     var item = Inners[index]; #>
-                            var inner<#= index #> = Inner<#= index #>[innerIndex];
+                    var innerOriginalPointer<#= index #> = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(Inner<#= index #>);
 <# } #>
+
+                    for (
+                        var outerIndex = 0;
+                        outerIndex < Outer0.Length;
+                        ++outerIndex<# for (var index = 0; index < Outers.Length; ++index) { #>,
+                        outerPointer<#= index #> += sizeof(<#= Outers[index].Symbol.ToDisplayString() #>.Eight)<# } #>
+
+                    )
+                    {
+<# for (var index = 0; index < method.Outers.Length; ++index) {
+    var item = method.Outers[index];
+    var fieldIndex = item.GetIndex(Outers[item.Index].Symbol);
+    var name = "outer" + item.Index + "_" + item.Name; #>
+                        var <#= name #> = outerPointer<#= item.Index #> + (<#= fieldIndex #> << 5);
+<# } #>
+
+<# for (var index = 0; index < method.Outers.Length; ++index) {
+    var item = method.Outers[index];
+    var fieldIndex = item.GetIndex(Outers[item.Index].Symbol);
+    var name = "outer" + item.Index + "_" + item.Name; #>
+                        var <#= name #>0 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_load_ps(<#= name #>);
+<# } #>
+
+<# for (var index = 0; index < method.Outers.Length; ++index) {
+    var item = method.Outers[index];
+    var fieldIndex = item.GetIndex(Outers[item.Index].Symbol);
+    var name = "outer" + item.Index + "_" + item.Name; #>
+                        var <#= name #>1 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(<#= name #>0, 0b00_11_10_01);
+<# } #>
+
+<# for (var index = 0; index < method.Outers.Length; ++index) {
+    var item = method.Outers[index];
+    var fieldIndex = item.GetIndex(Outers[item.Index].Symbol);
+    var name = "outer" + item.Index + "_" + item.Name; #>
+                        var <#= name #>2 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(<#= name #>0, 0b01_00_11_10);
+<# } #>
+
+<# for (var index = 0; index < method.Outers.Length; ++index) {
+    var item = method.Outers[index];
+    var fieldIndex = item.GetIndex(Outers[item.Index].Symbol);
+    var name = "outer" + item.Index + "_" + item.Name; #>
+                        var <#= name #>3 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(<#= name #>0, 0b10_01_00_11);
+<# } #>
+
+<# for (var index = 0; index < method.Outers.Length; ++index) {
+    var item = method.Outers[index];
+    var fieldIndex = item.GetIndex(Outers[item.Index].Symbol);
+    var name = "outer" + item.Index + "_" + item.Name; #>
+                        var <#= name #>4 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute2f128_ps(<#= name #>0, <#= name #>0, 0b0000_0001);
+<# } #>
+
+<# for (var index = 0; index < method.Outers.Length; ++index) {
+    var item = method.Outers[index];
+    var fieldIndex = item.GetIndex(Outers[item.Index].Symbol);
+    var name = "outer" + item.Index + "_" + item.Name; #>
+                        var <#= name #>5 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(<#= name #>4, 0b00_11_10_01);
+<# } #>
+
+<# for (var index = 0; index < method.Outers.Length; ++index) {
+    var item = method.Outers[index];
+    var fieldIndex = item.GetIndex(Outers[item.Index].Symbol);
+    var name = "outer" + item.Index + "_" + item.Name; #>
+                        var <#= name #>6 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(<#= name #>4, 0b01_00_11_10);
+<# } #>
+
+<# for (var index = 0; index < method.Outers.Length; ++index) {
+    var item = method.Outers[index];
+    var fieldIndex = item.GetIndex(Outers[item.Index].Symbol);
+    var name = "outer" + item.Index + "_" + item.Name; #>
+                        var <#= name #>7 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(<#= name #>4, 0b10_01_00_11);
+<# } #>
+
+<# for (var index = 0; index < Inners.Length; ++index) { #>
+                        var innerPointer<#= index #> = innerOriginalPointer<#= index #>;
+<# } #>
+                        for (
+                            var innerIndex = 0;
+                            innerIndex < Inner0.Length;
+                            ++innerIndex<# for (var index = 0; index < Inners.Length; ++index) { #>,
+                            innerPointer<#= index #> += sizeof(<#= Inners[index].Symbol.ToDisplayString() #>.Eight)<# } #>
+
+                        )
+                        {
 <# for (var index = 0; index < method.Inners.Length; ++index) {
     var item = method.Inners[index];
+    var fieldIndex = item.GetIndex(Inners[item.Index].Symbol);
     var name = "inner" + item.Index + "_" + item.Name; #>
-                            ref var <#= name #> = ref *(global::Unity.Burst.Intrinsics.v256*)&(inner<#= item.Index #>.<#= item.Name #>);
+                            var <#= name #> = global::Unity.Burst.Intrinsics.X86.Avx.mm256_load_ps(innerPointer<#= item.Index #> + (<#= fieldIndex #> << 5));
 <# } #>
 
 <# for (var counter = 0; counter < 8; ++counter) {
     var parameter = method.Outers[0]; #>
                             <#= method.Symbol.Name #>(ref outer<#= parameter.Index #>_<#= parameter.Name #><#= counter #><# for (var index = 1; index < method.Outers.Length; ++index) { parameter = method.Outers[index]; #>, ref outer<#= parameter.Index #>_<#= parameter.Name #><#= counter #><# } for (var index = 0; index < method.Inners.Length; ++index) { parameter = method.Inners[index]; #>, ref inner<#= parameter.Index #>_<#= parameter.Name #><# } for (var index = 0; index < method.Others.Length; ++index) { parameter = method.Others[index]; #>, ref other<#= parameter.Index #><# } for (var index = 0; index < method.Tables.Length; ++index) { parameter = method.Tables[index]; #>, ref Table<#= parameter.Index #><# } #>);
 <# } #>
-<# for (var index = 0; index < Inners.Length; ++index) {
-    var item = Inners[index];
-    if (item.IsReadOnly) { continue; } #>
-                            Inner<#= index #>[innerIndex] = inner<#= index #>;
+<# for (var index = 0; index < method.Inners.Length; ++index) {
+    var item = method.Inners[index];
+    var typeItem = Inners[item.Index];
+    var fieldIndex = item.GetIndex(typeItem.Symbol);
+    if (typeItem.IsReadOnly) continue;
+    var name = "inner" + item.Index + "_" + item.Name; #>
+                            global::Unity.Burst.Intrinsics.X86.Avx.mm256_store_ps(innerPointer<#= item.Index #> + (<#= fieldIndex #> << 5), <#= name #>);
 <# } #>
                         }
 
@@ -95,12 +166,7 @@ namespace <#= TypeSymbol.ContainingNamespace.ToDisplayString() #>
                         <#= name #>5 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute2f128_ps(<#= name #>5, <#= name #>5, 0b0000_0001), 0b10_01_00_11);
                         <#= name #>6 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute2f128_ps(<#= name #>6, <#= name #>6, 0b0000_0001), 0b01_00_11_10);
                         <#= name #>7 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute2f128_ps(<#= name #>7, <#= name #>7, 0b0000_0001), 0b00_11_10_01);
-                        <#= name #>0 = <#= item.Symbol.Name #>(<#= name #>0, <#= name #>1, <#= name #>2, <#= name #>3, <#= name #>4, <#= name #>5, <#= name #>6, <#= name #>7);
-<# } #>
-<# for (var index = 0; index < Outers.Length; ++index) {
-    var item = Outers[index];
-    if (item.IsReadOnly) { continue; } #>
-                        Outer<#= index #>[outerIndex] = outer<#= index #>;
+                        global::Unity.Burst.Intrinsics.X86.Avx.mm256_store_ps(<#= name #>, <#= item.Symbol.Name #>(<#= name #>0, <#= name #>1, <#= name #>2, <#= name #>3, <#= name #>4, <#= name #>5, <#= name #>6, <#= name #>7));
 <# } #>
                     }
 <# for (var index = 0; index < Others.Length; ++index) {

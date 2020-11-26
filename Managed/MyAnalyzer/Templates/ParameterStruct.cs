@@ -35,5 +35,22 @@ namespace MyAnalyzer.Templates
             answer = new(parameter, fieldIndex, fieldName);
             return true;
         }
+
+        public int GetIndex(INamedTypeSymbol type)
+        {
+            var fields = type.GetMembers().OfType<IFieldSymbol>().Where(x => !x.IsStatic);
+            var index = 0;
+            foreach (var fieldSymbol in fields)
+            {
+                if (fieldSymbol.Name == Name)
+                {
+                    return index;
+                }
+                
+                index++;
+            }
+
+            return -1;
+        }
     }
 }

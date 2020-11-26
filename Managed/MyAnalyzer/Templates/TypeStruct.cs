@@ -6,10 +6,10 @@ namespace MyAnalyzer.Templates
 {
     public readonly struct TypeStruct
     {
-        public readonly ITypeSymbol Symbol;
+        public readonly INamedTypeSymbol Symbol;
         public readonly bool IsReadOnly;
 
-        public TypeStruct(ITypeSymbol symbol, bool isReadOnly)
+        public TypeStruct(INamedTypeSymbol symbol, bool isReadOnly)
         {
             Symbol = symbol;
             IsReadOnly = isReadOnly;
@@ -26,7 +26,7 @@ namespace MyAnalyzer.Templates
             answer = new TypeStruct[types.Length];
             for (var i = 0; i < answer.Length; i++)
             {
-                if (types[i].Value is not ITypeSymbol typeSymbol || bools[i].Value is not bool boolValue)
+                if (types[i].Value is not INamedTypeSymbol typeSymbol || bools[i].Value is not bool boolValue)
                 {
                     return false;
                 }

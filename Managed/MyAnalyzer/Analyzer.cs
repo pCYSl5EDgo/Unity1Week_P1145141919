@@ -197,11 +197,12 @@ namespace MyAttribute
             Compilation compilation = context.Compilation.AddSyntaxTrees(CSharpSyntaxTree.ParseText(attributeText, options));
 
             buffer.Clear();
-            ExtractTypeSymbols(receiver, compilation, out var eightBaseTypes, out var countableBaseTypes, out var collisionTemplates);
+            ExtractTypeSymbols(receiver, compilation, out var eightBaseTypes, out var countableBaseTypes, out var collisionTemplates, out var singleLoopTemplates);
 
             GenerateEight(eightBaseTypes, buffer);
             GenerateCountable(countableBaseTypes, buffer);
             collisionTemplates.ForEach(template => buffer.AppendLine(template.TransformText()));
+            singleLoopTemplates.ForEach(template => buffer.AppendLine(template.TransformText()));
 
             string text = buffer.ToString();
             context.AddSource("MyAnalyzerResult.cs", SourceText.From(text, encoding));
@@ -225,19 +226,22 @@ namespace MyAttribute
             }
         }
 
-        private static void ExtractTypeSymbols(SyntaxReceiver receiver, Compilation compilation, out List<INamedTypeSymbol> eightBaseTypes, out List<(INamedTypeSymbol, AttributeData)> countableBaseTypes, out List<CollisionTemplate> collisionTemplates)
+        private static void ExtractTypeSymbols(SyntaxReceiver receiver, Compilation compilation, out List<INamedTypeSymbol> eightBaseTypes, out List<(INamedTypeSymbol, AttributeData)> countableBaseTypes, out List<CollisionTemplate> collisionTemplates, out List<SingleLoopTemplate> singleLoopTemplates)
         {
             var eight = compilation.GetTypeByMetadataName("MyAttribute.EightAttribute") ?? throw new System.NullReferenceException();
             var countable = compilation.GetTypeByMetadataName("MyAttribute.CountableAttribute") ?? throw new System.NullReferenceException();
             var collisionType = compilation.GetTypeByMetadataName("MyAttribute.CollisionTypeAttribute") ?? throw new System.NullReferenceException();
             var collisionMethod = compilation.GetTypeByMetadataName("MyAttribute.CollisionMethodAttribute") ?? throw new System.NullReferenceException();
             var collisionCloseMethod = compilation.GetTypeByMetadataName("MyAttribute.CollisionCloseMethodAttribute") ?? throw new System.NullReferenceException();
+            var loopType = compilation.GetTypeByMetadataName("MyAttribute.SingleLoopTypeAttribute") ?? throw new System.NullReferenceException();
+            var loopMethod = compilation.GetTypeByMetadataName("MyAttribute.SingleLoopMethodAttribute") ?? throw new System.NullReferenceException();
             var loopParameter = compilation.GetTypeByMetadataName("MyAttribute.LoopParameterAttribute") ?? throw new System.NullReferenceException();
 
             var candidateTypesCount = receiver.CandidateTypes.Count;
             eightBaseTypes = new(candidateTypesCount);
             countableBaseTypes = new(candidateTypesCount);
             collisionTemplates = new(candidateTypesCount);
+            singleLoopTemplates = new(candidateTypesCount);
             foreach (var candidate in receiver.CandidateTypes)
             {
                 var model = compilation.GetSemanticModel(candidate.SyntaxTree);
@@ -272,13 +276,20 @@ namespace MyAttribute
                 }
                 else
                 {
-                    var template = CollisionTemplate.TryCreate(collisionType, collisionMethod, collisionCloseMethod, loopParameter, type);
-                    if (template is null)
                     {
-                        continue;
+                        var template = CollisionTemplate.TryCreate(collisionType, collisionMethod, collisionCloseMethod, loopParameter, type);
+                        if (template is not null)
+                        {
+                            collisionTemplates.Add(template);
+                        }
                     }
-
-                    collisionTemplates.Add(template);
+                    {
+                        var template = SingleLoopTemplate.TryCreate(loopType, loopMethod, loopParameter, type);
+                        if (template is not null)
+                        {
+                            singleLoopTemplates.Add(template);
+                        }
+                    }
                 }
             }
         }

@@ -1,0 +1,112 @@
+﻿<#@ template language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+namespace <#= TypeSymbol.ContainingNamespace.ToDisplayString() #>
+{
+    <#= TypeSymbol.IsStatic ? "static " : "" #>partial <#= TypeSymbol.IsValueType ? "struct " : "class " #> <#= TypeSymbol.Name #>
+    {
+        [global::Unity.Burst.BurstCompile]
+        public unsafe struct Job : global::Unity.Jobs.IJob
+        {
+<# for (var index = 0; index < Outers.Length; ++index) {
+    var item = Outers[index]; #>
+            <# if (item.IsReadOnly) { #>[global::Unity.Collections.ReadOnly] <# } #>public global::Unity.Collections.NativeArray<<#= item.Symbol.ToDisplayString() #>.Eight> Outer<#= index #>;
+<# } #>
+<# for (var index = 0; index < Others.Length; ++index) {
+    var item = Others[index]; 
+    if (item.IsReadOnly) { #>
+            public <#= item.Symbol.ToDisplayString() #> Other<#= index #>;
+<# } else { #>
+            public global::Unity.Collections.NativeArray<<#= item.Symbol.ToDisplayString() #>> Other<#= index #>;
+<# } #>
+<# } #>
+<# for (var index = 0; index < Tables.Length; ++index) {
+    var item = Tables[index]; #>
+            <# if (item.IsReadOnly) { #>[global::Unity.Collections.ReadOnly] <# } #>public global::Unity.Collections.NativeArray<<#= item.Symbol.ToDisplayString() #>> Table<#= index #>;
+<# } #>
+
+            public void Execute()
+            {
+<# if (Fma.HasValue) { var method = Fma.Value; #>
+                if (global::Unity.Burst.Intrinsics.X86.Fma.IsFmaSupported)
+                {
+<# for (var index = 0; index < Others.Length; ++index) {
+    var item = Others[index];
+    if (item.IsReadOnly) { #>
+                    var other<#= index #> = new global::Unity.Burst.Intrinsics.v256(Other<#= index #>, Other<#= index #>, Other<#= index #>, Other<#= index #>, Other<#= index #>, Other<#= index #>, Other<#= index #>, Other<#= index #>);
+<# } else { #>
+                    var other<#= index #> = Other<#= index #>[0];
+<# } #>
+<# } #>
+                    for (var outerIndex = 0; outerIndex < Outer0.Length; ++outerIndex)
+                    {
+<# for (var index = 0; index < Outers.Length; ++index) {
+    var item = Outers[index]; #>
+                        var outer<#= index #> = Outer<#= index #>[outerIndex];
+<# } #>
+<# for (var index = 0; index < method.Outers.Length; ++index) {
+    var item = method.Outers[index];
+    var name = "outer" + item.Index + "_" + item.Name; #>
+                        ref var <#= name #>0 = ref *(global::Unity.Burst.Intrinsics.v256*)&(outer<#= item.Index #>.<#= item.Name #>);
+<# } #>
+<# { 
+      var parameter = method.Outers[0]; #>
+                        <#= method.Symbol.Name #>(ref outer<#= parameter.Index #>_<#= parameter.Name #><# for (var index = 1; index < method.Outers.Length; ++index) { parameter = method.Outers[index]; #>, ref outer<#= parameter.Index #>_<#= parameter.Name #><# } for (var index = 0; index < method.Others.Length; ++index) { parameter = method.Others[index]; #>, ref other<#= parameter.Index #><# } for (var index = 0; index < method.Tables.Length; ++index) { parameter = method.Tables[index]; #>, ref Table<#= parameter.Index #><# } #>);
+<# } #>
+<# for (var index = 0; index < Outers.Length; ++index) {
+    var item = Outers[index];
+    if (item.IsReadOnly) { continue; } #>
+                        Outer<#= index #>[outerIndex] = outer<#= index #>;
+<# } #>
+                    }
+<# for (var index = 0; index < Others.Length; ++index) {
+    var item = Others[index];
+    if (item.IsReadOnly) { continue; } #>
+
+                    Other<#= index #>[0] = other<#= index #>;
+<# } #>
+                    return;
+                }
+
+<# } #>
+<# { var method = Ordinal; #>
+                {
+<# for (var index = 0; index < Others.Length; ++index) {
+    var item = Others[index];
+    if (item.IsReadOnly) { #>
+                    var other<#= index #> = new global::Unity.Mathematics.<#= item.Symbol.ToDisplayString() #>4(Other<#= index #>, Other<#= index #>, Other<#= index #>, Other<#= index #>);
+<# } else { #>
+                    var other<#= index #> = Other<#= index #>[0];
+<# } #>
+<# } #>
+
+                    for (var outerIndex = 0; outerIndex < Outer0.Length; ++outerIndex)
+                    {
+<# for (var index = 0; index < Outers.Length; ++index) {
+    var item = Outers[index]; #>
+                        var outer<#= index #> = Outer<#= index #>[outerIndex];
+<# } #>
+<# for (var cIndex0 = 0; cIndex0 < 2; ++cIndex0) {
+      var parameter = method.Outers[0]; #>
+                        <#= method.Symbol.Name #>(ref outer<#= parameter.Index #>.<#= parameter.Name #>.c<#= cIndex0 #><# for (var index = 1; index < method.Outers.Length; ++index) { parameter = method.Outers[index]; #>, ref outer<#= parameter.Index #>.<#= parameter.Name #>.c<#= cIndex0 #><# } for (var index = 0; index < method.Others.Length; ++index) { parameter = method.Others[index]; #>, ref other<#= parameter.Index #><# } for (var index = 0; index < method.Tables.Length; ++index) { parameter = method.Tables[index]; #>, ref Table<#= parameter.Index #><# } #>);
+<# } #>
+<# for (var index = 0; index < Outers.Length; ++index) {
+    var item = Outers[index];
+    if (item.IsReadOnly) { continue; } #>
+                        Outer<#= index #>[outerIndex] = outer<#= index #>;
+<# } #>
+                    }
+<# for (var index = 0; index < Others.Length; ++index) {
+    var item = Others[index];
+    if (item.IsReadOnly) { continue; } #>
+
+                    Other<#= index #>[0] = other<#= index #>;
+<# } #>
+                }
+<# } #>
+            }
+        }
+    }
+}
