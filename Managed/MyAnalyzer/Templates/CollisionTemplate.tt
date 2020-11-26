@@ -36,6 +36,9 @@ namespace <#= TypeSymbol.ContainingNamespace.ToDisplayString() #>
 <# if (Fma.HasValue) { var method = Fma.Value; #>
                 if (global::Unity.Burst.Intrinsics.X86.Fma.IsFmaSupported)
                 {
+                    const int next1 = 0b00_11_10_01;
+                    const int next2 = 0b01_00_11_10;
+                    const int next3 = 0b10_01_00_11;
 <# for (var index = 0; index < Others.Length; ++index) {
     var item = Others[index];
     if (item.IsReadOnly) { #>
@@ -75,25 +78,13 @@ namespace <#= TypeSymbol.ContainingNamespace.ToDisplayString() #>
                         var <#= name #>0 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_load_ps(<#= name #>);
 <# } #>
 
-<# for (var index = 0; index < method.Outers.Length; ++index) {
-    var item = method.Outers[index];
-    var fieldIndex = item.GetIndex(Outers[item.Index].Symbol);
-    var name = "outer" + item.Index + "_" + item.Name; #>
-                        var <#= name #>1 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(<#= name #>0, 0b00_11_10_01);
+<# for (var nextIndex = 1; nextIndex < 4; ++nextIndex) {
+     for (var index = 0; index < method.Outers.Length; ++index) {
+      var item = method.Outers[index];
+      var fieldIndex = item.GetIndex(Outers[item.Index].Symbol);
+      var name = "outer" + item.Index + "_" + item.Name; #>
+                        var <#= name #><#= nextIndex #> = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(<#= name #>0, next<#= nextIndex #>);
 <# } #>
-
-<# for (var index = 0; index < method.Outers.Length; ++index) {
-    var item = method.Outers[index];
-    var fieldIndex = item.GetIndex(Outers[item.Index].Symbol);
-    var name = "outer" + item.Index + "_" + item.Name; #>
-                        var <#= name #>2 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(<#= name #>0, 0b01_00_11_10);
-<# } #>
-
-<# for (var index = 0; index < method.Outers.Length; ++index) {
-    var item = method.Outers[index];
-    var fieldIndex = item.GetIndex(Outers[item.Index].Symbol);
-    var name = "outer" + item.Index + "_" + item.Name; #>
-                        var <#= name #>3 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(<#= name #>0, 0b10_01_00_11);
 <# } #>
 
 <# for (var index = 0; index < method.Outers.Length; ++index) {
@@ -103,25 +94,13 @@ namespace <#= TypeSymbol.ContainingNamespace.ToDisplayString() #>
                         var <#= name #>4 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute2f128_ps(<#= name #>0, <#= name #>0, 0b0000_0001);
 <# } #>
 
-<# for (var index = 0; index < method.Outers.Length; ++index) {
-    var item = method.Outers[index];
-    var fieldIndex = item.GetIndex(Outers[item.Index].Symbol);
-    var name = "outer" + item.Index + "_" + item.Name; #>
-                        var <#= name #>5 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(<#= name #>4, 0b00_11_10_01);
+<# for (var nextIndex = 1; nextIndex < 4; ++nextIndex) {
+      for (var index = 0; index < method.Outers.Length; ++index) {
+        var item = method.Outers[index];
+        var fieldIndex = item.GetIndex(Outers[item.Index].Symbol);
+        var name = "outer" + item.Index + "_" + item.Name; #>
+                        var <#= name #><#= nextIndex + 4 #> = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(<#= name #>4, next<#= nextIndex #>);
 <# } #>
-
-<# for (var index = 0; index < method.Outers.Length; ++index) {
-    var item = method.Outers[index];
-    var fieldIndex = item.GetIndex(Outers[item.Index].Symbol);
-    var name = "outer" + item.Index + "_" + item.Name; #>
-                        var <#= name #>6 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(<#= name #>4, 0b01_00_11_10);
-<# } #>
-
-<# for (var index = 0; index < method.Outers.Length; ++index) {
-    var item = method.Outers[index];
-    var fieldIndex = item.GetIndex(Outers[item.Index].Symbol);
-    var name = "outer" + item.Index + "_" + item.Name; #>
-                        var <#= name #>7 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(<#= name #>4, 0b10_01_00_11);
 <# } #>
 
 <# for (var index = 0; index < Inners.Length; ++index) { #>

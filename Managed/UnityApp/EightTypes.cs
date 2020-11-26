@@ -21,6 +21,12 @@ namespace ComponentTypes
     }
 
     [Eight]
+    public partial struct Size
+    {
+        public float Value;
+    }
+
+    [Eight]
     public partial struct Destination2D
     {
         public float X;

@@ -228,22 +228,21 @@ namespace Unity1Week.Hit
     }
 
     [CollisionType(
-        new[] { typeof(Position2D), typeof(AliveState) }, new[] { true, false },
-        new[] { typeof(Position2D) }, new[] { true },
-        new[] { typeof(float), typeof(int) }, new[] { true, false },
-        new[] { typeof(AliveState.Eight) }, new[] { false }
+        new[] { typeof(Position2D), typeof(AliveState), typeof(Size) }, new[] { true, false, true },
+        new[] { typeof(Position2D), typeof(AliveState), typeof(Size) }, new[] { true, false, true }
     )]
     public static partial class CollisionHolder
     {
-        [CollisionMethod(IntrinsicsKind.Fma, 3, 2)]
+        [CollisionMethod(IntrinsicsKind.Fma, 4)]
         private static void Exe2(
-            [LoopParameter(0, nameof(Position2D.X))] ref v256 enemyX,
-            [LoopParameter(0, nameof(Position2D.Y))] ref v256 enemyY,
-            [LoopParameter(1, nameof(AliveState.Value))] ref v256 enemyAliveState,
-            [LoopParameter(0, nameof(Position2D.X))] ref v256 playerX,
-            [LoopParameter(0, nameof(Position2D.Y))] ref v256 playerY,
-            [LoopParameter(0)] ref v256 radius,
-            [LoopParameter(1)] ref int count
+             ref v256 enemyX,
+             ref v256 enemyY,
+             ref v256 enemyAliveState,
+             ref v256 enemySize,
+             ref v256 bulletX,
+             ref v256 bulletY,
+             ref v256 bulletAliveState,
+             ref v256 bulletSize
         )
         {
             if (!X86.Fma.IsFmaSupported)
@@ -251,45 +250,44 @@ namespace Unity1Week.Hit
                 return;
             }
 
-            var diffX = X86.Avx.mm256_sub_ps(enemyX, playerX);
-            var square = X86.Avx.mm256_mul_ps(diffX, diffX);
-            var diffY = X86.Avx.mm256_sub_ps(enemyY, playerY);
-            var len = X86.Fma.mm256_fmadd_ps(diffY, diffY, square);
-            var cmp = X86.Avx.mm256_cmp_ps(len, radius, (int)X86.Avx.CMP.LT_OQ);
-            var newState = X86.Avx.mm256_or_ps(enemyAliveState, cmp);
-            count += math.countbits(X86.Avx.mm256_movemask_ps(X86.Avx.mm256_xor_ps(enemyAliveState, newState)));
-            enemyAliveState = newState;
+            var diffX = X86.Avx.mm256_sub_ps(enemyX, bulletX);
+            var xSquare = X86.Avx.mm256_mul_ps(diffX, diffX);
+            var diffY = X86.Avx.mm256_sub_ps(enemyY, bulletY);
+            var lengthSquare = X86.Fma.mm256_fmadd_ps(diffY, diffY, xSquare);
+            
+            var radius = X86.Avx.mm256_add_ps(enemySize, bulletSize);
+            var radiusSquare = X86.Avx.mm256_mul_ps(radius, radius);
+            var cmp = X86.Avx.mm256_cmp_ps(lengthSquare, radiusSquare, (int)X86.Avx.CMP.LT_OQ);
+            
+            var hit = X86.Avx.mm256_andnot_ps(X86.Avx.mm256_or_ps(enemyAliveState, bulletAliveState), cmp);
+            enemyAliveState = X86.Avx.mm256_or_ps(enemyAliveState, hit);
+            bulletAliveState = X86.Avx.mm256_or_ps(bulletAliveState, hit);
         }
 
-        [CollisionMethod(IntrinsicsKind.Ordinal, 3, 2)]
+        [CollisionMethod(IntrinsicsKind.Ordinal, 4)]
         private static void Exe(
-            [LoopParameter(0, nameof(Position2D.X))] ref float4 enemyX,
-            [LoopParameter(0, nameof(Position2D.Y))] ref float4 enemyY,
-            [LoopParameter(1, nameof(AliveState.Value))] ref int4 enemyAliveState,
-            [LoopParameter(0, nameof(Position2D.X))] ref float4 playerX,
-            [LoopParameter(0, nameof(Position2D.Y))] ref float4 playerY,
-            [LoopParameter(0)] ref float4 radius,
-            [LoopParameter(1)] ref int count
+            ref float4 enemyX,
+            ref float4 enemyY,
+            ref int4 enemyAliveState,
+            ref float4 enemySize,
+            ref float4 bulletX,
+            ref float4 bulletY,
+            ref int4 bulletAliveState,
+            ref float4 bulletSize
         )
         {
-            var x0 = enemyX - playerX;
-            var y0 = enemyY - playerY;
-            var len0 = x0 * x0 + y0 * y0 < radius;
-            var newState = math.select(enemyAliveState, -1, len0);
-            var change = enemyAliveState != newState;
-            for (var i = 0; i < 4; ++i)
-            {
-                if (change[i])
-                {
-                    ++count;
-                }
-            }
+            var x0 = enemyX - bulletX;
+            var y0 = enemyY - bulletY;
+            var radius = enemySize + bulletSize;
+            var cmp = enemyAliveState == 0 & bulletAliveState == 0 & x0 * x0 + y0 * y0 < radius * radius;
+            enemyAliveState = math.select(enemyAliveState, -1, cmp);
+            bulletAliveState = math.select(bulletAliveState, -1, cmp);
         }
 
         [CollisionCloseMethod(IntrinsicsKind.Ordinal, CollisionFieldKind.Outer, 1, nameof(AliveState.Value))]
         private static int4 Close(int4 a0, int4 a1, int4 a2, int4 a3)
         {
-            return a0 & a1 & a2 & a3;
+            return (a0 | a1) | (a2 | a3);
         }
 
         [CollisionCloseMethod(IntrinsicsKind.Fma, CollisionFieldKind.Outer, 1, nameof(AliveState.Value))]
@@ -301,12 +299,12 @@ namespace Unity1Week.Hit
             }
 
             a0 = X86.Avx.mm256_or_ps(a0, a1);
+            a2 = X86.Avx.mm256_or_ps(a2, a3);
+            a4 = X86.Avx.mm256_or_ps(a4, a5);
+            a6 = X86.Avx.mm256_or_ps(a6, a7);
             a0 = X86.Avx.mm256_or_ps(a0, a2);
-            a0 = X86.Avx.mm256_or_ps(a0, a3);
-            a0 = X86.Avx.mm256_or_ps(a0, a4);
-            a0 = X86.Avx.mm256_or_ps(a0, a5);
-            a0 = X86.Avx.mm256_or_ps(a0, a6);
-            return X86.Avx.mm256_or_ps(a0, a7);
+            a4 = X86.Avx.mm256_or_ps(a4, a6);
+            return X86.Avx.mm256_or_ps(a0, a4);
         }
     }
 }
