@@ -1,5 +1,6 @@
 ﻿using ComponentTypes;
 using MyFolder.Scripts.ECS.Types;
+using MyAttribute;
 using Unity.Burst;
 using Unity.Burst.Intrinsics;
 using Unity.Collections;
@@ -9,6 +10,60 @@ using Unity.Mathematics;
 
 namespace Unity1Week.Hit
 {
+    [CollisionType(
+        new[] { typeof(Position2D), typeof(AliveState) }, new[] { true, false },
+        new[] { typeof(Position2D), typeof(AliveState) }, new[] { true, true },
+        new[] { typeof(float), typeof(float), typeof(int) }, new[] { true, true, false },
+        new[] { typeof(Position2D.Eight), typeof(FireStartTime.Eight) }, new[] { false, false }
+    )]
+    public static partial class BulletEnemyHit
+    {
+        [CollisionMethod(IntrinsicsKind.Ordinal, 3, 3, 3)]
+        public static void Exe(
+            ref float4 bulletPositionX,
+            ref float4 bulletPositionY,
+            ref int4 bulletAliveState,
+            ref float4 enemyPositionX,
+            ref float4 enemyPositionY,
+            ref int4 enemyAliveState,
+            ref float4 collisionRadiusSquare,
+            ref float4 currentTime,
+            ref int fireCount,
+            ref NativeArray<Position2D.Eight> firePositionArray,
+            ref NativeArray<FireStartTime.Eight> FireStartTimeArray
+        )
+        {
+            var oldCount = fireCount;
+            var diffX = bulletPositionX - enemyPositionX;
+            var diffY = bulletPositionY - enemyPositionY;
+            var lenSq = diffX * diffX + diffY * diffY;
+            var hit = lenSq < collisionRadiusSquare & enemyAliveState == 0 & bulletAliveState == 0;
+            enemyAliveState = math.select(bulletAliveState, -1, hit);
+            for (var i = 0; i < 4; ++i)
+            {
+                if (hit[i])
+                {
+                    var fireBigIndex = fireCount >> 3;
+                    var fireColumn = (fireBigIndex & 4) >> 2;
+                    var fireRow = fireBigIndex & 3;
+                    var position = firePositionArray[fireBigIndex];
+                    position.X[fireColumn][fireRow] = bulletPositionX[i];
+                    position.Y[fireColumn][fireRow] = bulletPositionY[i];
+                    firePositionArray[fireBigIndex] = position;
+                    var time = FireStartTimeArray[fireBigIndex];
+                    time.Value[fireColumn][fireRow] = currentTime.x;
+                    FireStartTimeArray[fireBigIndex] = time;
+                    ++fireCount;
+                }
+            }
+        }
+
+        [CollisionCloseMethod(IntrinsicsKind.Ordinal, CollisionFieldKind.Outer, 1, "Value")]
+        public static int4 CloseAlive(int4 a, int4 b)
+        {
+            return a | b;
+        }
+    }
     [BurstCompile]
     public struct BulletEnemyHitJob : IJob
     {

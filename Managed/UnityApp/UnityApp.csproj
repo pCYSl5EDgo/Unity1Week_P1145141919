@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="../../Unity/Assets/MyFolder/Scripts/ECS/ComponentTypes/**/*.cs" />
+    <Compile Include="../../Unity/Assets/MyFolder/Scripts/ECS/**/*.cs;" />
     <ProjectReference Include="..\MyAnalyzer\MyAnalyzer.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     <Reference Include="Unity.Burst">
       <HintPath>..\..\Unity\Library\ScriptAssemblies\Unity.Burst.dll</HintPath>
@@ -17,7 +17,6 @@
     <Reference Include="Unity.Mathematics">
       <HintPath>..\..\Unity\Library\ScriptAssemblies\Unity.Mathematics.dll</HintPath>
     </Reference>
-	  
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>..\..\..\..\..\..\..\Program Files\Unity\Hub\Editor\2020.2.0b13\Editor\Data\Managed\UnityEngine\UnityEngine.CoreModule.dll</HintPath>
     </Reference>

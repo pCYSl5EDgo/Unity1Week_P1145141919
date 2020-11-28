@@ -143,30 +143,12 @@ namespace MyAnalyzer.Templates
 
                     for (int memberIndex = 0, typeIndex = 0; typeIndex < others.Length; ++typeIndex)
                     {
-                        var typeStruct = others[typeIndex];
-                        foreach (var member in typeStruct.Symbol.GetMembers())
-                        {
-                            if (member is not IFieldSymbol fieldSymbol || fieldSymbol.IsStatic)
-                            {
-                                continue;
-                            }
-
-                            parameterOthers[memberIndex++] = new ParameterStruct(parameters[parameterIndex++], typeIndex, member.Name);
-                        }
+                        parameterOthers[memberIndex++] = new ParameterStruct(parameters[parameterIndex++], typeIndex, string.Empty);
                     }
 
                     for (int memberIndex = 0, typeIndex = 0; typeIndex < tables.Length; ++typeIndex)
                     {
-                        var typeStruct = tables[typeIndex];
-                        foreach (var member in typeStruct.Symbol.GetMembers())
-                        {
-                            if (member is not IFieldSymbol fieldSymbol || fieldSymbol.IsStatic)
-                            {
-                                continue;
-                            }
-
-                            parameterTables[memberIndex++] = new ParameterStruct(parameters[parameterIndex++], typeIndex, member.Name);
-                        }
+                        parameterTables[memberIndex++] = new ParameterStruct(parameters[parameterIndex++], typeIndex, string.Empty);
                     }
                 }
                 else

@@ -1067,6 +1067,20 @@ namespace MyAnalyzer.Templates
             this.Write("(");
             
             #line 148 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Symbol.Name));
+            
+            #line default
+            #line hidden
+            this.Write("(");
+            
+            #line 148 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Symbol.Name));
+            
+            #line default
+            #line hidden
+            this.Write("(");
+            
+            #line 148 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
@@ -1078,7 +1092,14 @@ namespace MyAnalyzer.Templates
             
             #line default
             #line hidden
-            this.Write("1, ");
+            this.Write("1), ");
+            
+            #line 148 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Symbol.Name));
+            
+            #line default
+            #line hidden
+            this.Write("(");
             
             #line 148 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
@@ -1092,7 +1113,21 @@ namespace MyAnalyzer.Templates
             
             #line default
             #line hidden
-            this.Write("3, ");
+            this.Write("3)), ");
+            
+            #line 148 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Symbol.Name));
+            
+            #line default
+            #line hidden
+            this.Write("(");
+            
+            #line 148 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Symbol.Name));
+            
+            #line default
+            #line hidden
+            this.Write("(");
             
             #line 148 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
@@ -1106,7 +1141,14 @@ namespace MyAnalyzer.Templates
             
             #line default
             #line hidden
-            this.Write("5, ");
+            this.Write("5), ");
+            
+            #line 148 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Symbol.Name));
+            
+            #line default
+            #line hidden
+            this.Write("(");
             
             #line 148 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
@@ -1120,7 +1162,7 @@ namespace MyAnalyzer.Templates
             
             #line default
             #line hidden
-            this.Write("7));\r\n");
+            this.Write("7)))));\r\n");
             
             #line 149 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
  } 
@@ -1709,6 +1751,13 @@ namespace MyAnalyzer.Templates
             this.Write("(");
             
             #line 220 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Symbol.Name));
+            
+            #line default
+            #line hidden
+            this.Write("(");
+            
+            #line 220 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
@@ -1720,7 +1769,14 @@ namespace MyAnalyzer.Templates
             
             #line default
             #line hidden
-            this.Write("1_c0.yzwx, ");
+            this.Write("1_c0.yzwx), ");
+            
+            #line 220 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Symbol.Name));
+            
+            #line default
+            #line hidden
+            this.Write("(");
             
             #line 220 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
@@ -1734,7 +1790,7 @@ namespace MyAnalyzer.Templates
             
             #line default
             #line hidden
-            this.Write("3_c0.wxyz);\r\n                        ");
+            this.Write("3_c0.wxyz));\r\n                        ");
             
             #line 221 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
@@ -1742,6 +1798,13 @@ namespace MyAnalyzer.Templates
             #line default
             #line hidden
             this.Write("0.c1 = ");
+            
+            #line 221 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Symbol.Name));
+            
+            #line default
+            #line hidden
+            this.Write("(");
             
             #line 221 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(item.Symbol.Name));
@@ -1762,7 +1825,14 @@ namespace MyAnalyzer.Templates
             
             #line default
             #line hidden
-            this.Write("1_c1.yzwx, ");
+            this.Write("1_c1.yzwx), ");
+            
+            #line 221 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Symbol.Name));
+            
+            #line default
+            #line hidden
+            this.Write("(");
             
             #line 221 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
@@ -1776,7 +1846,7 @@ namespace MyAnalyzer.Templates
             
             #line default
             #line hidden
-            this.Write("3_c1.wxyz);\r\n");
+            this.Write("3_c1.wxyz));\r\n");
             
             #line 222 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
  } 

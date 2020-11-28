@@ -499,3 +499,95 @@ namespace ComponentTypes
     }
 }
 
+namespace Unity1Week.Hit
+{
+    static partial class  BulletEnemyHit
+    {
+        [global::Unity.Burst.BurstCompile]
+        public unsafe struct CollisionJob : global::Unity.Jobs.IJob
+        {
+            [global::Unity.Collections.ReadOnly] public global::Unity.Collections.NativeArray<ComponentTypes.Position2D.Eight> Outer0;
+            public global::Unity.Collections.NativeArray<ComponentTypes.AliveState.Eight> Outer1;
+            [global::Unity.Collections.ReadOnly] public global::Unity.Collections.NativeArray<ComponentTypes.Position2D.Eight> Inner0;
+            [global::Unity.Collections.ReadOnly] public global::Unity.Collections.NativeArray<ComponentTypes.AliveState.Eight> Inner1;
+            public float Other0;
+            public float Other1;
+            public global::Unity.Collections.NativeArray<int> Other2;
+            public global::Unity.Collections.NativeArray<ComponentTypes.Position2D.Eight> Table0;
+            public global::Unity.Collections.NativeArray<ComponentTypes.FireStartTime.Eight> Table1;
+
+            public void Execute()
+            {
+                {
+                    var other0 = new global::Unity.Mathematics.float4(Other0, Other0, Other0, Other0);
+                    var other1 = new global::Unity.Mathematics.float4(Other1, Other1, Other1, Other1);
+                    var other2 = Other2[0];
+                    for (var outerIndex = 0; outerIndex < Outer0.Length; ++outerIndex)
+                    {
+                        var outer0 = Outer0[outerIndex];
+                        var outer1 = Outer1[outerIndex];
+                        ref var outer0_X0 = ref outer0.X;
+                        ref var outer0_X0_c0 = ref outer0_X0.c0;
+                        var outer0_X1_c0 = outer0_X0.c0.wxyz;
+                        var outer0_X2_c0 = outer0_X0.c0.zwxy;
+                        var outer0_X3_c0 = outer0_X0.c0.yzwx;
+                        ref var outer0_X0_c1 = ref outer0_X0.c1;
+                        var outer0_X1_c1 = outer0_X0_c1.wxyz;
+                        var outer0_X2_c1 = outer0_X0_c1.zwxy;
+                        var outer0_X3_c1 = outer0_X0_c1.yzwx;
+                        ref var outer0_Y0 = ref outer0.Y;
+                        ref var outer0_Y0_c0 = ref outer0_Y0.c0;
+                        var outer0_Y1_c0 = outer0_Y0.c0.wxyz;
+                        var outer0_Y2_c0 = outer0_Y0.c0.zwxy;
+                        var outer0_Y3_c0 = outer0_Y0.c0.yzwx;
+                        ref var outer0_Y0_c1 = ref outer0_Y0.c1;
+                        var outer0_Y1_c1 = outer0_Y0_c1.wxyz;
+                        var outer0_Y2_c1 = outer0_Y0_c1.zwxy;
+                        var outer0_Y3_c1 = outer0_Y0_c1.yzwx;
+                        ref var outer1_Value0 = ref outer1.Value;
+                        ref var outer1_Value0_c0 = ref outer1_Value0.c0;
+                        var outer1_Value1_c0 = outer1_Value0.c0.wxyz;
+                        var outer1_Value2_c0 = outer1_Value0.c0.zwxy;
+                        var outer1_Value3_c0 = outer1_Value0.c0.yzwx;
+                        ref var outer1_Value0_c1 = ref outer1_Value0.c1;
+                        var outer1_Value1_c1 = outer1_Value0_c1.wxyz;
+                        var outer1_Value2_c1 = outer1_Value0_c1.zwxy;
+                        var outer1_Value3_c1 = outer1_Value0_c1.yzwx;
+                        for (var innerIndex = 0; innerIndex < Inner0.Length; ++innerIndex)
+                        {
+                            var inner0 = Inner0[innerIndex];
+                            var inner1 = Inner1[innerIndex];
+                            ref var inner0_X = ref inner0.X;
+                            ref var inner0_Y = ref inner0.Y;
+                            ref var inner1_Value = ref inner1.Value;
+
+                            Exe(ref outer0_X0_c0, ref outer0_Y0_c0, ref outer1_Value0_c0, ref inner0_X.c0, ref inner0_Y.c0, ref inner1_Value.c0, ref other0, ref other1, ref other2, ref Table0, ref Table1);
+                            Exe(ref outer0_X0_c0, ref outer0_Y0_c0, ref outer1_Value0_c0, ref inner0_X.c1, ref inner0_Y.c1, ref inner1_Value.c1, ref other0, ref other1, ref other2, ref Table0, ref Table1);
+                            Exe(ref outer0_X0_c1, ref outer0_Y0_c1, ref outer1_Value0_c1, ref inner0_X.c0, ref inner0_Y.c0, ref inner1_Value.c0, ref other0, ref other1, ref other2, ref Table0, ref Table1);
+                            Exe(ref outer0_X0_c1, ref outer0_Y0_c1, ref outer1_Value0_c1, ref inner0_X.c1, ref inner0_Y.c1, ref inner1_Value.c1, ref other0, ref other1, ref other2, ref Table0, ref Table1);
+                            Exe(ref outer0_X1_c0, ref outer0_Y1_c0, ref outer1_Value1_c0, ref inner0_X.c0, ref inner0_Y.c0, ref inner1_Value.c0, ref other0, ref other1, ref other2, ref Table0, ref Table1);
+                            Exe(ref outer0_X1_c0, ref outer0_Y1_c0, ref outer1_Value1_c0, ref inner0_X.c1, ref inner0_Y.c1, ref inner1_Value.c1, ref other0, ref other1, ref other2, ref Table0, ref Table1);
+                            Exe(ref outer0_X1_c1, ref outer0_Y1_c1, ref outer1_Value1_c1, ref inner0_X.c0, ref inner0_Y.c0, ref inner1_Value.c0, ref other0, ref other1, ref other2, ref Table0, ref Table1);
+                            Exe(ref outer0_X1_c1, ref outer0_Y1_c1, ref outer1_Value1_c1, ref inner0_X.c1, ref inner0_Y.c1, ref inner1_Value.c1, ref other0, ref other1, ref other2, ref Table0, ref Table1);
+                            Exe(ref outer0_X2_c0, ref outer0_Y2_c0, ref outer1_Value2_c0, ref inner0_X.c0, ref inner0_Y.c0, ref inner1_Value.c0, ref other0, ref other1, ref other2, ref Table0, ref Table1);
+                            Exe(ref outer0_X2_c0, ref outer0_Y2_c0, ref outer1_Value2_c0, ref inner0_X.c1, ref inner0_Y.c1, ref inner1_Value.c1, ref other0, ref other1, ref other2, ref Table0, ref Table1);
+                            Exe(ref outer0_X2_c1, ref outer0_Y2_c1, ref outer1_Value2_c1, ref inner0_X.c0, ref inner0_Y.c0, ref inner1_Value.c0, ref other0, ref other1, ref other2, ref Table0, ref Table1);
+                            Exe(ref outer0_X2_c1, ref outer0_Y2_c1, ref outer1_Value2_c1, ref inner0_X.c1, ref inner0_Y.c1, ref inner1_Value.c1, ref other0, ref other1, ref other2, ref Table0, ref Table1);
+                            Exe(ref outer0_X3_c0, ref outer0_Y3_c0, ref outer1_Value3_c0, ref inner0_X.c0, ref inner0_Y.c0, ref inner1_Value.c0, ref other0, ref other1, ref other2, ref Table0, ref Table1);
+                            Exe(ref outer0_X3_c0, ref outer0_Y3_c0, ref outer1_Value3_c0, ref inner0_X.c1, ref inner0_Y.c1, ref inner1_Value.c1, ref other0, ref other1, ref other2, ref Table0, ref Table1);
+                            Exe(ref outer0_X3_c1, ref outer0_Y3_c1, ref outer1_Value3_c1, ref inner0_X.c0, ref inner0_Y.c0, ref inner1_Value.c0, ref other0, ref other1, ref other2, ref Table0, ref Table1);
+                            Exe(ref outer0_X3_c1, ref outer0_Y3_c1, ref outer1_Value3_c1, ref inner0_X.c1, ref inner0_Y.c1, ref inner1_Value.c1, ref other0, ref other1, ref other2, ref Table0, ref Table1);
+                        }
+
+                        outer1_Value0.c0 = CloseAlive(CloseAlive(outer1_Value0.c0, outer1_Value1_c0.yzwx), CloseAlive(outer1_Value2_c0.zwxy, outer1_Value3_c0.wxyz));
+                        outer1_Value0.c1 = CloseAlive(CloseAlive(outer1_Value0.c1, outer1_Value1_c1.yzwx), CloseAlive(outer1_Value2_c1.zwxy, outer1_Value3_c1.wxyz));
+                        Outer1[outerIndex] = outer1;
+                    }
+
+                    Other2[0] = other2;
+                }
+            }
+        }
+    }
+}
+
