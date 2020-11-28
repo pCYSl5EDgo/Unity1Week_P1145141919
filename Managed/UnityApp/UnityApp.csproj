@@ -4,11 +4,12 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>9.0</LangVersion>
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles> 
-    <CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)\GeneratedFiles</CompilerGeneratedFilesOutputPath>
+    <CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)GeneratedFiles</CompilerGeneratedFilesOutputPath>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="../../Unity/Assets/MyFolder/Scripts/ECS/ComponentTypes/**/*.cs" />
     <ProjectReference Include="..\MyAnalyzer\MyAnalyzer.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     <Reference Include="Unity.Burst">
       <HintPath>..\..\Unity\Library\ScriptAssemblies\Unity.Burst.dll</HintPath>
@@ -18,12 +19,13 @@
     </Reference>
 	  
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>..\..\..\..\..\..\..\Program Files\Unity\Hub\Editor\2020.2.0b12\Editor\Data\Managed\UnityEngine\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\Program Files\Unity\Hub\Editor\2020.2.0b13\Editor\Data\Managed\UnityEngine\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Copy SourceFiles="$(TargetPath)" DestinationFolder="../../Unity/Assets/Plugins/" />
+    <Copy SourceFiles="./obj/GeneratedFiles\MyAnalyzer\MyAnalyzer.MyGenerator\MyAnalyzerResult.cs;./obj/GeneratedFiles\MyAnalyzer\MyAnalyzer.MyGenerator\MyAttributeResult.cs"
+          DestinationFolder="../../Unity/Assets/MyFolder/Scripts/ECSPlugins/" />
   </Target>
 
 </Project>

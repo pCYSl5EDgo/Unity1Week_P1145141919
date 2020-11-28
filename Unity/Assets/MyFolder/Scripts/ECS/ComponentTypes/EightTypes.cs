@@ -3,11 +3,6 @@ using MyAttribute;
 
 namespace ComponentTypes
 {
-    public static class Z
-    {
-        public static Destination2D.Eight a;
-    }
-
     [Eight]
     public partial struct AliveState
     {
