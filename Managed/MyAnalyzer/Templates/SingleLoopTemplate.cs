@@ -56,7 +56,7 @@ namespace MyAnalyzer.Templates
             
             #line default
             #line hidden
-            this.Write("\r\n    {\r\n        [global::Unity.Burst.BurstCompile]\r\n        public unsafe struct" +
+            this.Write("\r\n    {\r\n        [global::Unity.Burst.BurstCompile]\r\n        public unsafe partial struct" +
                     " Job : global::Unity.Jobs.IJob\r\n        {\r\n");
             
             #line 13 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"

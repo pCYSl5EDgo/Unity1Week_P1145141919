@@ -94,7 +94,7 @@ namespace MyAnalyzer.Templates
                     }
                 }
 
-                var tableCount = parameters.Length - outerCount - innerCount - otherCount;
+                var tableCount = (parameters.Length - outerCount - innerCount - otherCount) >> 1;
 
                 var intrinsicsKind = (IntrinsicsKind)kind;
                 switch (intrinsicsKind)
@@ -146,9 +146,9 @@ namespace MyAnalyzer.Templates
                         parameterOthers[memberIndex++] = new ParameterStruct(parameters[parameterIndex++], typeIndex, string.Empty);
                     }
 
-                    for (int memberIndex = 0, typeIndex = 0; typeIndex < tables.Length; ++typeIndex)
+                    for (int memberIndex = 0, typeIndex = 0; typeIndex < tables.Length; ++typeIndex, parameterIndex += 2)
                     {
-                        parameterTables[memberIndex++] = new ParameterStruct(parameters[parameterIndex++], typeIndex, string.Empty);
+                        parameterTables[memberIndex++] = new ParameterStruct(parameters[parameterIndex], typeIndex, string.Empty);
                     }
                 }
                 else
@@ -182,7 +182,7 @@ namespace MyAnalyzer.Templates
 
                     for (var i = 0; i < parameterTables.Length; i++)
                     {
-                        var parameter = parameters[i + outerCount + innerCount + otherCount];
+                        var parameter = parameters[(i << 1) + outerCount + innerCount + otherCount];
                         if (!ParameterStruct.InterpretLoopParameter(loopParameter, comparer, parameter, out parameterTables[i]))
                         {
                             return false;
@@ -220,11 +220,6 @@ namespace MyAnalyzer.Templates
 
             if (methodSymbol.ReturnsVoid)
             {
-                if (methodSymbol.Parameters.Any(x => x.RefKind != RefKind.Ref))
-                {
-                    return;
-                }
-
                 var attr = attributes.SingleOrDefault(x => comparer.Equals(x.AttributeClass, collisionMethod));
                 if (attr is null)
                 {

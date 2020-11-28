@@ -8,7 +8,7 @@ namespace <#= TypeSymbol.ContainingNamespace.ToDisplayString() #>
     <#= TypeSymbol.IsStatic ? "static " : "" #>partial <#= TypeSymbol.IsValueType ? "struct " : "class " #> <#= TypeSymbol.Name #>
     {
         [global::Unity.Burst.BurstCompile]
-        public unsafe struct Job : global::Unity.Jobs.IJob
+        public unsafe partial struct Job : global::Unity.Jobs.IJob
         {
 <# for (var index = 0; index < Outers.Length; ++index) {
     var item = Outers[index]; #>

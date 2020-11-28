@@ -16,8 +16,211 @@ namespace Unity1Week.Hit
         new[] { typeof(float), typeof(float), typeof(int) }, new[] { true, true, false },
         new[] { typeof(Position2D.Eight), typeof(FireStartTime.Eight) }, new[] { false, false }
     )]
-    public static partial class BulletEnemyHit
+    public static unsafe partial class BulletEnemyHit
     {
+        [CollisionMethod(IntrinsicsKind.Fma, 3, 3, 3)]
+        public static void Exe2(
+            ref v256 bulletPositionX,
+            ref v256 bulletPositionY,
+            ref v256 bulletAliveState,
+            ref v256 enemyPositionX,
+            ref v256 enemyPositionY,
+            ref v256 enemyAliveState,
+            ref v256 collisionRadiusSquare,
+            ref v256 currentTime,
+            ref int fireCount,
+            void* firePositionArray,
+            int firePositionArrayLength,
+            void* FireStartTimeArray,
+            int FireStartTimeArrayLength
+        )
+        {
+            if (!X86.Fma.IsFmaSupported) return;
+
+            var currentTimeX = currentTime.Float0;
+            var diffX = X86.Avx.mm256_sub_ps(bulletPositionX, enemyPositionX);
+            var diffY = X86.Avx.mm256_sub_ps(bulletPositionY, enemyPositionY);
+            var lenSq = X86.Fma.mm256_fmadd_ps(diffY, diffY, X86.Avx.mm256_mul_ps(diffX, diffX));
+            var hit = X86.Avx.mm256_andnot_ps(X86.Avx.mm256_or_ps(bulletAliveState, enemyAliveState), X86.Avx.mm256_cmp_ps(lenSq, collisionRadiusSquare, (int)X86.Avx.CMP.LT_OQ));
+            bulletAliveState = X86.Avx.mm256_or_ps(bulletAliveState, hit);
+            var mask = X86.Avx.mm256_movemask_ps(hit);
+            if ((mask & 1) == 1)
+            {
+                var fireBigIndex = fireCount >> 3;
+                var fireColumn = (fireBigIndex & 4) >> 2;
+                var fireRow = fireBigIndex & 3;
+                ref var position = ref ((Position2D.Eight*)firePositionArray)[fireBigIndex];
+                ref var time = ref ((FireStartTime.Eight*)FireStartTimeArray)[fireBigIndex];
+                if (fireColumn == 0)
+                {
+                    position.X.c0[fireRow] = bulletPositionX.Float0;
+                    position.Y.c0[fireRow] = bulletPositionY.Float0;
+                    time.Value.c0[fireRow] = currentTimeX;
+                }
+                else
+                {
+                    position.X.c1[fireRow] = bulletPositionX.Float0;
+                    position.Y.c1[fireRow] = bulletPositionY.Float0;
+                    time.Value.c1[fireRow] = currentTimeX;
+                }
+                ++fireCount;
+            }
+
+            if (((mask >> 1) & 1) == 1)
+            {
+                var fireBigIndex = fireCount >> 3;
+                var fireColumn = (fireBigIndex & 4) >> 2;
+                var fireRow = fireBigIndex & 3;
+                ref var position = ref ((Position2D.Eight*)firePositionArray)[fireBigIndex];
+                ref var time = ref ((FireStartTime.Eight*)FireStartTimeArray)[fireBigIndex];
+                if (fireColumn == 0)
+                {
+                    position.X.c0[fireRow] = bulletPositionX.Float1;
+                    position.Y.c0[fireRow] = bulletPositionY.Float1;
+                    time.Value.c0[fireRow] = currentTimeX;
+                }
+                else
+                {
+                    position.X.c1[fireRow] = bulletPositionX.Float1;
+                    position.Y.c1[fireRow] = bulletPositionY.Float1;
+                    time.Value.c1[fireRow] = currentTimeX;
+                }
+                ++fireCount;
+            }
+
+            if (((mask >> 2) & 1) == 1)
+            {
+                var fireBigIndex = fireCount >> 3;
+                var fireColumn = (fireBigIndex & 4) >> 2;
+                var fireRow = fireBigIndex & 3;
+                ref var position = ref ((Position2D.Eight*)firePositionArray)[fireBigIndex];
+                ref var time = ref ((FireStartTime.Eight*)FireStartTimeArray)[fireBigIndex];
+                if (fireColumn == 0)
+                {
+                    position.X.c0[fireRow] = bulletPositionX.Float2;
+                    position.Y.c0[fireRow] = bulletPositionY.Float2;
+                    time.Value.c0[fireRow] = currentTimeX;
+                }
+                else
+                {
+                    position.X.c1[fireRow] = bulletPositionX.Float2;
+                    position.Y.c1[fireRow] = bulletPositionY.Float2;
+                    time.Value.c1[fireRow] = currentTimeX;
+                }
+                ++fireCount;
+            }
+
+            if (((mask >> 3) & 1) == 1)
+            {
+                var fireBigIndex = fireCount >> 3;
+                var fireColumn = (fireBigIndex & 4) >> 2;
+                var fireRow = fireBigIndex & 3;
+                ref var position = ref ((Position2D.Eight*)firePositionArray)[fireBigIndex];
+                ref var time = ref ((FireStartTime.Eight*)FireStartTimeArray)[fireBigIndex];
+                if (fireColumn == 0)
+                {
+                    position.X.c0[fireRow] = bulletPositionX.Float3;
+                    position.Y.c0[fireRow] = bulletPositionY.Float3;
+                    time.Value.c0[fireRow] = currentTimeX;
+                }
+                else
+                {
+                    position.X.c1[fireRow] = bulletPositionX.Float3;
+                    position.Y.c1[fireRow] = bulletPositionY.Float3;
+                    time.Value.c1[fireRow] = currentTimeX;
+                }
+                ++fireCount;
+            }
+
+            if (((mask >> 4) & 1) == 1)
+            {
+                var fireBigIndex = fireCount >> 3;
+                var fireColumn = (fireBigIndex & 4) >> 2;
+                var fireRow = fireBigIndex & 3;
+                ref var position = ref ((Position2D.Eight*)firePositionArray)[fireBigIndex];
+                ref var time = ref ((FireStartTime.Eight*)FireStartTimeArray)[fireBigIndex];
+                if (fireColumn == 0)
+                {
+                    position.X.c0[fireRow] = bulletPositionX.Float4;
+                    position.Y.c0[fireRow] = bulletPositionY.Float4;
+                    time.Value.c0[fireRow] = currentTimeX;
+                }
+                else
+                {
+                    position.X.c1[fireRow] = bulletPositionX.Float4;
+                    position.Y.c1[fireRow] = bulletPositionY.Float4;
+                    time.Value.c1[fireRow] = currentTimeX;
+                }
+                ++fireCount;
+            }
+
+            if (((mask >> 5) & 1) == 1)
+            {
+                var fireBigIndex = fireCount >> 3;
+                var fireColumn = (fireBigIndex & 4) >> 2;
+                var fireRow = fireBigIndex & 3;
+                ref var position = ref ((Position2D.Eight*)firePositionArray)[fireBigIndex];
+                ref var time = ref ((FireStartTime.Eight*)FireStartTimeArray)[fireBigIndex];
+                if (fireColumn == 0)
+                {
+                    position.X.c0[fireRow] = bulletPositionX.Float5;
+                    position.Y.c0[fireRow] = bulletPositionY.Float5;
+                    time.Value.c0[fireRow] = currentTimeX;
+                }
+                else
+                {
+                    position.X.c1[fireRow] = bulletPositionX.Float5;
+                    position.Y.c1[fireRow] = bulletPositionY.Float5;
+                    time.Value.c1[fireRow] = currentTimeX;
+                }
+                ++fireCount;
+            }
+
+            if (((mask >> 6) & 1) == 1)
+            {
+                var fireBigIndex = fireCount >> 3;
+                var fireColumn = (fireBigIndex & 4) >> 2;
+                var fireRow = fireBigIndex & 3;
+                ref var position = ref ((Position2D.Eight*)firePositionArray)[fireBigIndex];
+                ref var time = ref ((FireStartTime.Eight*)FireStartTimeArray)[fireBigIndex];
+                if (fireColumn == 0)
+                {
+                    position.X.c0[fireRow] = bulletPositionX.Float6;
+                    position.Y.c0[fireRow] = bulletPositionY.Float6;
+                    time.Value.c0[fireRow] = currentTimeX;
+                }
+                else
+                {
+                    position.X.c1[fireRow] = bulletPositionX.Float6;
+                    position.Y.c1[fireRow] = bulletPositionY.Float6;
+                    time.Value.c1[fireRow] = currentTimeX;
+                }
+                ++fireCount;
+            }
+
+            if (((mask >> 7) & 1) == 1)
+            {
+                var fireBigIndex = fireCount >> 3;
+                var fireColumn = (fireBigIndex & 4) >> 2;
+                var fireRow = fireBigIndex & 3;
+                ref var position = ref ((Position2D.Eight*)firePositionArray)[fireBigIndex];
+                ref var time = ref ((FireStartTime.Eight*)FireStartTimeArray)[fireBigIndex];
+                if (fireColumn == 0)
+                {
+                    position.X.c0[fireRow] = bulletPositionX.Float7;
+                    position.Y.c0[fireRow] = bulletPositionY.Float7;
+                    time.Value.c0[fireRow] = currentTimeX;
+                }
+                else
+                {
+                    position.X.c1[fireRow] = bulletPositionX.Float7;
+                    position.Y.c1[fireRow] = bulletPositionY.Float7;
+                    time.Value.c1[fireRow] = currentTimeX;
+                }
+                ++fireCount;
+            }
+        }
+
         [CollisionMethod(IntrinsicsKind.Ordinal, 3, 3, 3)]
         public static void Exe(
             ref float4 bulletPositionX,
@@ -29,11 +232,12 @@ namespace Unity1Week.Hit
             ref float4 collisionRadiusSquare,
             ref float4 currentTime,
             ref int fireCount,
-            ref NativeArray<Position2D.Eight> firePositionArray,
-            ref NativeArray<FireStartTime.Eight> FireStartTimeArray
+            void* firePositionArray,
+            int firePositionArrayLength,
+            void* FireStartTimeArray,
+            int FireStartTimeArrayLength
         )
         {
-            var oldCount = fireCount;
             var diffX = bulletPositionX - enemyPositionX;
             var diffY = bulletPositionY - enemyPositionY;
             var lenSq = diffX * diffX + diffY * diffY;
@@ -46,13 +250,21 @@ namespace Unity1Week.Hit
                     var fireBigIndex = fireCount >> 3;
                     var fireColumn = (fireBigIndex & 4) >> 2;
                     var fireRow = fireBigIndex & 3;
-                    var position = firePositionArray[fireBigIndex];
-                    position.X[fireColumn][fireRow] = bulletPositionX[i];
-                    position.Y[fireColumn][fireRow] = bulletPositionY[i];
-                    firePositionArray[fireBigIndex] = position;
-                    var time = FireStartTimeArray[fireBigIndex];
-                    time.Value[fireColumn][fireRow] = currentTime.x;
-                    FireStartTimeArray[fireBigIndex] = time;
+                    ref var position = ref ((Position2D.Eight*)firePositionArray)[fireBigIndex];
+                    ref var time = ref ((FireStartTime.Eight*)FireStartTimeArray)[fireBigIndex];
+                    if (fireColumn == 0)
+                    {
+                        position.X.c0[fireRow] = bulletPositionX[i];
+                        position.Y.c0[fireRow] = bulletPositionY[i];
+                        time.Value.c0[fireRow] = currentTime.x;
+                    }
+                    else
+                    {
+                        position.X.c1[fireRow] = bulletPositionX[i];
+                        position.Y.c1[fireRow] = bulletPositionY[i];
+                        time.Value.c1[fireRow] = currentTime.x;
+                    }
+                    
                     ++fireCount;
                 }
             }
@@ -63,133 +275,13 @@ namespace Unity1Week.Hit
         {
             return a | b;
         }
-    }
-    [BurstCompile]
-    public struct BulletEnemyHitJob : IJob
-    {
-        [ReadOnly] public NativeArray<Position2D.Eight> BulletPositionArray;
-        public NativeArray<AliveState.Eight> BulletStateArray;
-        [ReadOnly] public NativeArray<Position2D.Eight> EnemyPositionArray;
-        [ReadOnly] public NativeArray<AliveState.Eight> EnemyAliveStateArray;
 
-        public NativeArray<Position2D.Eight> FirePositionArray;
-        public NativeArray<FireStartTime.Eight> FireStartTimeArray;
-        public NativeArray<int> FireCount;
-
-        public float CollisionRadiusSquare;
-        public float CurrentTime;
-
-        public void Execute()
+        [CollisionCloseMethod(IntrinsicsKind.Fma, CollisionFieldKind.Outer, 1, "Value")]
+        public static v256 CloseAlive2(v256 a, v256 b)
         {
-            var oldFireCount = FireCount[0];
-            var fireIndex = oldFireCount;
-            var fireColumn = fireIndex % 8;
-            fireIndex -= fireColumn;
-            fireIndex >>= 3;
-            var fireRow = fireIndex % 4;
-            fireColumn -= fireRow;
-            fireColumn >>= 2;
+            if (!X86.Fma.IsFmaSupported) return a;
 
-            void AddFire(float x, float y, NativeArray<Position2D.Eight> firePositionArray)
-            {
-                if (fireIndex == firePositionArray.Length) return;
-                
-                var position = firePositionArray[fireIndex];
-                position.X[fireColumn][fireRow] = x;
-                position.Y[fireColumn][fireRow] = y;
-                firePositionArray[fireIndex] = position;
-                
-                if (++fireRow != 4) return;
-
-                fireRow = 0;
-                if (++fireColumn != 2) return;
-
-                fireColumn = 0;
-                ++fireIndex;
-            }
-            
-            for (var bulletIndex = 0; bulletIndex < BulletPositionArray.Length; bulletIndex++)
-            {
-                var bulletPosition = BulletPositionArray[bulletIndex];
-                var bulletState = BulletStateArray[bulletIndex];
-                var oldBulletState = bulletState;
-                // ReSharper disable once ForCanBeConvertedToForeach
-                for (var enemyIndex = 0; enemyIndex < EnemyPositionArray.Length; enemyIndex++)
-                {
-                    var enemyPosition4X2 = EnemyPositionArray[enemyIndex];
-                    var enemyAliveState4X2 = EnemyAliveStateArray[enemyIndex].Value;
-                    for (var i = 0; i < 8; i++)
-                    {
-                        if (i != 0)
-                        {
-                            RotateUtility.RotateHeadToTail<float4x2, float>(ref enemyPosition4X2.X);
-                            RotateUtility.RotateHeadToTail<float4x2, float>(ref enemyPosition4X2.Y);
-                            RotateUtility.RotateHeadToTail<int4x2, int>(ref enemyAliveState4X2);
-                        }
-
-                        var lengthSquared = Position2DHelper.CalculateDistanceSquared(enemyPosition4X2, bulletPosition);
-                        var collision = lengthSquared <= CollisionRadiusSquare;
-                        for (var columnIndex = 0; columnIndex < 2; columnIndex++)
-                        for (var rowIndex = 0; rowIndex < 4; rowIndex++)
-                            if (collision[columnIndex][rowIndex] && enemyAliveState4X2[columnIndex][rowIndex] == (int)AliveState.State.Alive && (int)AliveState.State.Alive == bulletState.Value[columnIndex][rowIndex])
-                                bulletState.Value[columnIndex][rowIndex] = (int)AliveState.State.Dead;
-                    }
-                }
-
-                if (bulletState.Value.c0.x != oldBulletState.Value.c0.x)
-                {
-                    AddFire(bulletPosition.X.c0.x, bulletPosition.Y.c0.x, FirePositionArray);
-                }
-                    
-                if (bulletState.Value.c0.y != oldBulletState.Value.c0.y)
-                {
-                    AddFire(bulletPosition.X.c0.y, bulletPosition.Y.c0.y, FirePositionArray);
-                }
-                    
-                if (bulletState.Value.c0.z != oldBulletState.Value.c0.z)
-                {
-                    AddFire(bulletPosition.X.c0.z, bulletPosition.Y.c0.z, FirePositionArray);
-                }
-                    
-                if (bulletState.Value.c0.w != oldBulletState.Value.c0.w)
-                {
-                    AddFire(bulletPosition.X.c0.w, bulletPosition.Y.c0.w, FirePositionArray);
-                }
-                    
-                if (bulletState.Value.c1.x != oldBulletState.Value.c1.x)
-                {
-                    AddFire(bulletPosition.X.c1.x, bulletPosition.Y.c1.x, FirePositionArray);
-                }
-                    
-                if (bulletState.Value.c1.y != oldBulletState.Value.c1.y)
-                {
-                    AddFire(bulletPosition.X.c1.y, bulletPosition.Y.c1.y, FirePositionArray);
-                }
-                    
-                if (bulletState.Value.c1.z != oldBulletState.Value.c1.z)
-                {
-                    AddFire(bulletPosition.X.c1.z, bulletPosition.Y.c1.z, FirePositionArray);
-                }
-                    
-                if (bulletState.Value.c1.w != oldBulletState.Value.c1.w)
-                {
-                    AddFire(bulletPosition.X.c1.w, bulletPosition.Y.c1.w, FirePositionArray);
-                }
-                
-                BulletStateArray[bulletIndex] = bulletState;
-            }
-
-            var newFireCount = (fireIndex << 3) | (fireColumn << 2) | fireRow;
-            if (newFireCount != oldFireCount)
-            {
-                var currentTime = CurrentTime;
-                unsafe
-                {
-                    UnsafeUtility.MemCpyReplicate((float*)FireStartTimeArray.GetUnsafePtr() + oldFireCount, &currentTime, sizeof(float), newFireCount - oldFireCount);
-                }
-
-                FireCount[0] = newFireCount;
-            }
+            return X86.Avx.mm256_or_ps(a, b);
         }
     }
 
