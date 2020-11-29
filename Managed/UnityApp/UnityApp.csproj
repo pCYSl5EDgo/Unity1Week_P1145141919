@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Copy SourceFiles="./obj/GeneratedFiles\MyAnalyzer\MyAnalyzer.MyGenerator\MyAnalyzerResult.cs;./obj/GeneratedFiles\MyAnalyzer\MyAnalyzer.MyGenerator\MyAttributeResult.cs"
+    <Copy SourceFiles="./obj/GeneratedFiles\MyAnalyzer\MyAnalyzer.MyGenerator\MyAnalyzerResult.cs"
           DestinationFolder="../../Unity/Assets/MyFolder/Scripts/ECSPlugins/" />
   </Target>
 
