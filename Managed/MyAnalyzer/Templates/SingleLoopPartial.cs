@@ -24,7 +24,7 @@ namespace MyAnalyzer.Templates
             Fma = fma;
         }
 
-        public static SingleLoopTemplate? TryCreate(ISymbol loopType, ISymbol loopMethod, ISymbol loopParameter, INamedTypeSymbol typeSymbol)
+        public static SingleLoopTemplate? TryCreate(ISymbol loopType, ISymbol loopMethod, INamedTypeSymbol typeSymbol)
         {
             var comparer = SymbolEqualityComparer.Default;
             if (!InterpretLoopType(loopType, typeSymbol, comparer, out var outers, out var others, out var tables))
@@ -32,7 +32,7 @@ namespace MyAnalyzer.Templates
                 return default;
             }
 
-            if (!CollectLoop(loopMethod, loopParameter, typeSymbol, comparer, outers, others, tables, out var ordinal, out var fma))
+            if (!CollectLoop(loopMethod, typeSymbol, comparer, outers, others, tables, out var ordinal, out var fma))
             {
                 return default;
             }
@@ -93,7 +93,7 @@ namespace MyAnalyzer.Templates
         }
 
 
-        private static bool CollectLoop(ISymbol loopMethod, ISymbol loopParameter, INamedTypeSymbol typeSymbol, SymbolEqualityComparer comparer, TypeStruct[] outers, TypeStruct[] others, TypeStruct[] tables, out MethodStruct ordinal, out MethodStruct? fma)
+        private static bool CollectLoop(ISymbol loopMethod, INamedTypeSymbol typeSymbol, SymbolEqualityComparer comparer, TypeStruct[] outers, TypeStruct[] others, TypeStruct[] tables, out MethodStruct ordinal, out MethodStruct? fma)
         {
             var isOrdinalInitialized = false;
             ordinal = default;
@@ -133,7 +133,7 @@ namespace MyAnalyzer.Templates
                     otherCount = x;
                 }
 
-                var tableCount = parameters.Length - outerCount - otherCount;
+                var tableCount = (parameters.Length - outerCount - otherCount) >> 1;
 
                 var intrinsicsKind = (IntrinsicsKind)kind;
                 switch (intrinsicsKind)
@@ -148,61 +148,29 @@ namespace MyAnalyzer.Templates
                 parameterOuters = new ParameterStruct[outerCount];
                 parameterOthers = otherCount == 0 ? Array.Empty<ParameterStruct>() : new ParameterStruct[otherCount];
                 parameterTables = tableCount == 0 ? Array.Empty<ParameterStruct>() : new ParameterStruct[tableCount];
-                if (parameters.All(x => x.GetAttributes().IsDefaultOrEmpty))
+                var parameterIndex = 0;
+                for (int memberIndex = 0, typeIndex = 0; typeIndex < outers.Length; ++typeIndex)
                 {
-                    var parameterIndex = 0;
-                    for (int memberIndex = 0, typeIndex = 0; typeIndex < outers.Length; ++typeIndex)
+                    var typeStruct = outers[typeIndex];
+                    foreach (var member2 in typeStruct.Symbol.GetMembers())
                     {
-                        var typeStruct = outers[typeIndex];
-                        foreach (var member2 in typeStruct.Symbol.GetMembers())
+                        if (member2 is not IFieldSymbol fieldSymbol || fieldSymbol.IsStatic)
                         {
-                            if (member2 is not IFieldSymbol fieldSymbol || fieldSymbol.IsStatic)
-                            {
-                                continue;
-                            }
-
-                            parameterOuters[memberIndex++] = new ParameterStruct(parameters[parameterIndex++], typeIndex, fieldSymbol.Name);
+                            continue;
                         }
-                    }
 
-                    for (int memberIndex = 0, typeIndex = 0; typeIndex < others.Length; ++typeIndex)
-                    {
-                        parameterOthers[memberIndex++] = new ParameterStruct(parameters[parameterIndex++], typeIndex, string.Empty);
-                    }
-
-                    for (int memberIndex = 0, typeIndex = 0; typeIndex < tables.Length; ++typeIndex)
-                    {
-                        parameterTables[memberIndex++] = new ParameterStruct(parameters[parameterIndex++], typeIndex, string.Empty);
+                        parameterOuters[memberIndex++] = new ParameterStruct(parameters[parameterIndex++], typeIndex, fieldSymbol.Name);
                     }
                 }
-                else
+
+                for (int memberIndex = 0, typeIndex = 0; typeIndex < others.Length; ++typeIndex)
                 {
-                    for (var i = 0; i < parameterOuters.Length; i++)
-                    {
-                        var parameter = parameters[i];
-                        if (!ParameterStruct.InterpretLoopParameter(loopParameter, comparer, parameter, out parameterOuters[i]))
-                        {
-                            return false;
-                        }
-                    }
+                    parameterOthers[memberIndex++] = new ParameterStruct(parameters[parameterIndex++], typeIndex, string.Empty);
+                }
 
-                    for (var i = 0; i < parameterOthers.Length; i++)
-                    {
-                        var parameter = parameters[i + outerCount];
-                        if (!ParameterStruct.InterpretLoopParameter(loopParameter, comparer, parameter, out parameterOthers[i]))
-                        {
-                            return false;
-                        }
-                    }
-
-                    for (var i = 0; i < parameterTables.Length; i++)
-                    {
-                        var parameter = parameters[i + outerCount + otherCount];
-                        if (!ParameterStruct.InterpretLoopParameter(loopParameter, comparer, parameter, out parameterTables[i]))
-                        {
-                            return false;
-                        }
-                    }
+                for (int memberIndex = 0, typeIndex = 0; typeIndex < tables.Length; ++typeIndex, parameterIndex += 2)
+                {
+                    parameterTables[memberIndex++] = new ParameterStruct(parameters[parameterIndex], typeIndex, string.Empty);
                 }
 
                 switch (intrinsicsKind)

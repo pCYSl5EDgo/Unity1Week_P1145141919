@@ -57,7 +57,6 @@ namespace MyAnalyzer
             var collisionCloseMethod = compilation.GetTypeByMetadataName("MyAttribute.CollisionCloseMethodAttribute") ?? throw new System.NullReferenceException();
             var loopType = compilation.GetTypeByMetadataName("MyAttribute.SingleLoopTypeAttribute") ?? throw new System.NullReferenceException();
             var loopMethod = compilation.GetTypeByMetadataName("MyAttribute.SingleLoopMethodAttribute") ?? throw new System.NullReferenceException();
-            var loopParameter = compilation.GetTypeByMetadataName("MyAttribute.LoopParameterAttribute") ?? throw new System.NullReferenceException();
 
             var candidateTypesCount = receiver.CandidateTypes.Count;
             eightBaseTypes = new(candidateTypesCount);
@@ -99,14 +98,14 @@ namespace MyAnalyzer
                 else
                 {
                     {
-                        var template = CollisionTemplate.TryCreate(collisionType, collisionMethod, collisionCloseMethod, loopParameter, type);
+                        var template = CollisionTemplate.TryCreate(collisionType, collisionMethod, collisionCloseMethod, type);
                         if (template is not null)
                         {
                             collisionTemplates.Add(template);
                         }
                     }
                     {
-                        var template = SingleLoopTemplate.TryCreate(loopType, loopMethod, loopParameter, type);
+                        var template = SingleLoopTemplate.TryCreate(loopType, loopMethod, type);
                         if (template is not null)
                         {
                             singleLoopTemplates.Add(template);

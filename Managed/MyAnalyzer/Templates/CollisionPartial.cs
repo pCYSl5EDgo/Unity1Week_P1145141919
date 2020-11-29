@@ -27,7 +27,7 @@ namespace MyAnalyzer.Templates
             Fma = fma;
         }
 
-        public static CollisionTemplate? TryCreate(ISymbol collisionType, ISymbol collisionMethod, ISymbol collisionCloseMethod, ISymbol loopParameter, INamedTypeSymbol typeSymbol)
+        public static CollisionTemplate? TryCreate(ISymbol collisionType, ISymbol collisionMethod, ISymbol collisionCloseMethod, INamedTypeSymbol typeSymbol)
         {
             var comparer = SymbolEqualityComparer.Default;
             if (!InterpretCollisionType(collisionType, typeSymbol, comparer, out var outers, out var inners, out var others, out var tables))
@@ -35,7 +35,7 @@ namespace MyAnalyzer.Templates
                 return default;
             }
 
-            if (!CollectCollisionMethodAndCollisionCloseMethod(collisionMethod, collisionCloseMethod, loopParameter, typeSymbol, comparer, outers, inners, others, tables, out var ordinal, out var fma))
+            if (!CollectCollisionMethodAndCollisionCloseMethod(collisionMethod, collisionCloseMethod, typeSymbol, comparer, outers, inners, others, tables, out var ordinal, out var fma))
             {
                 return default;
             }
@@ -43,7 +43,7 @@ namespace MyAnalyzer.Templates
             return new(typeSymbol, outers, inners, others, tables, ordinal, fma);
         }
 
-        private static bool CollectCollisionMethodAndCollisionCloseMethod(ISymbol collisionMethod, ISymbol collisionCloseMethod, ISymbol loopParameter, INamedTypeSymbol typeSymbol, SymbolEqualityComparer comparer, TypeStruct[] outers, TypeStruct[] inners, TypeStruct[] others, TypeStruct[] tables, out MethodStruct ordinal, out MethodStruct? fma)
+        private static bool CollectCollisionMethodAndCollisionCloseMethod(ISymbol collisionMethod, ISymbol collisionCloseMethod, INamedTypeSymbol typeSymbol, SymbolEqualityComparer comparer, TypeStruct[] outers, TypeStruct[] inners, TypeStruct[] others, TypeStruct[] tables, out MethodStruct ordinal, out MethodStruct? fma)
         {
             ordinal = default;
             List<CloseMethodStruct> ordinalCloses = new();
@@ -110,84 +110,43 @@ namespace MyAnalyzer.Templates
                 parameterInners = new ParameterStruct[innerCount];
                 parameterOthers = otherCount == 0 ? Array.Empty<ParameterStruct>() : new ParameterStruct[otherCount];
                 parameterTables = tableCount == 0 ? Array.Empty<ParameterStruct>() : new ParameterStruct[tableCount];
-                if (parameters.All(x => x.GetAttributes().IsDefaultOrEmpty))
+                var parameterIndex = 0;
+                for (int memberIndex = 0, typeIndex = 0; typeIndex < outers.Length; ++typeIndex)
                 {
-                    var parameterIndex = 0;
-                    for (int memberIndex = 0, typeIndex = 0; typeIndex < outers.Length; ++typeIndex)
+                    var typeStruct = outers[typeIndex];
+                    foreach (var member in typeStruct.Symbol.GetMembers())
                     {
-                        var typeStruct = outers[typeIndex];
-                        foreach (var member in typeStruct.Symbol.GetMembers())
+                        if (member is not IFieldSymbol fieldSymbol || fieldSymbol.IsStatic)
                         {
-                            if (member is not IFieldSymbol fieldSymbol || fieldSymbol.IsStatic)
-                            {
-                                continue;
-                            }
-
-                            parameterOuters[memberIndex++] = new ParameterStruct(parameters[parameterIndex++], typeIndex, member.Name);
+                            continue;
                         }
-                    }
 
-                    for (int memberIndex = 0, typeIndex = 0; typeIndex < inners.Length; ++typeIndex)
-                    {
-                        var typeStruct = inners[typeIndex];
-                        foreach (var member in typeStruct.Symbol.GetMembers())
-                        {
-                            if (member is not IFieldSymbol fieldSymbol || fieldSymbol.IsStatic)
-                            {
-                                continue;
-                            }
-
-                            parameterInners[memberIndex++] = new ParameterStruct(parameters[parameterIndex++], typeIndex, member.Name);
-                        }
-                    }
-
-                    for (int memberIndex = 0, typeIndex = 0; typeIndex < others.Length; ++typeIndex)
-                    {
-                        parameterOthers[memberIndex++] = new ParameterStruct(parameters[parameterIndex++], typeIndex, string.Empty);
-                    }
-
-                    for (int memberIndex = 0, typeIndex = 0; typeIndex < tables.Length; ++typeIndex, parameterIndex += 2)
-                    {
-                        parameterTables[memberIndex++] = new ParameterStruct(parameters[parameterIndex], typeIndex, string.Empty);
+                        parameterOuters[memberIndex++] = new ParameterStruct(parameters[parameterIndex++], typeIndex, member.Name);
                     }
                 }
-                else
+
+                for (int memberIndex = 0, typeIndex = 0; typeIndex < inners.Length; ++typeIndex)
                 {
-                    for (var i = 0; i < parameterOuters.Length; i++)
+                    var typeStruct = inners[typeIndex];
+                    foreach (var member in typeStruct.Symbol.GetMembers())
                     {
-                        var parameter = parameters[i];
-                        if (!ParameterStruct.InterpretLoopParameter(loopParameter, comparer, parameter, out parameterOuters[i]))
+                        if (member is not IFieldSymbol fieldSymbol || fieldSymbol.IsStatic)
                         {
-                            return false;
+                            continue;
                         }
-                    }
 
-                    for (var i = 0; i < parameterInners.Length; i++)
-                    {
-                        var parameter = parameters[i + outerCount];
-                        if (!ParameterStruct.InterpretLoopParameter(loopParameter, comparer, parameter, out parameterInners[i]))
-                        {
-                            return false;
-                        }
+                        parameterInners[memberIndex++] = new ParameterStruct(parameters[parameterIndex++], typeIndex, member.Name);
                     }
+                }
 
-                    for (var i = 0; i < parameterOthers.Length; i++)
-                    {
-                        var parameter = parameters[i + outerCount + innerCount];
-                        if (!ParameterStruct.InterpretLoopParameter(loopParameter, comparer, parameter, out parameterOthers[i]))
-                        {
-                            return false;
-                        }
-                    }
+                for (int memberIndex = 0, typeIndex = 0; typeIndex < others.Length; ++typeIndex)
+                {
+                    parameterOthers[memberIndex++] = new ParameterStruct(parameters[parameterIndex++], typeIndex, string.Empty);
+                }
 
-                    for (var i = 0; i < parameterTables.Length; i++)
-                    {
-                        var parameter = parameters[(i << 1) + outerCount + innerCount + otherCount];
-                        if (!ParameterStruct.InterpretLoopParameter(loopParameter, comparer, parameter, out parameterTables[i]))
-                        {
-                            return false;
-                        }
-                    }
+                for (int memberIndex = 0, typeIndex = 0; typeIndex < tables.Length; ++typeIndex, parameterIndex += 2)
+                {
+                    parameterTables[memberIndex++] = new ParameterStruct(parameters[parameterIndex], typeIndex, string.Empty);
                 }
 
                 switch (intrinsicsKind)

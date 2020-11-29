@@ -127,19 +127,6 @@ namespace MyAttribute
         }
     }
 
-    [AttributeUsage(AttributeTargets.Parameter)]
-    public class LoopParameterAttribute : Attribute
-    {
-        public readonly int FieldIndex;
-        public readonly string FieldName;
-
-        public LoopParameterAttribute(int fieldIndex, string fieldName = "")
-        {
-            FieldIndex = fieldIndex;
-            FieldName = fieldName;
-        }
-    }
-
     public class EightAttribute : Attribute { }
 
     public class CountableAttribute : Attribute
