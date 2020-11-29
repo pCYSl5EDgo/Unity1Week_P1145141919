@@ -56,8 +56,8 @@ namespace MyAnalyzer.Templates
             
             #line default
             #line hidden
-            this.Write("\r\n    {\r\n        [global::Unity.Burst.BurstCompile]\r\n        public unsafe partial struct" +
-                    " Job : global::Unity.Jobs.IJob\r\n        {\r\n");
+            this.Write("\r\n    {\r\n        [global::Unity.Burst.BurstCompile]\r\n        public unsafe partia" +
+                    "l struct Job : global::Unity.Jobs.IJob\r\n        {\r\n");
             
             #line 13 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
  for (var index = 0; index < Outers.Length; ++index) {
@@ -201,6 +201,64 @@ namespace MyAnalyzer.Templates
             this.Write("\r\n            public void Execute()\r\n            {\r\n");
             
             #line 32 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+ for (var index = 0; index < Tables.Length; ++index) {
+    var item = Tables[index];
+    if (item.IsReadOnly) { 
+            
+            #line default
+            #line hidden
+            this.Write("                var tablePointer");
+            
+            #line 35 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            
+            #line default
+            #line hidden
+            this.Write(" = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeRe" +
+                    "adOnlyPtr(Table");
+            
+            #line 35 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            
+            #line default
+            #line hidden
+            this.Write(");\r\n");
+            
+            #line 36 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+ } else { 
+            
+            #line default
+            #line hidden
+            this.Write("                var tablePointer");
+            
+            #line 37 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            
+            #line default
+            #line hidden
+            this.Write(" = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBu" +
+                    "fferPointerWithoutChecks(Table");
+            
+            #line 37 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            
+            #line default
+            #line hidden
+            this.Write(");\r\n");
+            
+            #line 38 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+ } 
+            
+            #line default
+            #line hidden
+            
+            #line 39 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+ } 
+            
+            #line default
+            #line hidden
+            
+            #line 40 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
  if (Fma.HasValue) { var method = Fma.Value; 
             
             #line default
@@ -208,7 +266,7 @@ namespace MyAnalyzer.Templates
             this.Write("                if (global::Unity.Burst.Intrinsics.X86.Fma.IsFmaSupported)\r\n     " +
                     "           {\r\n");
             
-            #line 35 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 43 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
  for (var index = 0; index < Others.Length; ++index) {
     var item = Others[index];
     if (item.IsReadOnly) { 
@@ -217,169 +275,206 @@ namespace MyAnalyzer.Templates
             #line hidden
             this.Write("                    var other");
             
-            #line 38 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 46 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(index));
             
             #line default
             #line hidden
             this.Write(" = new global::Unity.Burst.Intrinsics.v256(Other");
             
-            #line 38 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 46 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(index));
             
             #line default
             #line hidden
             this.Write(", Other");
             
-            #line 38 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 46 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(index));
             
             #line default
             #line hidden
             this.Write(", Other");
             
-            #line 38 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 46 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(index));
             
             #line default
             #line hidden
             this.Write(", Other");
             
-            #line 38 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 46 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(index));
             
             #line default
             #line hidden
             this.Write(", Other");
             
-            #line 38 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 46 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(index));
             
             #line default
             #line hidden
             this.Write(", Other");
             
-            #line 38 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 46 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(index));
             
             #line default
             #line hidden
             this.Write(", Other");
             
-            #line 38 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 46 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(index));
             
             #line default
             #line hidden
             this.Write(", Other");
             
-            #line 38 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 46 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(index));
             
             #line default
             #line hidden
             this.Write(");\r\n");
             
-            #line 39 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 47 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
  } else { 
             
             #line default
             #line hidden
             this.Write("                    var other");
             
-            #line 40 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 48 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(index));
             
             #line default
             #line hidden
             this.Write(" = Other");
             
-            #line 40 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 48 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(index));
             
             #line default
             #line hidden
             this.Write("[0];\r\n");
             
-            #line 41 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 49 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
  } 
             
             #line default
             #line hidden
             
-            #line 42 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 50 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
  } 
             
             #line default
             #line hidden
-            this.Write("                    for (var outerIndex = 0; outerIndex < Outer0.Length; ++outerI" +
-                    "ndex)\r\n                    {\r\n");
             
-            #line 45 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 51 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
  for (var index = 0; index < Outers.Length; ++index) {
     var item = Outers[index]; 
             
             #line default
             #line hidden
-            this.Write("                        var outer");
+            this.Write("                    var outerPointer");
             
-            #line 47 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 53 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(index));
             
             #line default
             #line hidden
-            this.Write(" = Outer");
+            this.Write(" = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetU" +
+                    "nsafeBufferPointerWithoutChecks(Outer");
             
-            #line 47 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 53 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(index));
-            
-            #line default
-            #line hidden
-            this.Write("[outerIndex];\r\n");
-            
-            #line 48 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
- } 
-            
-            #line default
-            #line hidden
-            
-            #line 49 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
- for (var index = 0; index < method.Outers.Length; ++index) {
-    var item = method.Outers[index];
-    var name = "outer" + item.Index + "_" + item.Name; 
-            
-            #line default
-            #line hidden
-            this.Write("                        ref var ");
-            
-            #line 52 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(name));
-            
-            #line default
-            #line hidden
-            this.Write("0 = ref *(global::Unity.Burst.Intrinsics.v256*)&(outer");
-            
-            #line 52 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(item.Index));
-            
-            #line default
-            #line hidden
-            this.Write(".");
-            
-            #line 52 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(item.Name));
             
             #line default
             #line hidden
             this.Write(");\r\n");
             
-            #line 53 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 54 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+ } 
+            
+            #line default
+            #line hidden
+            this.Write("\r\n                    for (\r\n                        var outerIndex = 0;\r\n       " +
+                    "                 outerIndex < Outer0.Length;\r\n                        ++outerInd" +
+                    "ex");
+            
+            #line 59 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+ for (var index = 0; index < Outers.Length; ++index) { 
+            
+            #line default
+            #line hidden
+            this.Write(",\r\n                        outerPointer");
+            
+            #line 60 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            
+            #line default
+            #line hidden
+            this.Write(" += sizeof(");
+            
+            #line 60 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Outers[index].Symbol.ToDisplayString()));
+            
+            #line default
+            #line hidden
+            this.Write(".Eight)");
+            
+            #line 60 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+ } 
+            
+            #line default
+            #line hidden
+            this.Write("\r\n                    )\r\n                    {\r\n");
+            
+            #line 64 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+ for (var index = 0; index < method.Outers.Length; ++index) {
+    var item = method.Outers[index];
+    var fieldIndex = item.GetIndex(Outers[item.Index].Symbol); 
+            
+            #line default
+            #line hidden
+            this.Write("                        var outer");
+            
+            #line 67 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Index));
+            
+            #line default
+            #line hidden
+            this.Write("_");
+            
+            #line 67 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Name));
+            
+            #line default
+            #line hidden
+            this.Write(" = global::Unity.Burst.Intrinsics.X86.Avx.mm256_load_ps(outerPointer");
+            
+            #line 67 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Index));
+            
+            #line default
+            #line hidden
+            this.Write(" + (");
+            
+            #line 67 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(fieldIndex));
+            
+            #line default
+            #line hidden
+            this.Write(" << 5));\r\n");
+            
+            #line 68 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
  } 
             
             #line default
             #line hidden
             
-            #line 54 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 69 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
  { 
       var parameter = method.Outers[0]; 
             
@@ -387,116 +482,141 @@ namespace MyAnalyzer.Templates
             #line hidden
             this.Write("                        ");
             
-            #line 56 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 71 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(method.Symbol.Name));
             
             #line default
             #line hidden
             this.Write("(ref outer");
             
-            #line 56 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 71 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(parameter.Index));
             
             #line default
             #line hidden
             this.Write("_");
             
-            #line 56 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 71 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(parameter.Name));
             
             #line default
             #line hidden
             
-            #line 56 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 71 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
  for (var index = 1; index < method.Outers.Length; ++index) { parameter = method.Outers[index]; 
             
             #line default
             #line hidden
             this.Write(", ref outer");
             
-            #line 56 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 71 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(parameter.Index));
             
             #line default
             #line hidden
             this.Write("_");
             
-            #line 56 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 71 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(parameter.Name));
             
             #line default
             #line hidden
             
-            #line 56 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 71 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
  } for (var index = 0; index < method.Others.Length; ++index) { parameter = method.Others[index]; 
             
             #line default
             #line hidden
             this.Write(", ref other");
             
-            #line 56 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 71 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(parameter.Index));
             
             #line default
             #line hidden
             
-            #line 56 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 71 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
  } for (var index = 0; index < method.Tables.Length; ++index) { parameter = method.Tables[index]; 
             
             #line default
             #line hidden
-            this.Write(", ref Table");
+            this.Write(", tablePointer");
             
-            #line 56 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 71 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(parameter.Index));
             
             #line default
             #line hidden
+            this.Write(", Table");
             
-            #line 56 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 71 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(parameter.Index));
+            
+            #line default
+            #line hidden
+            this.Write(".Length");
+            
+            #line 71 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
  } 
             
             #line default
             #line hidden
             this.Write(");\r\n");
             
-            #line 57 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 72 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
  } 
             
             #line default
             #line hidden
             
-            #line 58 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
- for (var index = 0; index < Outers.Length; ++index) {
-    var item = Outers[index];
-    if (item.IsReadOnly) { continue; } 
+            #line 73 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+ for (var index = 0; index < method.Outers.Length; ++index) {
+    var item = method.Outers[index];
+    var typeItem = Outers[item.Index];
+    if (typeItem.IsReadOnly) { continue; }
+    var fieldIndex = item.GetIndex(typeItem.Symbol); 
             
             #line default
             #line hidden
-            this.Write("                        Outer");
+            this.Write("                        global::Unity.Burst.Intrinsics.X86.Avx.mm256_store_ps(out" +
+                    "erPointer");
             
-            #line 61 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(index));
-            
-            #line default
-            #line hidden
-            this.Write("[outerIndex] = outer");
-            
-            #line 61 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            #line 78 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Index));
             
             #line default
             #line hidden
-            this.Write(";\r\n");
+            this.Write(" + (");
             
-            #line 62 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 78 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(fieldIndex));
+            
+            #line default
+            #line hidden
+            this.Write(" << 5), outer");
+            
+            #line 78 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Index));
+            
+            #line default
+            #line hidden
+            this.Write("_");
+            
+            #line 78 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Name));
+            
+            #line default
+            #line hidden
+            this.Write(");\r\n");
+            
+            #line 79 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
  } 
             
             #line default
             #line hidden
             this.Write("                    }\r\n");
             
-            #line 64 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 81 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
  for (var index = 0; index < Others.Length; ++index) {
     var item = Others[index];
     if (item.IsReadOnly) { continue; } 
@@ -505,147 +625,26 @@ namespace MyAnalyzer.Templates
             #line hidden
             this.Write("\r\n                    Other");
             
-            #line 68 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 85 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(index));
             
             #line default
             #line hidden
             this.Write("[0] = other");
             
-            #line 68 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 85 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(index));
             
             #line default
             #line hidden
             this.Write(";\r\n");
             
-            #line 69 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 86 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
  } 
             
             #line default
             #line hidden
             this.Write("                    return;\r\n                }\r\n\r\n");
-            
-            #line 73 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
- } 
-            
-            #line default
-            #line hidden
-            
-            #line 74 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
- { var method = Ordinal; 
-            
-            #line default
-            #line hidden
-            this.Write("                {\r\n");
-            
-            #line 76 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
- for (var index = 0; index < Others.Length; ++index) {
-    var item = Others[index];
-    if (item.IsReadOnly) { 
-            
-            #line default
-            #line hidden
-            this.Write("                    var other");
-            
-            #line 79 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(index));
-            
-            #line default
-            #line hidden
-            this.Write(" = new global::Unity.Mathematics.");
-            
-            #line 79 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(item.Symbol.ToDisplayString()));
-            
-            #line default
-            #line hidden
-            this.Write("4(Other");
-            
-            #line 79 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(index));
-            
-            #line default
-            #line hidden
-            this.Write(", Other");
-            
-            #line 79 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(index));
-            
-            #line default
-            #line hidden
-            this.Write(", Other");
-            
-            #line 79 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(index));
-            
-            #line default
-            #line hidden
-            this.Write(", Other");
-            
-            #line 79 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(index));
-            
-            #line default
-            #line hidden
-            this.Write(");\r\n");
-            
-            #line 80 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
- } else { 
-            
-            #line default
-            #line hidden
-            this.Write("                    var other");
-            
-            #line 81 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(index));
-            
-            #line default
-            #line hidden
-            this.Write(" = Other");
-            
-            #line 81 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(index));
-            
-            #line default
-            #line hidden
-            this.Write("[0];\r\n");
-            
-            #line 82 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
- } 
-            
-            #line default
-            #line hidden
-            
-            #line 83 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
- } 
-            
-            #line default
-            #line hidden
-            this.Write("\r\n                    for (var outerIndex = 0; outerIndex < Outer0.Length; ++oute" +
-                    "rIndex)\r\n                    {\r\n");
-            
-            #line 87 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
- for (var index = 0; index < Outers.Length; ++index) {
-    var item = Outers[index]; 
-            
-            #line default
-            #line hidden
-            this.Write("                        var outer");
-            
-            #line 89 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(index));
-            
-            #line default
-            #line hidden
-            this.Write(" = Outer");
-            
-            #line 89 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(index));
-            
-            #line default
-            #line hidden
-            this.Write("[outerIndex];\r\n");
             
             #line 90 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
  } 
@@ -654,6 +653,127 @@ namespace MyAnalyzer.Templates
             #line hidden
             
             #line 91 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+ { var method = Ordinal; 
+            
+            #line default
+            #line hidden
+            this.Write("                {\r\n");
+            
+            #line 93 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+ for (var index = 0; index < Others.Length; ++index) {
+    var item = Others[index];
+    if (item.IsReadOnly) { 
+            
+            #line default
+            #line hidden
+            this.Write("                    var other");
+            
+            #line 96 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            
+            #line default
+            #line hidden
+            this.Write(" = new global::Unity.Mathematics.");
+            
+            #line 96 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Symbol.ToDisplayString()));
+            
+            #line default
+            #line hidden
+            this.Write("4(Other");
+            
+            #line 96 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            
+            #line default
+            #line hidden
+            this.Write(", Other");
+            
+            #line 96 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            
+            #line default
+            #line hidden
+            this.Write(", Other");
+            
+            #line 96 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            
+            #line default
+            #line hidden
+            this.Write(", Other");
+            
+            #line 96 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            
+            #line default
+            #line hidden
+            this.Write(");\r\n");
+            
+            #line 97 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+ } else { 
+            
+            #line default
+            #line hidden
+            this.Write("                    var other");
+            
+            #line 98 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            
+            #line default
+            #line hidden
+            this.Write(" = Other");
+            
+            #line 98 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            
+            #line default
+            #line hidden
+            this.Write("[0];\r\n");
+            
+            #line 99 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+ } 
+            
+            #line default
+            #line hidden
+            
+            #line 100 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+ } 
+            
+            #line default
+            #line hidden
+            this.Write("\r\n                    for (var outerIndex = 0; outerIndex < Outer0.Length; ++oute" +
+                    "rIndex)\r\n                    {\r\n");
+            
+            #line 104 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+ for (var index = 0; index < Outers.Length; ++index) {
+    var item = Outers[index]; 
+            
+            #line default
+            #line hidden
+            this.Write("                        var outer");
+            
+            #line 106 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            
+            #line default
+            #line hidden
+            this.Write(" = Outer");
+            
+            #line 106 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            
+            #line default
+            #line hidden
+            this.Write("[outerIndex];\r\n");
+            
+            #line 107 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+ } 
+            
+            #line default
+            #line hidden
+            
+            #line 108 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
  for (var cIndex0 = 0; cIndex0 < 2; ++cIndex0) {
       var parameter = method.Outers[0]; 
             
@@ -661,100 +781,108 @@ namespace MyAnalyzer.Templates
             #line hidden
             this.Write("                        ");
             
-            #line 93 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 110 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(method.Symbol.Name));
             
             #line default
             #line hidden
             this.Write("(ref outer");
             
-            #line 93 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 110 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(parameter.Index));
             
             #line default
             #line hidden
             this.Write(".");
             
-            #line 93 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 110 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(parameter.Name));
             
             #line default
             #line hidden
             this.Write(".c");
             
-            #line 93 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 110 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(cIndex0));
             
             #line default
             #line hidden
             
-            #line 93 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 110 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
  for (var index = 1; index < method.Outers.Length; ++index) { parameter = method.Outers[index]; 
             
             #line default
             #line hidden
             this.Write(", ref outer");
             
-            #line 93 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 110 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(parameter.Index));
             
             #line default
             #line hidden
             this.Write(".");
             
-            #line 93 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 110 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(parameter.Name));
             
             #line default
             #line hidden
             this.Write(".c");
             
-            #line 93 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 110 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(cIndex0));
             
             #line default
             #line hidden
             
-            #line 93 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 110 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
  } for (var index = 0; index < method.Others.Length; ++index) { parameter = method.Others[index]; 
             
             #line default
             #line hidden
             this.Write(", ref other");
             
-            #line 93 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 110 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(parameter.Index));
             
             #line default
             #line hidden
             
-            #line 93 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 110 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
  } for (var index = 0; index < method.Tables.Length; ++index) { parameter = method.Tables[index]; 
             
             #line default
             #line hidden
-            this.Write(", ref Table");
+            this.Write(", tablePointer");
             
-            #line 93 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 110 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(parameter.Index));
             
             #line default
             #line hidden
+            this.Write(", Table");
             
-            #line 93 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 110 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(parameter.Index));
+            
+            #line default
+            #line hidden
+            this.Write(".Length");
+            
+            #line 110 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
  } 
             
             #line default
             #line hidden
             this.Write(");\r\n");
             
-            #line 94 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 111 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
  } 
             
             #line default
             #line hidden
             
-            #line 95 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 112 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
  for (var index = 0; index < Outers.Length; ++index) {
     var item = Outers[index];
     if (item.IsReadOnly) { continue; } 
@@ -763,28 +891,28 @@ namespace MyAnalyzer.Templates
             #line hidden
             this.Write("                        Outer");
             
-            #line 98 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 115 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(index));
             
             #line default
             #line hidden
             this.Write("[outerIndex] = outer");
             
-            #line 98 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 115 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(index));
             
             #line default
             #line hidden
             this.Write(";\r\n");
             
-            #line 99 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 116 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
  } 
             
             #line default
             #line hidden
             this.Write("                    }\r\n");
             
-            #line 101 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 118 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
  for (var index = 0; index < Others.Length; ++index) {
     var item = Others[index];
     if (item.IsReadOnly) { continue; } 
@@ -793,28 +921,28 @@ namespace MyAnalyzer.Templates
             #line hidden
             this.Write("\r\n                    Other");
             
-            #line 105 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 122 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(index));
             
             #line default
             #line hidden
             this.Write("[0] = other");
             
-            #line 105 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 122 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(index));
             
             #line default
             #line hidden
             this.Write(";\r\n");
             
-            #line 106 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 123 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
  } 
             
             #line default
             #line hidden
             this.Write("                }\r\n");
             
-            #line 108 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
+            #line 125 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
  } 
             
             #line default

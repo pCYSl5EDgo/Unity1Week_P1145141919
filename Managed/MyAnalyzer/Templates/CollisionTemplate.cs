@@ -995,130 +995,183 @@ namespace MyAnalyzer.Templates
             
             #line default
             #line hidden
-            this.Write("1 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(");
+            this.Write("0 = ");
+            
+            #line 151 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Symbol.Name));
+            
+            #line default
+            #line hidden
+            this.Write("(");
             
             #line 151 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
-            this.Write("1, 0b10_01_00_11);\r\n                        ");
+            this.Write("0, global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute2f128_ps(");
             
-            #line 152 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(name));
-            
-            #line default
-            #line hidden
-            this.Write("2 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(");
-            
-            #line 152 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(name));
-            
-            #line default
-            #line hidden
-            this.Write("2, 0b01_00_11_10);\r\n                        ");
-            
-            #line 153 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(name));
-            
-            #line default
-            #line hidden
-            this.Write("3 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(");
-            
-            #line 153 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(name));
-            
-            #line default
-            #line hidden
-            this.Write("3, 0b00_11_10_01);\r\n                        ");
-            
-            #line 154 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(name));
-            
-            #line default
-            #line hidden
-            this.Write("4 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute2f128_ps(");
-            
-            #line 154 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 151 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
             this.Write("4, ");
             
-            #line 154 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 151 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
-            this.Write("4, 0b0000_0001);\r\n                        ");
+            this.Write("4, 0b0000_0001));\r\n                        ");
             
-            #line 155 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 152 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
-            this.Write("5 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(global::Unity.Burst.I" +
-                    "ntrinsics.X86.Avx.mm256_permute2f128_ps(");
+            this.Write("1 = ");
             
-            #line 155 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 152 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Symbol.Name));
+            
+            #line default
+            #line hidden
+            this.Write("(");
+            
+            #line 152 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(name));
+            
+            #line default
+            #line hidden
+            this.Write("1, global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute2f128_ps(");
+            
+            #line 152 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
             this.Write("5, ");
             
-            #line 155 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 152 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
-            this.Write("5, 0b0000_0001), 0b10_01_00_11);\r\n                        ");
+            this.Write("5, 0b0000_0001));\r\n                        ");
             
-            #line 156 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 153 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
-            this.Write("6 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(global::Unity.Burst.I" +
-                    "ntrinsics.X86.Avx.mm256_permute2f128_ps(");
+            this.Write("2 = ");
             
-            #line 156 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 153 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Symbol.Name));
+            
+            #line default
+            #line hidden
+            this.Write("(");
+            
+            #line 153 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(name));
+            
+            #line default
+            #line hidden
+            this.Write("2, global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute2f128_ps(");
+            
+            #line 153 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
             this.Write("6, ");
             
-            #line 156 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 153 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
-            this.Write("6, 0b0000_0001), 0b01_00_11_10);\r\n                        ");
+            this.Write("6, 0b0000_0001));\r\n                        ");
             
-            #line 157 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 154 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
-            this.Write("7 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(global::Unity.Burst.I" +
-                    "ntrinsics.X86.Avx.mm256_permute2f128_ps(");
+            this.Write("3 = ");
             
-            #line 157 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            #line 154 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Symbol.Name));
+            
+            #line default
+            #line hidden
+            this.Write("(");
+            
+            #line 154 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(name));
+            
+            #line default
+            #line hidden
+            this.Write("3, global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute2f128_ps(");
+            
+            #line 154 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
             this.Write("7, ");
             
+            #line 154 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(name));
+            
+            #line default
+            #line hidden
+            this.Write("7, 0b0000_0001));\r\n                        ");
+            
+            #line 155 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(name));
+            
+            #line default
+            #line hidden
+            this.Write("1 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(");
+            
+            #line 155 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(name));
+            
+            #line default
+            #line hidden
+            this.Write("1, 0b10_01_00_11);\r\n                        ");
+            
+            #line 156 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(name));
+            
+            #line default
+            #line hidden
+            this.Write("2 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(");
+            
+            #line 156 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(name));
+            
+            #line default
+            #line hidden
+            this.Write("2, 0b01_00_11_10);\r\n                        ");
+            
             #line 157 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
-            this.Write("7, 0b0000_0001), 0b00_11_10_01);\r\n                        global::Unity.Burst.Int" +
-                    "rinsics.X86.Avx.mm256_store_ps(");
+            this.Write("3 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(");
+            
+            #line 157 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(name));
+            
+            #line default
+            #line hidden
+            this.Write("3, 0b00_11_10_01);\r\n                        global::Unity.Burst.Intrinsics.X86.Av" +
+                    "x.mm256_store_ps(");
             
             #line 158 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
@@ -1126,13 +1179,6 @@ namespace MyAnalyzer.Templates
             #line default
             #line hidden
             this.Write(", ");
-            
-            #line 158 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(item.Symbol.Name));
-            
-            #line default
-            #line hidden
-            this.Write("(");
             
             #line 158 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(item.Symbol.Name));
@@ -1181,56 +1227,7 @@ namespace MyAnalyzer.Templates
             
             #line default
             #line hidden
-            this.Write("3)), ");
-            
-            #line 158 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(item.Symbol.Name));
-            
-            #line default
-            #line hidden
-            this.Write("(");
-            
-            #line 158 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(item.Symbol.Name));
-            
-            #line default
-            #line hidden
-            this.Write("(");
-            
-            #line 158 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(name));
-            
-            #line default
-            #line hidden
-            this.Write("4, ");
-            
-            #line 158 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(name));
-            
-            #line default
-            #line hidden
-            this.Write("5), ");
-            
-            #line 158 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(item.Symbol.Name));
-            
-            #line default
-            #line hidden
-            this.Write("(");
-            
-            #line 158 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(name));
-            
-            #line default
-            #line hidden
-            this.Write("6, ");
-            
-            #line 158 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(name));
-            
-            #line default
-            #line hidden
-            this.Write("7))));\r\n");
+            this.Write("3)));\r\n");
             
             #line 159 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CollisionTemplate.tt"
  } 

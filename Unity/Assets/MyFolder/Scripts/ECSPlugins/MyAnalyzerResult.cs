@@ -599,14 +599,14 @@ namespace Unity1Week.Hit
                             Exe2(ref outer0_X7, ref outer0_Y7, ref outer1_Value7, ref inner0_X, ref inner0_Y, ref inner1_Value, ref other0, ref other1, ref other2, tablePointer0, Table0.Length, tablePointer1, Table1.Length);
                         }
 
+                        outer1_Value0 = CloseAlive2(outer1_Value0, global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute2f128_ps(outer1_Value4, outer1_Value4, 0b0000_0001));
+                        outer1_Value1 = CloseAlive2(outer1_Value1, global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute2f128_ps(outer1_Value5, outer1_Value5, 0b0000_0001));
+                        outer1_Value2 = CloseAlive2(outer1_Value2, global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute2f128_ps(outer1_Value6, outer1_Value6, 0b0000_0001));
+                        outer1_Value3 = CloseAlive2(outer1_Value3, global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute2f128_ps(outer1_Value7, outer1_Value7, 0b0000_0001));
                         outer1_Value1 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(outer1_Value1, 0b10_01_00_11);
                         outer1_Value2 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(outer1_Value2, 0b01_00_11_10);
                         outer1_Value3 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(outer1_Value3, 0b00_11_10_01);
-                        outer1_Value4 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute2f128_ps(outer1_Value4, outer1_Value4, 0b0000_0001);
-                        outer1_Value5 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute2f128_ps(outer1_Value5, outer1_Value5, 0b0000_0001), 0b10_01_00_11);
-                        outer1_Value6 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute2f128_ps(outer1_Value6, outer1_Value6, 0b0000_0001), 0b01_00_11_10);
-                        outer1_Value7 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute2f128_ps(outer1_Value7, outer1_Value7, 0b0000_0001), 0b00_11_10_01);
-                        global::Unity.Burst.Intrinsics.X86.Avx.mm256_store_ps(outer1_Value, CloseAlive2(CloseAlive2(CloseAlive2(outer1_Value0, outer1_Value1), CloseAlive2(outer1_Value2, outer1_Value3)), CloseAlive2(CloseAlive2(outer1_Value4, outer1_Value5), CloseAlive2(outer1_Value6, outer1_Value7))));
+                        global::Unity.Burst.Intrinsics.X86.Avx.mm256_store_ps(outer1_Value, CloseAlive2(CloseAlive2(outer1_Value0, outer1_Value1), CloseAlive2(outer1_Value2, outer1_Value3)));
                     }
 
                     Other2[0] = other2;
@@ -686,4 +686,308 @@ namespace Unity1Week.Hit
     }
 }
 
+namespace Unity1Week.Hit
+{
+    static partial class  PlayerFireEnemyHitJob
+    {
+        [global::Unity.Burst.BurstCompile]
+        public unsafe partial struct CollisionJob : global::Unity.Jobs.IJob
+        {
+            [global::Unity.Collections.ReadOnly] public global::Unity.Collections.NativeArray<ComponentTypes.Position2D.Eight> Outer0;
+            [global::Unity.Collections.ReadOnly] public global::Unity.Collections.NativeArray<ComponentTypes.FireStartTime.Eight> Outer1;
+            [global::Unity.Collections.ReadOnly] public global::Unity.Collections.NativeArray<ComponentTypes.Position2D.Eight> Inner0;
+            public global::Unity.Collections.NativeArray<ComponentTypes.AliveState.Eight> Inner1;
+            public float Other0;
+            public float Other1;
+            public global::Unity.Collections.NativeArray<int> Other2;
+
+            public void Execute()
+            {
+
+                if (global::Unity.Burst.Intrinsics.X86.Fma.IsFmaSupported)
+                {
+                    const int next1 = 0b00_11_10_01;
+                    const int next2 = 0b01_00_11_10;
+                    const int next3 = 0b10_01_00_11;
+                    var other0 = new global::Unity.Burst.Intrinsics.v256(Other0, Other0, Other0, Other0, Other0, Other0, Other0, Other0);
+                    var other1 = new global::Unity.Burst.Intrinsics.v256(Other1, Other1, Other1, Other1, Other1, Other1, Other1, Other1);
+                    var other2 = Other2[0];
+
+                    var outerPointer0 = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(Outer0);
+                    var outerPointer1 = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(Outer1);
+                    var innerOriginalPointer0 = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(Inner0);
+                    var innerOriginalPointer1 = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(Inner1);
+
+                    for (
+                        var outerIndex = 0;
+                        outerIndex < Outer0.Length;
+                        ++outerIndex,
+                        outerPointer0 += sizeof(ComponentTypes.Position2D.Eight),
+                        outerPointer1 += sizeof(ComponentTypes.FireStartTime.Eight)
+                    )
+                    {
+                        var outer0_X = outerPointer0 + (0 << 5);
+                        var outer0_Y = outerPointer0 + (1 << 5);
+                        var outer1_Value = outerPointer1 + (0 << 5);
+
+                        var outer0_X0 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_load_ps(outer0_X);
+                        var outer0_Y0 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_load_ps(outer0_Y);
+                        var outer1_Value0 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_load_ps(outer1_Value);
+
+                        var outer0_X1 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(outer0_X0, next1);
+                        var outer0_Y1 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(outer0_Y0, next1);
+                        var outer1_Value1 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(outer1_Value0, next1);
+                        var outer0_X2 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(outer0_X0, next2);
+                        var outer0_Y2 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(outer0_Y0, next2);
+                        var outer1_Value2 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(outer1_Value0, next2);
+                        var outer0_X3 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(outer0_X0, next3);
+                        var outer0_Y3 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(outer0_Y0, next3);
+                        var outer1_Value3 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(outer1_Value0, next3);
+
+                        var outer0_X4 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute2f128_ps(outer0_X0, outer0_X0, 0b0000_0001);
+                        var outer0_Y4 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute2f128_ps(outer0_Y0, outer0_Y0, 0b0000_0001);
+                        var outer1_Value4 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute2f128_ps(outer1_Value0, outer1_Value0, 0b0000_0001);
+
+                        var outer0_X5 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(outer0_X4, next1);
+                        var outer0_Y5 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(outer0_Y4, next1);
+                        var outer1_Value5 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(outer1_Value4, next1);
+                        var outer0_X6 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(outer0_X4, next2);
+                        var outer0_Y6 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(outer0_Y4, next2);
+                        var outer1_Value6 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(outer1_Value4, next2);
+                        var outer0_X7 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(outer0_X4, next3);
+                        var outer0_Y7 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(outer0_Y4, next3);
+                        var outer1_Value7 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(outer1_Value4, next3);
+
+                        var innerPointer0 = innerOriginalPointer0;
+                        var innerPointer1 = innerOriginalPointer1;
+                        for (
+                            var innerIndex = 0;
+                            innerIndex < Inner0.Length;
+                            ++innerIndex,
+                            innerPointer0 += sizeof(ComponentTypes.Position2D.Eight),
+                            innerPointer1 += sizeof(ComponentTypes.AliveState.Eight)
+                        )
+                        {
+                            var inner0_X = global::Unity.Burst.Intrinsics.X86.Avx.mm256_load_ps(innerPointer0 + (0 << 5));
+                            var inner0_Y = global::Unity.Burst.Intrinsics.X86.Avx.mm256_load_ps(innerPointer0 + (1 << 5));
+                            var inner1_Value = global::Unity.Burst.Intrinsics.X86.Avx.mm256_load_ps(innerPointer1 + (0 << 5));
+
+                            Exe2(ref outer0_X0, ref outer0_Y0, ref outer1_Value0, ref inner0_X, ref inner0_Y, ref inner1_Value, ref other0, ref other1, ref other2);
+                            Exe2(ref outer0_X1, ref outer0_Y1, ref outer1_Value1, ref inner0_X, ref inner0_Y, ref inner1_Value, ref other0, ref other1, ref other2);
+                            Exe2(ref outer0_X2, ref outer0_Y2, ref outer1_Value2, ref inner0_X, ref inner0_Y, ref inner1_Value, ref other0, ref other1, ref other2);
+                            Exe2(ref outer0_X3, ref outer0_Y3, ref outer1_Value3, ref inner0_X, ref inner0_Y, ref inner1_Value, ref other0, ref other1, ref other2);
+                            Exe2(ref outer0_X4, ref outer0_Y4, ref outer1_Value4, ref inner0_X, ref inner0_Y, ref inner1_Value, ref other0, ref other1, ref other2);
+                            Exe2(ref outer0_X5, ref outer0_Y5, ref outer1_Value5, ref inner0_X, ref inner0_Y, ref inner1_Value, ref other0, ref other1, ref other2);
+                            Exe2(ref outer0_X6, ref outer0_Y6, ref outer1_Value6, ref inner0_X, ref inner0_Y, ref inner1_Value, ref other0, ref other1, ref other2);
+                            Exe2(ref outer0_X7, ref outer0_Y7, ref outer1_Value7, ref inner0_X, ref inner0_Y, ref inner1_Value, ref other0, ref other1, ref other2);
+                            global::Unity.Burst.Intrinsics.X86.Avx.mm256_store_ps(innerPointer1 + (0 << 5), inner1_Value);
+                        }
+
+                    }
+
+                    Other2[0] = other2;
+                    return;
+                }
+
+                {
+                    var other0 = new global::Unity.Mathematics.float4(Other0, Other0, Other0, Other0);
+                    var other1 = new global::Unity.Mathematics.float4(Other1, Other1, Other1, Other1);
+                    var other2 = Other2[0];
+                    for (var outerIndex = 0; outerIndex < Outer0.Length; ++outerIndex)
+                    {
+                        var outer0 = Outer0[outerIndex];
+                        var outer1 = Outer1[outerIndex];
+                        ref var outer0_X0 = ref outer0.X;
+                        ref var outer0_X0_c0 = ref outer0_X0.c0;
+                        var outer0_X1_c0 = outer0_X0.c0.wxyz;
+                        var outer0_X2_c0 = outer0_X0.c0.zwxy;
+                        var outer0_X3_c0 = outer0_X0.c0.yzwx;
+                        ref var outer0_X0_c1 = ref outer0_X0.c1;
+                        var outer0_X1_c1 = outer0_X0_c1.wxyz;
+                        var outer0_X2_c1 = outer0_X0_c1.zwxy;
+                        var outer0_X3_c1 = outer0_X0_c1.yzwx;
+                        ref var outer0_Y0 = ref outer0.Y;
+                        ref var outer0_Y0_c0 = ref outer0_Y0.c0;
+                        var outer0_Y1_c0 = outer0_Y0.c0.wxyz;
+                        var outer0_Y2_c0 = outer0_Y0.c0.zwxy;
+                        var outer0_Y3_c0 = outer0_Y0.c0.yzwx;
+                        ref var outer0_Y0_c1 = ref outer0_Y0.c1;
+                        var outer0_Y1_c1 = outer0_Y0_c1.wxyz;
+                        var outer0_Y2_c1 = outer0_Y0_c1.zwxy;
+                        var outer0_Y3_c1 = outer0_Y0_c1.yzwx;
+                        ref var outer1_Value0 = ref outer1.Value;
+                        ref var outer1_Value0_c0 = ref outer1_Value0.c0;
+                        var outer1_Value1_c0 = outer1_Value0.c0.wxyz;
+                        var outer1_Value2_c0 = outer1_Value0.c0.zwxy;
+                        var outer1_Value3_c0 = outer1_Value0.c0.yzwx;
+                        ref var outer1_Value0_c1 = ref outer1_Value0.c1;
+                        var outer1_Value1_c1 = outer1_Value0_c1.wxyz;
+                        var outer1_Value2_c1 = outer1_Value0_c1.zwxy;
+                        var outer1_Value3_c1 = outer1_Value0_c1.yzwx;
+                        for (var innerIndex = 0; innerIndex < Inner0.Length; ++innerIndex)
+                        {
+                            var inner0 = Inner0[innerIndex];
+                            var inner1 = Inner1[innerIndex];
+                            ref var inner0_X = ref inner0.X;
+                            ref var inner0_Y = ref inner0.Y;
+                            ref var inner1_Value = ref inner1.Value;
+
+                            Exe(ref outer0_X0_c0, ref outer0_Y0_c0, ref outer1_Value0_c0, ref inner0_X.c0, ref inner0_Y.c0, ref inner1_Value.c0, ref other0, ref other1, ref other2);
+                            Exe(ref outer0_X0_c0, ref outer0_Y0_c0, ref outer1_Value0_c0, ref inner0_X.c1, ref inner0_Y.c1, ref inner1_Value.c1, ref other0, ref other1, ref other2);
+                            Exe(ref outer0_X0_c1, ref outer0_Y0_c1, ref outer1_Value0_c1, ref inner0_X.c0, ref inner0_Y.c0, ref inner1_Value.c0, ref other0, ref other1, ref other2);
+                            Exe(ref outer0_X0_c1, ref outer0_Y0_c1, ref outer1_Value0_c1, ref inner0_X.c1, ref inner0_Y.c1, ref inner1_Value.c1, ref other0, ref other1, ref other2);
+                            Exe(ref outer0_X1_c0, ref outer0_Y1_c0, ref outer1_Value1_c0, ref inner0_X.c0, ref inner0_Y.c0, ref inner1_Value.c0, ref other0, ref other1, ref other2);
+                            Exe(ref outer0_X1_c0, ref outer0_Y1_c0, ref outer1_Value1_c0, ref inner0_X.c1, ref inner0_Y.c1, ref inner1_Value.c1, ref other0, ref other1, ref other2);
+                            Exe(ref outer0_X1_c1, ref outer0_Y1_c1, ref outer1_Value1_c1, ref inner0_X.c0, ref inner0_Y.c0, ref inner1_Value.c0, ref other0, ref other1, ref other2);
+                            Exe(ref outer0_X1_c1, ref outer0_Y1_c1, ref outer1_Value1_c1, ref inner0_X.c1, ref inner0_Y.c1, ref inner1_Value.c1, ref other0, ref other1, ref other2);
+                            Exe(ref outer0_X2_c0, ref outer0_Y2_c0, ref outer1_Value2_c0, ref inner0_X.c0, ref inner0_Y.c0, ref inner1_Value.c0, ref other0, ref other1, ref other2);
+                            Exe(ref outer0_X2_c0, ref outer0_Y2_c0, ref outer1_Value2_c0, ref inner0_X.c1, ref inner0_Y.c1, ref inner1_Value.c1, ref other0, ref other1, ref other2);
+                            Exe(ref outer0_X2_c1, ref outer0_Y2_c1, ref outer1_Value2_c1, ref inner0_X.c0, ref inner0_Y.c0, ref inner1_Value.c0, ref other0, ref other1, ref other2);
+                            Exe(ref outer0_X2_c1, ref outer0_Y2_c1, ref outer1_Value2_c1, ref inner0_X.c1, ref inner0_Y.c1, ref inner1_Value.c1, ref other0, ref other1, ref other2);
+                            Exe(ref outer0_X3_c0, ref outer0_Y3_c0, ref outer1_Value3_c0, ref inner0_X.c0, ref inner0_Y.c0, ref inner1_Value.c0, ref other0, ref other1, ref other2);
+                            Exe(ref outer0_X3_c0, ref outer0_Y3_c0, ref outer1_Value3_c0, ref inner0_X.c1, ref inner0_Y.c1, ref inner1_Value.c1, ref other0, ref other1, ref other2);
+                            Exe(ref outer0_X3_c1, ref outer0_Y3_c1, ref outer1_Value3_c1, ref inner0_X.c0, ref inner0_Y.c0, ref inner1_Value.c0, ref other0, ref other1, ref other2);
+                            Exe(ref outer0_X3_c1, ref outer0_Y3_c1, ref outer1_Value3_c1, ref inner0_X.c1, ref inner0_Y.c1, ref inner1_Value.c1, ref other0, ref other1, ref other2);
+                            Inner1[innerIndex] = inner1;
+                        }
+                    }
+
+                    Other2[0] = other2;
+                }
+            }
+        }
+    }
+}
+
+namespace Unity1Week.Hit
+{
+    static partial class  PlayerEnemyHitJob
+    {
+        [global::Unity.Burst.BurstCompile]
+        public unsafe partial struct Job : global::Unity.Jobs.IJob
+        {
+            [global::Unity.Collections.ReadOnly] public global::Unity.Collections.NativeArray<ComponentTypes.Position2D.Eight> Outer0;
+            public global::Unity.Collections.NativeArray<ComponentTypes.AliveState.Eight> Outer1;
+            public float Other0;
+            public float Other1;
+            public float Other2;
+            public global::Unity.Collections.NativeArray<int> Other3;
+
+            public void Execute()
+            {
+                if (global::Unity.Burst.Intrinsics.X86.Fma.IsFmaSupported)
+                {
+                    var other0 = new global::Unity.Burst.Intrinsics.v256(Other0, Other0, Other0, Other0, Other0, Other0, Other0, Other0);
+                    var other1 = new global::Unity.Burst.Intrinsics.v256(Other1, Other1, Other1, Other1, Other1, Other1, Other1, Other1);
+                    var other2 = new global::Unity.Burst.Intrinsics.v256(Other2, Other2, Other2, Other2, Other2, Other2, Other2, Other2);
+                    var other3 = Other3[0];
+                    var outerPointer0 = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(Outer0);
+                    var outerPointer1 = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(Outer1);
+
+                    for (
+                        var outerIndex = 0;
+                        outerIndex < Outer0.Length;
+                        ++outerIndex,
+                        outerPointer0 += sizeof(ComponentTypes.Position2D.Eight),
+                        outerPointer1 += sizeof(ComponentTypes.AliveState.Eight)
+                    )
+                    {
+                        var outer0_X = global::Unity.Burst.Intrinsics.X86.Avx.mm256_load_ps(outerPointer0 + (0 << 5));
+                        var outer0_Y = global::Unity.Burst.Intrinsics.X86.Avx.mm256_load_ps(outerPointer0 + (1 << 5));
+                        var outer1_Value = global::Unity.Burst.Intrinsics.X86.Avx.mm256_load_ps(outerPointer1 + (0 << 5));
+                        Exe2(ref outer0_X, ref outer0_Y, ref outer1_Value, ref other0, ref other1, ref other2, ref other3);
+                        global::Unity.Burst.Intrinsics.X86.Avx.mm256_store_ps(outerPointer1 + (0 << 5), outer1_Value);
+                    }
+
+                    Other3[0] = other3;
+                    return;
+                }
+
+                {
+                    var other0 = new global::Unity.Mathematics.float4(Other0, Other0, Other0, Other0);
+                    var other1 = new global::Unity.Mathematics.float4(Other1, Other1, Other1, Other1);
+                    var other2 = new global::Unity.Mathematics.float4(Other2, Other2, Other2, Other2);
+                    var other3 = Other3[0];
+
+                    for (var outerIndex = 0; outerIndex < Outer0.Length; ++outerIndex)
+                    {
+                        var outer0 = Outer0[outerIndex];
+                        var outer1 = Outer1[outerIndex];
+                        Exe(ref outer0.X.c0, ref outer0.Y.c0, ref outer1.Value.c0, ref other0, ref other1, ref other2, ref other3);
+                        Exe(ref outer0.X.c1, ref outer0.Y.c1, ref outer1.Value.c1, ref other0, ref other1, ref other2, ref other3);
+                        Outer1[outerIndex] = outer1;
+                    }
+
+                    Other3[0] = other3;
+                }
+            }
+        }
+    }
+}
+
+namespace Unity1Week.Hit
+{
+    static partial class  EnemyAttackPlayerHitJob
+    {
+        [global::Unity.Burst.BurstCompile]
+        public unsafe partial struct Job : global::Unity.Jobs.IJob
+        {
+            [global::Unity.Collections.ReadOnly] public global::Unity.Collections.NativeArray<ComponentTypes.Position2D.Eight> Outer0;
+            public global::Unity.Collections.NativeArray<ComponentTypes.AliveState.Eight> Outer1;
+            public float Other0;
+            public float Other1;
+            public float Other2;
+            public global::Unity.Collections.NativeArray<int> Other3;
+
+            public void Execute()
+            {
+                if (global::Unity.Burst.Intrinsics.X86.Fma.IsFmaSupported)
+                {
+                    var other0 = new global::Unity.Burst.Intrinsics.v256(Other0, Other0, Other0, Other0, Other0, Other0, Other0, Other0);
+                    var other1 = new global::Unity.Burst.Intrinsics.v256(Other1, Other1, Other1, Other1, Other1, Other1, Other1, Other1);
+                    var other2 = new global::Unity.Burst.Intrinsics.v256(Other2, Other2, Other2, Other2, Other2, Other2, Other2, Other2);
+                    var other3 = Other3[0];
+                    var outerPointer0 = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(Outer0);
+                    var outerPointer1 = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(Outer1);
+
+                    for (
+                        var outerIndex = 0;
+                        outerIndex < Outer0.Length;
+                        ++outerIndex,
+                        outerPointer0 += sizeof(ComponentTypes.Position2D.Eight),
+                        outerPointer1 += sizeof(ComponentTypes.AliveState.Eight)
+                    )
+                    {
+                        var outer0_X = global::Unity.Burst.Intrinsics.X86.Avx.mm256_load_ps(outerPointer0 + (0 << 5));
+                        var outer0_Y = global::Unity.Burst.Intrinsics.X86.Avx.mm256_load_ps(outerPointer0 + (1 << 5));
+                        var outer1_Value = global::Unity.Burst.Intrinsics.X86.Avx.mm256_load_ps(outerPointer1 + (0 << 5));
+                        Exe2(ref outer0_X, ref outer0_Y, ref outer1_Value, ref other0, ref other1, ref other2, ref other3);
+                        global::Unity.Burst.Intrinsics.X86.Avx.mm256_store_ps(outerPointer1 + (0 << 5), outer1_Value);
+                    }
+
+                    Other3[0] = other3;
+                    return;
+                }
+
+                {
+                    var other0 = new global::Unity.Mathematics.float4(Other0, Other0, Other0, Other0);
+                    var other1 = new global::Unity.Mathematics.float4(Other1, Other1, Other1, Other1);
+                    var other2 = new global::Unity.Mathematics.float4(Other2, Other2, Other2, Other2);
+                    var other3 = Other3[0];
+
+                    for (var outerIndex = 0; outerIndex < Outer0.Length; ++outerIndex)
+                    {
+                        var outer0 = Outer0[outerIndex];
+                        var outer1 = Outer1[outerIndex];
+                        Exe(ref outer0.X.c0, ref outer0.Y.c0, ref outer1.Value.c0, ref other0, ref other1, ref other2, ref other3);
+                        Exe(ref outer0.X.c1, ref outer0.Y.c1, ref outer1.Value.c1, ref other0, ref other1, ref other2, ref other3);
+                        Outer1[outerIndex] = outer1;
+                    }
+
+                    Other3[0] = other3;
+                }
+            }
+        }
+    }
+}
 

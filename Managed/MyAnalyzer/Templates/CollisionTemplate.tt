@@ -148,14 +148,14 @@ namespace <#= TypeSymbol.ContainingNamespace.ToDisplayString() #>
 <# foreach (var item in method.Closers) {
     if (item.FieldKind != CollisionFieldKind.Outer) continue;
     var name = "outer" + item.Index + "_" + item.Name; #>
+                        <#= name #>0 = <#= item.Symbol.Name #>(<#= name #>0, global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute2f128_ps(<#= name #>4, <#= name #>4, 0b0000_0001));
+                        <#= name #>1 = <#= item.Symbol.Name #>(<#= name #>1, global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute2f128_ps(<#= name #>5, <#= name #>5, 0b0000_0001));
+                        <#= name #>2 = <#= item.Symbol.Name #>(<#= name #>2, global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute2f128_ps(<#= name #>6, <#= name #>6, 0b0000_0001));
+                        <#= name #>3 = <#= item.Symbol.Name #>(<#= name #>3, global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute2f128_ps(<#= name #>7, <#= name #>7, 0b0000_0001));
                         <#= name #>1 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(<#= name #>1, 0b10_01_00_11);
                         <#= name #>2 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(<#= name #>2, 0b01_00_11_10);
                         <#= name #>3 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(<#= name #>3, 0b00_11_10_01);
-                        <#= name #>4 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute2f128_ps(<#= name #>4, <#= name #>4, 0b0000_0001);
-                        <#= name #>5 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute2f128_ps(<#= name #>5, <#= name #>5, 0b0000_0001), 0b10_01_00_11);
-                        <#= name #>6 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute2f128_ps(<#= name #>6, <#= name #>6, 0b0000_0001), 0b01_00_11_10);
-                        <#= name #>7 = global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute_ps(global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute2f128_ps(<#= name #>7, <#= name #>7, 0b0000_0001), 0b00_11_10_01);
-                        global::Unity.Burst.Intrinsics.X86.Avx.mm256_store_ps(<#= name #>, <#= item.Symbol.Name #>(<#= item.Symbol.Name #>(<#= item.Symbol.Name #>(<#= name #>0, <#= name #>1), <#= item.Symbol.Name #>(<#= name #>2, <#= name #>3)), <#= item.Symbol.Name #>(<#= item.Symbol.Name #>(<#= name #>4, <#= name #>5), <#= item.Symbol.Name #>(<#= name #>6, <#= name #>7))));
+                        global::Unity.Burst.Intrinsics.X86.Avx.mm256_store_ps(<#= name #>, <#= item.Symbol.Name #>(<#= item.Symbol.Name #>(<#= name #>0, <#= name #>1), <#= item.Symbol.Name #>(<#= name #>2, <#= name #>3)));
 <# } #>
                     }
 <# for (var index = 0; index < Others.Length; ++index) {
