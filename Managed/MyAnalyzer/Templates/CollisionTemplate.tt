@@ -8,27 +8,27 @@ namespace <#= TypeSymbol.ContainingNamespace.ToDisplayString() #>
     <#= TypeSymbol.IsStatic ? "static " : "" #>partial <#= TypeSymbol.IsValueType ? "struct " : "class " #> <#= TypeSymbol.Name #>
     {
         [global::Unity.Burst.BurstCompile]
-        public unsafe partial struct CollisionJob : global::Unity.Jobs.IJob
+        public unsafe partial struct Job : global::Unity.Jobs.IJob
         {
 <# for (var index = 0; index < Outers.Length; ++index) {
     var item = Outers[index]; #>
-            <# if (item.IsReadOnly) { #>[global::Unity.Collections.ReadOnly] <# } #>public global::Unity.Collections.NativeArray<<#= item.Symbol.ToDisplayString() #>.Eight> Outer<#= index #>;
+            <# if (item.IsReadOnly) { #>[global::Unity.Collections.ReadOnly] <# } #>public global::Unity.Collections.NativeArray<<#= item.Symbol.ToDisplayString() #>.Eight> <#= item.Name #>;
 <# } #>
 <# for (var index = 0; index < Inners.Length; ++index) {
     var item = Inners[index]; #>
-            <# if (item.IsReadOnly) { #>[global::Unity.Collections.ReadOnly] <# } #>public global::Unity.Collections.NativeArray<<#= item.Symbol.ToDisplayString() #>.Eight> Inner<#= index #>;
+            <# if (item.IsReadOnly) { #>[global::Unity.Collections.ReadOnly] <# } #>public global::Unity.Collections.NativeArray<<#= item.Symbol.ToDisplayString() #>.Eight> <#= item.Name #>;
 <# } #>
 <# for (var index = 0; index < Others.Length; ++index) {
     var item = Others[index]; 
     if (item.IsReadOnly) { #>
-            public <#= item.Symbol.ToDisplayString() #> Other<#= index #>;
+            public <#= item.Symbol.ToDisplayString() #> <#= item.Name #>;
 <# } else { #>
-            public global::Unity.Collections.NativeArray<<#= item.Symbol.ToDisplayString() #>> Other<#= index #>;
+            public global::Unity.Collections.NativeArray<<#= item.Symbol.ToDisplayString() #>> <#=item.Name #>;
 <# } #>
 <# } #>
 <# for (var index = 0; index < Tables.Length; ++index) {
     var item = Tables[index]; #>
-            <# if (item.IsReadOnly) { #>[global::Unity.Collections.ReadOnly] <# } #>public global::Unity.Collections.NativeArray<<#= item.Symbol.ToDisplayString() #>> Table<#= index #>;
+            <# if (item.IsReadOnly) { #>[global::Unity.Collections.ReadOnly] <# } #>public global::Unity.Collections.NativeArray<<#= item.Symbol.ToDisplayString() #>> <#= item.Name #>;
 <# } #>
 
             public void Execute()
@@ -36,9 +36,9 @@ namespace <#= TypeSymbol.ContainingNamespace.ToDisplayString() #>
 <# for (var index = 0; index < Tables.Length; ++index) {
     var item = Tables[index];
     if (item.IsReadOnly) { #>
-                var tablePointer<#= index #> = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeReadOnlyPtr(Table<#= index #>);
+                var tablePointer<#= index #> = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeReadOnlyPtr(<#= item.Name #>);
 <# } else { #>
-                var tablePointer<#= index #> = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(Table<#= index #>);
+                var tablePointer<#= index #> = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(<#= item.Name #>);
 <# } #>
 <# } #>
 
@@ -51,24 +51,24 @@ namespace <#= TypeSymbol.ContainingNamespace.ToDisplayString() #>
 <# for (var index = 0; index < Others.Length; ++index) {
     var item = Others[index];
     if (item.IsReadOnly) { #>
-                    var other<#= index #> = new global::Unity.Burst.Intrinsics.v256(Other<#= index #>, Other<#= index #>, Other<#= index #>, Other<#= index #>, Other<#= index #>, Other<#= index #>, Other<#= index #>, Other<#= index #>);
+                    var other<#= index #> = new global::Unity.Burst.Intrinsics.v256(<#= item.Name #>, <#= item.Name #>, <#= item.Name #>, <#= item.Name #>, <#= item.Name #>, <#= item.Name #>, <#= item.Name #>, <#= item.Name #>);
 <# } else { #>
-                    var other<#= index #> = Other<#= index #>[0];
+                    var other<#= index #> = <#= item.Name #>[0];
 <# } #>
 <# } #>
 
 <# for (var index = 0; index < Outers.Length; ++index) {
     var item = Outers[index]; #>
-                    var outerPointer<#= index #> = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(Outer<#= index #>);
+                    var outerPointer<#= index #> = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(<#= item.Name #>);
 <# } #>
 <# for (var index = 0; index < Inners.Length; ++index) {
     var item = Inners[index]; #>
-                    var innerOriginalPointer<#= index #> = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(Inner<#= index #>);
+                    var innerOriginalPointer<#= index #> = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(<#= item.Name #>);
 <# } #>
 
                     for (
                         var outerIndex = 0;
-                        outerIndex < Outer0.Length;
+                        outerIndex < <#= Outers[0].Name #>.Length;
                         ++outerIndex<# for (var index = 0; index < Outers.Length; ++index) { #>,
                         outerPointer<#= index #> += sizeof(<#= Outers[index].Symbol.ToDisplayString() #>.Eight)<# } #>
 
@@ -118,7 +118,7 @@ namespace <#= TypeSymbol.ContainingNamespace.ToDisplayString() #>
 <# } #>
                         for (
                             var innerIndex = 0;
-                            innerIndex < Inner0.Length;
+                            innerIndex < <#= Inners[0].Name #>.Length;
                             ++innerIndex<# for (var index = 0; index < Inners.Length; ++index) { #>,
                             innerPointer<#= index #> += sizeof(<#= Inners[index].Symbol.ToDisplayString() #>.Eight)<# } #>
 
@@ -133,7 +133,7 @@ namespace <#= TypeSymbol.ContainingNamespace.ToDisplayString() #>
 
 <# for (var counter = 0; counter < 8; ++counter) {
     var parameter = method.Outers[0]; #>
-                            <#= method.Symbol.Name #>(ref outer<#= parameter.Index #>_<#= parameter.Name #><#= counter #><# for (var index = 1; index < method.Outers.Length; ++index) { parameter = method.Outers[index]; #>, ref outer<#= parameter.Index #>_<#= parameter.Name #><#= counter #><# } for (var index = 0; index < method.Inners.Length; ++index) { parameter = method.Inners[index]; #>, ref inner<#= parameter.Index #>_<#= parameter.Name #><# } for (var index = 0; index < method.Others.Length; ++index) { parameter = method.Others[index]; #>, ref other<#= parameter.Index #><# } for (var index = 0; index < method.Tables.Length; ++index) { parameter = method.Tables[index]; #>, tablePointer<#= parameter.Index #>, Table<#= parameter.Index #>.Length<# } #>);
+                            <#= method.Symbol.Name #>(ref outer<#= parameter.Index #>_<#= parameter.Name #><#= counter #><# for (var index = 1; index < method.Outers.Length; ++index) { parameter = method.Outers[index]; #>, ref outer<#= parameter.Index #>_<#= parameter.Name #><#= counter #><# } for (var index = 0; index < method.Inners.Length; ++index) { parameter = method.Inners[index]; #>, ref inner<#= parameter.Index #>_<#= parameter.Name #><# } for (var index = 0; index < method.Others.Length; ++index) { parameter = method.Others[index]; #>, ref other<#= parameter.Index #><# } for (var index = 0; index < method.Tables.Length; ++index) { parameter = method.Tables[index]; #>, tablePointer<#= parameter.Index #>, <#= Tables[parameter.Index].Name #>.Length<# } #>);
 <# } #>
 <# for (var index = 0; index < method.Inners.Length; ++index) {
     var item = method.Inners[index];
@@ -161,7 +161,7 @@ namespace <#= TypeSymbol.ContainingNamespace.ToDisplayString() #>
     var item = Others[index];
     if (item.IsReadOnly) { continue; } #>
 
-                    Other<#= index #>[0] = other<#= index #>;
+                    <#= item.Name #>[0] = other<#= index #>;
 <# } #>
                     return;
                 }
@@ -172,16 +172,16 @@ namespace <#= TypeSymbol.ContainingNamespace.ToDisplayString() #>
 <# for (var index = 0; index < Others.Length; ++index) {
     var item = Others[index];
     if (item.IsReadOnly) { #>
-                    var other<#= index #> = new global::Unity.Mathematics.<#= item.Symbol.ToDisplayString() #>4(Other<#= index #>, Other<#= index #>, Other<#= index #>, Other<#= index #>);
+                    var other<#= index #> = new global::Unity.Mathematics.<#= item.Symbol.ToDisplayString() #>4(<#= item.Name #>, <#= item.Name #>, <#= item.Name #>, <#= item.Name #>);
 <# } else { #>
-                    var other<#= index #> = Other<#= index #>[0];
+                    var other<#= index #> = <#= item.Name #>[0];
 <# } #>
 <# } #>
-                    for (var outerIndex = 0; outerIndex < Outer0.Length; ++outerIndex)
+                    for (var outerIndex = 0; outerIndex < <#= Outers[0].Name #>.Length; ++outerIndex)
                     {
 <# for (var index = 0; index < Outers.Length; ++index) {
     var item = Outers[index]; #>
-                        var outer<#= index #> = Outer<#= index #>[outerIndex];
+                        var outer<#= index #> = <#= item.Name #>[outerIndex];
 <# } #>
 <# for (var index = 0; index < method.Outers.Length; ++index) {
     var item = method.Outers[index];
@@ -196,11 +196,11 @@ namespace <#= TypeSymbol.ContainingNamespace.ToDisplayString() #>
                         var <#= name #>2_c1 = <#= name #>0_c1.zwxy;
                         var <#= name #>3_c1 = <#= name #>0_c1.yzwx;
 <# } #>
-                        for (var innerIndex = 0; innerIndex < Inner0.Length; ++innerIndex)
+                        for (var innerIndex = 0; innerIndex < <#= Inners[0].Name #>.Length; ++innerIndex)
                         {
 <# for (var index = 0; index < Inners.Length; ++index) {
     var item = Inners[index]; #>
-                            var inner<#= index #> = Inner<#= index #>[innerIndex];
+                            var inner<#= index #> = <#= item.Name #>[innerIndex];
 <# } #>
 <# for (var index = 0; index < method.Inners.Length; ++index) {
     var item = method.Inners[index];
@@ -212,14 +212,14 @@ namespace <#= TypeSymbol.ContainingNamespace.ToDisplayString() #>
     for (var cIndex0 = 0; cIndex0 < 2; ++cIndex0) {
       for (var cIndex1 = 0; cIndex1 < 2; ++cIndex1) {
         var parameter = method.Outers[0]; #>
-                            <#= method.Symbol.Name #>(ref outer<#= parameter.Index #>_<#= parameter.Name #><#= counter #>_c<#= cIndex0 #><# for (var index = 1; index < method.Outers.Length; ++index) { parameter = method.Outers[index]; #>, ref outer<#= parameter.Index #>_<#= parameter.Name #><#= counter #>_c<#= cIndex0 #><# } for (var index = 0; index < method.Inners.Length; ++index) { parameter = method.Inners[index]; #>, ref inner<#= parameter.Index #>_<#= parameter.Name #>.c<#= cIndex1 #><# } for (var index = 0; index < method.Others.Length; ++index) { parameter = method.Others[index]; #>, ref other<#= parameter.Index #><# } for (var index = 0; index < method.Tables.Length; ++index) { parameter = method.Tables[index]; #>, tablePointer<#= parameter.Index #>, Table<#= parameter.Index #>.Length<# } #>);
+                            <#= method.Symbol.Name #>(ref outer<#= parameter.Index #>_<#= parameter.Name #><#= counter #>_c<#= cIndex0 #><# for (var index = 1; index < method.Outers.Length; ++index) { parameter = method.Outers[index]; #>, ref outer<#= parameter.Index #>_<#= parameter.Name #><#= counter #>_c<#= cIndex0 #><# } for (var index = 0; index < method.Inners.Length; ++index) { parameter = method.Inners[index]; #>, ref inner<#= parameter.Index #>_<#= parameter.Name #>.c<#= cIndex1 #><# } for (var index = 0; index < method.Others.Length; ++index) { parameter = method.Others[index]; #>, ref other<#= parameter.Index #><# } for (var index = 0; index < method.Tables.Length; ++index) { parameter = method.Tables[index]; #>, tablePointer<#= parameter.Index #>, <#= Tables[parameter.Index].Name #>.Length<# } #>);
 <# } #>
 <# } #>
 <# } #>
 <# for (var index = 0; index < Inners.Length; ++index) {
     var item = Inners[index];
     if (item.IsReadOnly) { continue; } #>
-                            Inner<#= index #>[innerIndex] = inner<#= index #>;
+                            <#= item.Name #>[innerIndex] = inner<#= index #>;
 <# } #>
                         }
 <# foreach (var item in method.Closers) {
@@ -231,7 +231,7 @@ namespace <#= TypeSymbol.ContainingNamespace.ToDisplayString() #>
 <# for (var index = 0; index < Outers.Length; ++index) {
     var item = Outers[index];
     if (item.IsReadOnly) { continue; } #>
-                        Outer<#= index #>[outerIndex] = outer<#= index #>;
+                        <#= item.Name #>[outerIndex] = outer<#= index #>;
 <# } #>
 <# } #>
                     }
@@ -239,7 +239,7 @@ namespace <#= TypeSymbol.ContainingNamespace.ToDisplayString() #>
     var item = Others[index];
     if (item.IsReadOnly) { continue; } #>
 
-                    Other<#= index #>[0] = other<#= index #>;
+                    <#= item.Name #>[0] = other<#= index #>;
 <# } #>
                 }
             }

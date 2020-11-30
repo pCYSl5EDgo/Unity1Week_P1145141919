@@ -504,40 +504,40 @@ namespace Unity1Week.Hit
     static partial class  BulletEnemyHit
     {
         [global::Unity.Burst.BurstCompile]
-        public unsafe partial struct CollisionJob : global::Unity.Jobs.IJob
+        public unsafe partial struct Job : global::Unity.Jobs.IJob
         {
-            [global::Unity.Collections.ReadOnly] public global::Unity.Collections.NativeArray<ComponentTypes.Position2D.Eight> Outer0;
-            public global::Unity.Collections.NativeArray<ComponentTypes.AliveState.Eight> Outer1;
-            [global::Unity.Collections.ReadOnly] public global::Unity.Collections.NativeArray<ComponentTypes.Position2D.Eight> Inner0;
-            [global::Unity.Collections.ReadOnly] public global::Unity.Collections.NativeArray<ComponentTypes.AliveState.Eight> Inner1;
-            public float Other0;
-            public float Other1;
-            public global::Unity.Collections.NativeArray<int> Other2;
-            public global::Unity.Collections.NativeArray<ComponentTypes.Position2D.Eight> Table0;
-            public global::Unity.Collections.NativeArray<ComponentTypes.FireStartTime.Eight> Table1;
+            [global::Unity.Collections.ReadOnly] public global::Unity.Collections.NativeArray<ComponentTypes.Position2D.Eight> BulletPosition2D;
+            public global::Unity.Collections.NativeArray<ComponentTypes.AliveState.Eight> BulletAliveState;
+            [global::Unity.Collections.ReadOnly] public global::Unity.Collections.NativeArray<ComponentTypes.Position2D.Eight> EnemyPosition2D;
+            [global::Unity.Collections.ReadOnly] public global::Unity.Collections.NativeArray<ComponentTypes.AliveState.Eight> EnemyAliveState;
+            public float CollisionRadiusSquare;
+            public float CurrentTime;
+            public global::Unity.Collections.NativeArray<int> FireCount;
+            public global::Unity.Collections.NativeArray<ComponentTypes.Position2D.Eight> FirePositionArray;
+            public global::Unity.Collections.NativeArray<ComponentTypes.FireStartTime.Eight> FireStartTimeArray;
 
             public void Execute()
             {
-                var tablePointer0 = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(Table0);
-                var tablePointer1 = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(Table1);
+                var tablePointer0 = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(FirePositionArray);
+                var tablePointer1 = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(FireStartTimeArray);
 
                 if (global::Unity.Burst.Intrinsics.X86.Fma.IsFmaSupported)
                 {
                     const int next1 = 0b00_11_10_01;
                     const int next2 = 0b01_00_11_10;
                     const int next3 = 0b10_01_00_11;
-                    var other0 = new global::Unity.Burst.Intrinsics.v256(Other0, Other0, Other0, Other0, Other0, Other0, Other0, Other0);
-                    var other1 = new global::Unity.Burst.Intrinsics.v256(Other1, Other1, Other1, Other1, Other1, Other1, Other1, Other1);
-                    var other2 = Other2[0];
+                    var other0 = new global::Unity.Burst.Intrinsics.v256(CollisionRadiusSquare, CollisionRadiusSquare, CollisionRadiusSquare, CollisionRadiusSquare, CollisionRadiusSquare, CollisionRadiusSquare, CollisionRadiusSquare, CollisionRadiusSquare);
+                    var other1 = new global::Unity.Burst.Intrinsics.v256(CurrentTime, CurrentTime, CurrentTime, CurrentTime, CurrentTime, CurrentTime, CurrentTime, CurrentTime);
+                    var other2 = FireCount[0];
 
-                    var outerPointer0 = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(Outer0);
-                    var outerPointer1 = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(Outer1);
-                    var innerOriginalPointer0 = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(Inner0);
-                    var innerOriginalPointer1 = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(Inner1);
+                    var outerPointer0 = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(BulletPosition2D);
+                    var outerPointer1 = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(BulletAliveState);
+                    var innerOriginalPointer0 = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(EnemyPosition2D);
+                    var innerOriginalPointer1 = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(EnemyAliveState);
 
                     for (
                         var outerIndex = 0;
-                        outerIndex < Outer0.Length;
+                        outerIndex < BulletPosition2D.Length;
                         ++outerIndex,
                         outerPointer0 += sizeof(ComponentTypes.Position2D.Eight),
                         outerPointer1 += sizeof(ComponentTypes.AliveState.Eight)
@@ -579,7 +579,7 @@ namespace Unity1Week.Hit
                         var innerPointer1 = innerOriginalPointer1;
                         for (
                             var innerIndex = 0;
-                            innerIndex < Inner0.Length;
+                            innerIndex < EnemyPosition2D.Length;
                             ++innerIndex,
                             innerPointer0 += sizeof(ComponentTypes.Position2D.Eight),
                             innerPointer1 += sizeof(ComponentTypes.AliveState.Eight)
@@ -589,14 +589,14 @@ namespace Unity1Week.Hit
                             var inner0_Y = global::Unity.Burst.Intrinsics.X86.Avx.mm256_load_ps(innerPointer0 + (1 << 5));
                             var inner1_Value = global::Unity.Burst.Intrinsics.X86.Avx.mm256_load_ps(innerPointer1 + (0 << 5));
 
-                            Exe2(ref outer0_X0, ref outer0_Y0, ref outer1_Value0, ref inner0_X, ref inner0_Y, ref inner1_Value, ref other0, ref other1, ref other2, tablePointer0, Table0.Length, tablePointer1, Table1.Length);
-                            Exe2(ref outer0_X1, ref outer0_Y1, ref outer1_Value1, ref inner0_X, ref inner0_Y, ref inner1_Value, ref other0, ref other1, ref other2, tablePointer0, Table0.Length, tablePointer1, Table1.Length);
-                            Exe2(ref outer0_X2, ref outer0_Y2, ref outer1_Value2, ref inner0_X, ref inner0_Y, ref inner1_Value, ref other0, ref other1, ref other2, tablePointer0, Table0.Length, tablePointer1, Table1.Length);
-                            Exe2(ref outer0_X3, ref outer0_Y3, ref outer1_Value3, ref inner0_X, ref inner0_Y, ref inner1_Value, ref other0, ref other1, ref other2, tablePointer0, Table0.Length, tablePointer1, Table1.Length);
-                            Exe2(ref outer0_X4, ref outer0_Y4, ref outer1_Value4, ref inner0_X, ref inner0_Y, ref inner1_Value, ref other0, ref other1, ref other2, tablePointer0, Table0.Length, tablePointer1, Table1.Length);
-                            Exe2(ref outer0_X5, ref outer0_Y5, ref outer1_Value5, ref inner0_X, ref inner0_Y, ref inner1_Value, ref other0, ref other1, ref other2, tablePointer0, Table0.Length, tablePointer1, Table1.Length);
-                            Exe2(ref outer0_X6, ref outer0_Y6, ref outer1_Value6, ref inner0_X, ref inner0_Y, ref inner1_Value, ref other0, ref other1, ref other2, tablePointer0, Table0.Length, tablePointer1, Table1.Length);
-                            Exe2(ref outer0_X7, ref outer0_Y7, ref outer1_Value7, ref inner0_X, ref inner0_Y, ref inner1_Value, ref other0, ref other1, ref other2, tablePointer0, Table0.Length, tablePointer1, Table1.Length);
+                            Exe2(ref outer0_X0, ref outer0_Y0, ref outer1_Value0, ref inner0_X, ref inner0_Y, ref inner1_Value, ref other0, ref other1, ref other2, tablePointer0, FirePositionArray.Length, tablePointer1, FireStartTimeArray.Length);
+                            Exe2(ref outer0_X1, ref outer0_Y1, ref outer1_Value1, ref inner0_X, ref inner0_Y, ref inner1_Value, ref other0, ref other1, ref other2, tablePointer0, FirePositionArray.Length, tablePointer1, FireStartTimeArray.Length);
+                            Exe2(ref outer0_X2, ref outer0_Y2, ref outer1_Value2, ref inner0_X, ref inner0_Y, ref inner1_Value, ref other0, ref other1, ref other2, tablePointer0, FirePositionArray.Length, tablePointer1, FireStartTimeArray.Length);
+                            Exe2(ref outer0_X3, ref outer0_Y3, ref outer1_Value3, ref inner0_X, ref inner0_Y, ref inner1_Value, ref other0, ref other1, ref other2, tablePointer0, FirePositionArray.Length, tablePointer1, FireStartTimeArray.Length);
+                            Exe2(ref outer0_X4, ref outer0_Y4, ref outer1_Value4, ref inner0_X, ref inner0_Y, ref inner1_Value, ref other0, ref other1, ref other2, tablePointer0, FirePositionArray.Length, tablePointer1, FireStartTimeArray.Length);
+                            Exe2(ref outer0_X5, ref outer0_Y5, ref outer1_Value5, ref inner0_X, ref inner0_Y, ref inner1_Value, ref other0, ref other1, ref other2, tablePointer0, FirePositionArray.Length, tablePointer1, FireStartTimeArray.Length);
+                            Exe2(ref outer0_X6, ref outer0_Y6, ref outer1_Value6, ref inner0_X, ref inner0_Y, ref inner1_Value, ref other0, ref other1, ref other2, tablePointer0, FirePositionArray.Length, tablePointer1, FireStartTimeArray.Length);
+                            Exe2(ref outer0_X7, ref outer0_Y7, ref outer1_Value7, ref inner0_X, ref inner0_Y, ref inner1_Value, ref other0, ref other1, ref other2, tablePointer0, FirePositionArray.Length, tablePointer1, FireStartTimeArray.Length);
                         }
 
                         outer1_Value0 = CloseAlive2(outer1_Value0, global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute2f128_ps(outer1_Value4, outer1_Value4, 0b0000_0001));
@@ -609,18 +609,18 @@ namespace Unity1Week.Hit
                         global::Unity.Burst.Intrinsics.X86.Avx.mm256_store_ps(outer1_Value, CloseAlive2(CloseAlive2(outer1_Value0, outer1_Value1), CloseAlive2(outer1_Value2, outer1_Value3)));
                     }
 
-                    Other2[0] = other2;
+                    FireCount[0] = other2;
                     return;
                 }
 
                 {
-                    var other0 = new global::Unity.Mathematics.float4(Other0, Other0, Other0, Other0);
-                    var other1 = new global::Unity.Mathematics.float4(Other1, Other1, Other1, Other1);
-                    var other2 = Other2[0];
-                    for (var outerIndex = 0; outerIndex < Outer0.Length; ++outerIndex)
+                    var other0 = new global::Unity.Mathematics.float4(CollisionRadiusSquare, CollisionRadiusSquare, CollisionRadiusSquare, CollisionRadiusSquare);
+                    var other1 = new global::Unity.Mathematics.float4(CurrentTime, CurrentTime, CurrentTime, CurrentTime);
+                    var other2 = FireCount[0];
+                    for (var outerIndex = 0; outerIndex < BulletPosition2D.Length; ++outerIndex)
                     {
-                        var outer0 = Outer0[outerIndex];
-                        var outer1 = Outer1[outerIndex];
+                        var outer0 = BulletPosition2D[outerIndex];
+                        var outer1 = BulletAliveState[outerIndex];
                         ref var outer0_X0 = ref outer0.X;
                         ref var outer0_X0_c0 = ref outer0_X0.c0;
                         var outer0_X1_c0 = outer0_X0.c0.wxyz;
@@ -648,38 +648,38 @@ namespace Unity1Week.Hit
                         var outer1_Value1_c1 = outer1_Value0_c1.wxyz;
                         var outer1_Value2_c1 = outer1_Value0_c1.zwxy;
                         var outer1_Value3_c1 = outer1_Value0_c1.yzwx;
-                        for (var innerIndex = 0; innerIndex < Inner0.Length; ++innerIndex)
+                        for (var innerIndex = 0; innerIndex < EnemyPosition2D.Length; ++innerIndex)
                         {
-                            var inner0 = Inner0[innerIndex];
-                            var inner1 = Inner1[innerIndex];
+                            var inner0 = EnemyPosition2D[innerIndex];
+                            var inner1 = EnemyAliveState[innerIndex];
                             ref var inner0_X = ref inner0.X;
                             ref var inner0_Y = ref inner0.Y;
                             ref var inner1_Value = ref inner1.Value;
 
-                            Exe(ref outer0_X0_c0, ref outer0_Y0_c0, ref outer1_Value0_c0, ref inner0_X.c0, ref inner0_Y.c0, ref inner1_Value.c0, ref other0, ref other1, ref other2, tablePointer0, Table0.Length, tablePointer1, Table1.Length);
-                            Exe(ref outer0_X0_c0, ref outer0_Y0_c0, ref outer1_Value0_c0, ref inner0_X.c1, ref inner0_Y.c1, ref inner1_Value.c1, ref other0, ref other1, ref other2, tablePointer0, Table0.Length, tablePointer1, Table1.Length);
-                            Exe(ref outer0_X0_c1, ref outer0_Y0_c1, ref outer1_Value0_c1, ref inner0_X.c0, ref inner0_Y.c0, ref inner1_Value.c0, ref other0, ref other1, ref other2, tablePointer0, Table0.Length, tablePointer1, Table1.Length);
-                            Exe(ref outer0_X0_c1, ref outer0_Y0_c1, ref outer1_Value0_c1, ref inner0_X.c1, ref inner0_Y.c1, ref inner1_Value.c1, ref other0, ref other1, ref other2, tablePointer0, Table0.Length, tablePointer1, Table1.Length);
-                            Exe(ref outer0_X1_c0, ref outer0_Y1_c0, ref outer1_Value1_c0, ref inner0_X.c0, ref inner0_Y.c0, ref inner1_Value.c0, ref other0, ref other1, ref other2, tablePointer0, Table0.Length, tablePointer1, Table1.Length);
-                            Exe(ref outer0_X1_c0, ref outer0_Y1_c0, ref outer1_Value1_c0, ref inner0_X.c1, ref inner0_Y.c1, ref inner1_Value.c1, ref other0, ref other1, ref other2, tablePointer0, Table0.Length, tablePointer1, Table1.Length);
-                            Exe(ref outer0_X1_c1, ref outer0_Y1_c1, ref outer1_Value1_c1, ref inner0_X.c0, ref inner0_Y.c0, ref inner1_Value.c0, ref other0, ref other1, ref other2, tablePointer0, Table0.Length, tablePointer1, Table1.Length);
-                            Exe(ref outer0_X1_c1, ref outer0_Y1_c1, ref outer1_Value1_c1, ref inner0_X.c1, ref inner0_Y.c1, ref inner1_Value.c1, ref other0, ref other1, ref other2, tablePointer0, Table0.Length, tablePointer1, Table1.Length);
-                            Exe(ref outer0_X2_c0, ref outer0_Y2_c0, ref outer1_Value2_c0, ref inner0_X.c0, ref inner0_Y.c0, ref inner1_Value.c0, ref other0, ref other1, ref other2, tablePointer0, Table0.Length, tablePointer1, Table1.Length);
-                            Exe(ref outer0_X2_c0, ref outer0_Y2_c0, ref outer1_Value2_c0, ref inner0_X.c1, ref inner0_Y.c1, ref inner1_Value.c1, ref other0, ref other1, ref other2, tablePointer0, Table0.Length, tablePointer1, Table1.Length);
-                            Exe(ref outer0_X2_c1, ref outer0_Y2_c1, ref outer1_Value2_c1, ref inner0_X.c0, ref inner0_Y.c0, ref inner1_Value.c0, ref other0, ref other1, ref other2, tablePointer0, Table0.Length, tablePointer1, Table1.Length);
-                            Exe(ref outer0_X2_c1, ref outer0_Y2_c1, ref outer1_Value2_c1, ref inner0_X.c1, ref inner0_Y.c1, ref inner1_Value.c1, ref other0, ref other1, ref other2, tablePointer0, Table0.Length, tablePointer1, Table1.Length);
-                            Exe(ref outer0_X3_c0, ref outer0_Y3_c0, ref outer1_Value3_c0, ref inner0_X.c0, ref inner0_Y.c0, ref inner1_Value.c0, ref other0, ref other1, ref other2, tablePointer0, Table0.Length, tablePointer1, Table1.Length);
-                            Exe(ref outer0_X3_c0, ref outer0_Y3_c0, ref outer1_Value3_c0, ref inner0_X.c1, ref inner0_Y.c1, ref inner1_Value.c1, ref other0, ref other1, ref other2, tablePointer0, Table0.Length, tablePointer1, Table1.Length);
-                            Exe(ref outer0_X3_c1, ref outer0_Y3_c1, ref outer1_Value3_c1, ref inner0_X.c0, ref inner0_Y.c0, ref inner1_Value.c0, ref other0, ref other1, ref other2, tablePointer0, Table0.Length, tablePointer1, Table1.Length);
-                            Exe(ref outer0_X3_c1, ref outer0_Y3_c1, ref outer1_Value3_c1, ref inner0_X.c1, ref inner0_Y.c1, ref inner1_Value.c1, ref other0, ref other1, ref other2, tablePointer0, Table0.Length, tablePointer1, Table1.Length);
+                            Exe(ref outer0_X0_c0, ref outer0_Y0_c0, ref outer1_Value0_c0, ref inner0_X.c0, ref inner0_Y.c0, ref inner1_Value.c0, ref other0, ref other1, ref other2, tablePointer0, FirePositionArray.Length, tablePointer1, FireStartTimeArray.Length);
+                            Exe(ref outer0_X0_c0, ref outer0_Y0_c0, ref outer1_Value0_c0, ref inner0_X.c1, ref inner0_Y.c1, ref inner1_Value.c1, ref other0, ref other1, ref other2, tablePointer0, FirePositionArray.Length, tablePointer1, FireStartTimeArray.Length);
+                            Exe(ref outer0_X0_c1, ref outer0_Y0_c1, ref outer1_Value0_c1, ref inner0_X.c0, ref inner0_Y.c0, ref inner1_Value.c0, ref other0, ref other1, ref other2, tablePointer0, FirePositionArray.Length, tablePointer1, FireStartTimeArray.Length);
+                            Exe(ref outer0_X0_c1, ref outer0_Y0_c1, ref outer1_Value0_c1, ref inner0_X.c1, ref inner0_Y.c1, ref inner1_Value.c1, ref other0, ref other1, ref other2, tablePointer0, FirePositionArray.Length, tablePointer1, FireStartTimeArray.Length);
+                            Exe(ref outer0_X1_c0, ref outer0_Y1_c0, ref outer1_Value1_c0, ref inner0_X.c0, ref inner0_Y.c0, ref inner1_Value.c0, ref other0, ref other1, ref other2, tablePointer0, FirePositionArray.Length, tablePointer1, FireStartTimeArray.Length);
+                            Exe(ref outer0_X1_c0, ref outer0_Y1_c0, ref outer1_Value1_c0, ref inner0_X.c1, ref inner0_Y.c1, ref inner1_Value.c1, ref other0, ref other1, ref other2, tablePointer0, FirePositionArray.Length, tablePointer1, FireStartTimeArray.Length);
+                            Exe(ref outer0_X1_c1, ref outer0_Y1_c1, ref outer1_Value1_c1, ref inner0_X.c0, ref inner0_Y.c0, ref inner1_Value.c0, ref other0, ref other1, ref other2, tablePointer0, FirePositionArray.Length, tablePointer1, FireStartTimeArray.Length);
+                            Exe(ref outer0_X1_c1, ref outer0_Y1_c1, ref outer1_Value1_c1, ref inner0_X.c1, ref inner0_Y.c1, ref inner1_Value.c1, ref other0, ref other1, ref other2, tablePointer0, FirePositionArray.Length, tablePointer1, FireStartTimeArray.Length);
+                            Exe(ref outer0_X2_c0, ref outer0_Y2_c0, ref outer1_Value2_c0, ref inner0_X.c0, ref inner0_Y.c0, ref inner1_Value.c0, ref other0, ref other1, ref other2, tablePointer0, FirePositionArray.Length, tablePointer1, FireStartTimeArray.Length);
+                            Exe(ref outer0_X2_c0, ref outer0_Y2_c0, ref outer1_Value2_c0, ref inner0_X.c1, ref inner0_Y.c1, ref inner1_Value.c1, ref other0, ref other1, ref other2, tablePointer0, FirePositionArray.Length, tablePointer1, FireStartTimeArray.Length);
+                            Exe(ref outer0_X2_c1, ref outer0_Y2_c1, ref outer1_Value2_c1, ref inner0_X.c0, ref inner0_Y.c0, ref inner1_Value.c0, ref other0, ref other1, ref other2, tablePointer0, FirePositionArray.Length, tablePointer1, FireStartTimeArray.Length);
+                            Exe(ref outer0_X2_c1, ref outer0_Y2_c1, ref outer1_Value2_c1, ref inner0_X.c1, ref inner0_Y.c1, ref inner1_Value.c1, ref other0, ref other1, ref other2, tablePointer0, FirePositionArray.Length, tablePointer1, FireStartTimeArray.Length);
+                            Exe(ref outer0_X3_c0, ref outer0_Y3_c0, ref outer1_Value3_c0, ref inner0_X.c0, ref inner0_Y.c0, ref inner1_Value.c0, ref other0, ref other1, ref other2, tablePointer0, FirePositionArray.Length, tablePointer1, FireStartTimeArray.Length);
+                            Exe(ref outer0_X3_c0, ref outer0_Y3_c0, ref outer1_Value3_c0, ref inner0_X.c1, ref inner0_Y.c1, ref inner1_Value.c1, ref other0, ref other1, ref other2, tablePointer0, FirePositionArray.Length, tablePointer1, FireStartTimeArray.Length);
+                            Exe(ref outer0_X3_c1, ref outer0_Y3_c1, ref outer1_Value3_c1, ref inner0_X.c0, ref inner0_Y.c0, ref inner1_Value.c0, ref other0, ref other1, ref other2, tablePointer0, FirePositionArray.Length, tablePointer1, FireStartTimeArray.Length);
+                            Exe(ref outer0_X3_c1, ref outer0_Y3_c1, ref outer1_Value3_c1, ref inner0_X.c1, ref inner0_Y.c1, ref inner1_Value.c1, ref other0, ref other1, ref other2, tablePointer0, FirePositionArray.Length, tablePointer1, FireStartTimeArray.Length);
                         }
 
                         outer1_Value0.c0 = CloseAlive(CloseAlive(outer1_Value0.c0, outer1_Value1_c0.yzwx), CloseAlive(outer1_Value2_c0.zwxy, outer1_Value3_c0.wxyz));
                         outer1_Value0.c1 = CloseAlive(CloseAlive(outer1_Value0.c1, outer1_Value1_c1.yzwx), CloseAlive(outer1_Value2_c1.zwxy, outer1_Value3_c1.wxyz));
-                        Outer1[outerIndex] = outer1;
+                        BulletAliveState[outerIndex] = outer1;
                     }
 
-                    Other2[0] = other2;
+                    FireCount[0] = other2;
                 }
             }
         }
@@ -691,15 +691,15 @@ namespace Unity1Week.Hit
     static partial class  PlayerFireEnemyHitJob
     {
         [global::Unity.Burst.BurstCompile]
-        public unsafe partial struct CollisionJob : global::Unity.Jobs.IJob
+        public unsafe partial struct Job : global::Unity.Jobs.IJob
         {
-            [global::Unity.Collections.ReadOnly] public global::Unity.Collections.NativeArray<ComponentTypes.Position2D.Eight> Outer0;
-            [global::Unity.Collections.ReadOnly] public global::Unity.Collections.NativeArray<ComponentTypes.FireStartTime.Eight> Outer1;
-            [global::Unity.Collections.ReadOnly] public global::Unity.Collections.NativeArray<ComponentTypes.Position2D.Eight> Inner0;
-            public global::Unity.Collections.NativeArray<ComponentTypes.AliveState.Eight> Inner1;
-            public float Other0;
-            public float Other1;
-            public global::Unity.Collections.NativeArray<int> Other2;
+            [global::Unity.Collections.ReadOnly] public global::Unity.Collections.NativeArray<ComponentTypes.Position2D.Eight> FirePosition2D;
+            [global::Unity.Collections.ReadOnly] public global::Unity.Collections.NativeArray<ComponentTypes.FireStartTime.Eight> FireFireStartTime;
+            [global::Unity.Collections.ReadOnly] public global::Unity.Collections.NativeArray<ComponentTypes.Position2D.Eight> EnemyPosition2D;
+            public global::Unity.Collections.NativeArray<ComponentTypes.AliveState.Eight> EnemyAliveState;
+            public float CollisionRadiusSquare;
+            public float FireDeadTime;
+            public global::Unity.Collections.NativeArray<int> EnemyKillCount;
 
             public void Execute()
             {
@@ -709,18 +709,18 @@ namespace Unity1Week.Hit
                     const int next1 = 0b00_11_10_01;
                     const int next2 = 0b01_00_11_10;
                     const int next3 = 0b10_01_00_11;
-                    var other0 = new global::Unity.Burst.Intrinsics.v256(Other0, Other0, Other0, Other0, Other0, Other0, Other0, Other0);
-                    var other1 = new global::Unity.Burst.Intrinsics.v256(Other1, Other1, Other1, Other1, Other1, Other1, Other1, Other1);
-                    var other2 = Other2[0];
+                    var other0 = new global::Unity.Burst.Intrinsics.v256(CollisionRadiusSquare, CollisionRadiusSquare, CollisionRadiusSquare, CollisionRadiusSquare, CollisionRadiusSquare, CollisionRadiusSquare, CollisionRadiusSquare, CollisionRadiusSquare);
+                    var other1 = new global::Unity.Burst.Intrinsics.v256(FireDeadTime, FireDeadTime, FireDeadTime, FireDeadTime, FireDeadTime, FireDeadTime, FireDeadTime, FireDeadTime);
+                    var other2 = EnemyKillCount[0];
 
-                    var outerPointer0 = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(Outer0);
-                    var outerPointer1 = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(Outer1);
-                    var innerOriginalPointer0 = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(Inner0);
-                    var innerOriginalPointer1 = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(Inner1);
+                    var outerPointer0 = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(FirePosition2D);
+                    var outerPointer1 = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(FireFireStartTime);
+                    var innerOriginalPointer0 = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(EnemyPosition2D);
+                    var innerOriginalPointer1 = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(EnemyAliveState);
 
                     for (
                         var outerIndex = 0;
-                        outerIndex < Outer0.Length;
+                        outerIndex < FirePosition2D.Length;
                         ++outerIndex,
                         outerPointer0 += sizeof(ComponentTypes.Position2D.Eight),
                         outerPointer1 += sizeof(ComponentTypes.FireStartTime.Eight)
@@ -762,7 +762,7 @@ namespace Unity1Week.Hit
                         var innerPointer1 = innerOriginalPointer1;
                         for (
                             var innerIndex = 0;
-                            innerIndex < Inner0.Length;
+                            innerIndex < EnemyPosition2D.Length;
                             ++innerIndex,
                             innerPointer0 += sizeof(ComponentTypes.Position2D.Eight),
                             innerPointer1 += sizeof(ComponentTypes.AliveState.Eight)
@@ -785,18 +785,18 @@ namespace Unity1Week.Hit
 
                     }
 
-                    Other2[0] = other2;
+                    EnemyKillCount[0] = other2;
                     return;
                 }
 
                 {
-                    var other0 = new global::Unity.Mathematics.float4(Other0, Other0, Other0, Other0);
-                    var other1 = new global::Unity.Mathematics.float4(Other1, Other1, Other1, Other1);
-                    var other2 = Other2[0];
-                    for (var outerIndex = 0; outerIndex < Outer0.Length; ++outerIndex)
+                    var other0 = new global::Unity.Mathematics.float4(CollisionRadiusSquare, CollisionRadiusSquare, CollisionRadiusSquare, CollisionRadiusSquare);
+                    var other1 = new global::Unity.Mathematics.float4(FireDeadTime, FireDeadTime, FireDeadTime, FireDeadTime);
+                    var other2 = EnemyKillCount[0];
+                    for (var outerIndex = 0; outerIndex < FirePosition2D.Length; ++outerIndex)
                     {
-                        var outer0 = Outer0[outerIndex];
-                        var outer1 = Outer1[outerIndex];
+                        var outer0 = FirePosition2D[outerIndex];
+                        var outer1 = FireFireStartTime[outerIndex];
                         ref var outer0_X0 = ref outer0.X;
                         ref var outer0_X0_c0 = ref outer0_X0.c0;
                         var outer0_X1_c0 = outer0_X0.c0.wxyz;
@@ -824,10 +824,10 @@ namespace Unity1Week.Hit
                         var outer1_Value1_c1 = outer1_Value0_c1.wxyz;
                         var outer1_Value2_c1 = outer1_Value0_c1.zwxy;
                         var outer1_Value3_c1 = outer1_Value0_c1.yzwx;
-                        for (var innerIndex = 0; innerIndex < Inner0.Length; ++innerIndex)
+                        for (var innerIndex = 0; innerIndex < EnemyPosition2D.Length; ++innerIndex)
                         {
-                            var inner0 = Inner0[innerIndex];
-                            var inner1 = Inner1[innerIndex];
+                            var inner0 = EnemyPosition2D[innerIndex];
+                            var inner1 = EnemyAliveState[innerIndex];
                             ref var inner0_X = ref inner0.X;
                             ref var inner0_Y = ref inner0.Y;
                             ref var inner1_Value = ref inner1.Value;
@@ -848,11 +848,11 @@ namespace Unity1Week.Hit
                             Exe(ref outer0_X3_c0, ref outer0_Y3_c0, ref outer1_Value3_c0, ref inner0_X.c1, ref inner0_Y.c1, ref inner1_Value.c1, ref other0, ref other1, ref other2);
                             Exe(ref outer0_X3_c1, ref outer0_Y3_c1, ref outer1_Value3_c1, ref inner0_X.c0, ref inner0_Y.c0, ref inner1_Value.c0, ref other0, ref other1, ref other2);
                             Exe(ref outer0_X3_c1, ref outer0_Y3_c1, ref outer1_Value3_c1, ref inner0_X.c1, ref inner0_Y.c1, ref inner1_Value.c1, ref other0, ref other1, ref other2);
-                            Inner1[innerIndex] = inner1;
+                            EnemyAliveState[innerIndex] = inner1;
                         }
                     }
 
-                    Other2[0] = other2;
+                    EnemyKillCount[0] = other2;
                 }
             }
         }
@@ -866,27 +866,27 @@ namespace Unity1Week.Hit
         [global::Unity.Burst.BurstCompile]
         public unsafe partial struct Job : global::Unity.Jobs.IJob
         {
-            [global::Unity.Collections.ReadOnly] public global::Unity.Collections.NativeArray<ComponentTypes.Position2D.Eight> Outer0;
-            public global::Unity.Collections.NativeArray<ComponentTypes.AliveState.Eight> Outer1;
-            public float Other0;
-            public float Other1;
-            public float Other2;
-            public global::Unity.Collections.NativeArray<int> Other3;
+            [global::Unity.Collections.ReadOnly] public global::Unity.Collections.NativeArray<ComponentTypes.Position2D.Eight> EnemyPosition2D;
+            public global::Unity.Collections.NativeArray<ComponentTypes.AliveState.Eight> EnemyAliveState;
+            public float PlayerPositionX;
+            public float PlayerPositionY;
+            public float CollisionRadiusSquare;
+            public global::Unity.Collections.NativeArray<int> CollisionCount;
 
             public void Execute()
             {
                 if (global::Unity.Burst.Intrinsics.X86.Fma.IsFmaSupported)
                 {
-                    var other0 = new global::Unity.Burst.Intrinsics.v256(Other0, Other0, Other0, Other0, Other0, Other0, Other0, Other0);
-                    var other1 = new global::Unity.Burst.Intrinsics.v256(Other1, Other1, Other1, Other1, Other1, Other1, Other1, Other1);
-                    var other2 = new global::Unity.Burst.Intrinsics.v256(Other2, Other2, Other2, Other2, Other2, Other2, Other2, Other2);
-                    var other3 = Other3[0];
-                    var outerPointer0 = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(Outer0);
-                    var outerPointer1 = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(Outer1);
+                    var other0 = new global::Unity.Burst.Intrinsics.v256(PlayerPositionX, PlayerPositionX, PlayerPositionX, PlayerPositionX, PlayerPositionX, PlayerPositionX, PlayerPositionX, PlayerPositionX);
+                    var other1 = new global::Unity.Burst.Intrinsics.v256(PlayerPositionY, PlayerPositionY, PlayerPositionY, PlayerPositionY, PlayerPositionY, PlayerPositionY, PlayerPositionY, PlayerPositionY);
+                    var other2 = new global::Unity.Burst.Intrinsics.v256(CollisionRadiusSquare, CollisionRadiusSquare, CollisionRadiusSquare, CollisionRadiusSquare, CollisionRadiusSquare, CollisionRadiusSquare, CollisionRadiusSquare, CollisionRadiusSquare);
+                    var other3 = CollisionCount[0];
+                    var outerPointer0 = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(EnemyPosition2D);
+                    var outerPointer1 = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(EnemyAliveState);
 
                     for (
                         var outerIndex = 0;
-                        outerIndex < Outer0.Length;
+                        outerIndex < EnemyPosition2D.Length;
                         ++outerIndex,
                         outerPointer0 += sizeof(ComponentTypes.Position2D.Eight),
                         outerPointer1 += sizeof(ComponentTypes.AliveState.Eight)
@@ -899,26 +899,26 @@ namespace Unity1Week.Hit
                         global::Unity.Burst.Intrinsics.X86.Avx.mm256_store_ps(outerPointer1 + (0 << 5), outer1_Value);
                     }
 
-                    Other3[0] = other3;
+                    CollisionCount[0] = other3;
                     return;
                 }
 
                 {
-                    var other0 = new global::Unity.Mathematics.float4(Other0, Other0, Other0, Other0);
-                    var other1 = new global::Unity.Mathematics.float4(Other1, Other1, Other1, Other1);
-                    var other2 = new global::Unity.Mathematics.float4(Other2, Other2, Other2, Other2);
-                    var other3 = Other3[0];
+                    var other0 = new global::Unity.Mathematics.float4(PlayerPositionX, PlayerPositionX, PlayerPositionX, PlayerPositionX);
+                    var other1 = new global::Unity.Mathematics.float4(PlayerPositionY, PlayerPositionY, PlayerPositionY, PlayerPositionY);
+                    var other2 = new global::Unity.Mathematics.float4(CollisionRadiusSquare, CollisionRadiusSquare, CollisionRadiusSquare, CollisionRadiusSquare);
+                    var other3 = CollisionCount[0];
 
-                    for (var outerIndex = 0; outerIndex < Outer0.Length; ++outerIndex)
+                    for (var outerIndex = 0; outerIndex < EnemyPosition2D.Length; ++outerIndex)
                     {
-                        var outer0 = Outer0[outerIndex];
-                        var outer1 = Outer1[outerIndex];
+                        var outer0 = EnemyPosition2D[outerIndex];
+                        var outer1 = EnemyAliveState[outerIndex];
                         Exe(ref outer0.X.c0, ref outer0.Y.c0, ref outer1.Value.c0, ref other0, ref other1, ref other2, ref other3);
                         Exe(ref outer0.X.c1, ref outer0.Y.c1, ref outer1.Value.c1, ref other0, ref other1, ref other2, ref other3);
-                        Outer1[outerIndex] = outer1;
+                        EnemyAliveState[outerIndex] = outer1;
                     }
 
-                    Other3[0] = other3;
+                    CollisionCount[0] = other3;
                 }
             }
         }
@@ -932,27 +932,27 @@ namespace Unity1Week.Hit
         [global::Unity.Burst.BurstCompile]
         public unsafe partial struct Job : global::Unity.Jobs.IJob
         {
-            [global::Unity.Collections.ReadOnly] public global::Unity.Collections.NativeArray<ComponentTypes.Position2D.Eight> Outer0;
-            public global::Unity.Collections.NativeArray<ComponentTypes.AliveState.Eight> Outer1;
-            public float Other0;
-            public float Other1;
-            public float Other2;
-            public global::Unity.Collections.NativeArray<int> Other3;
+            [global::Unity.Collections.ReadOnly] public global::Unity.Collections.NativeArray<ComponentTypes.Position2D.Eight> EnemyPosition2D;
+            public global::Unity.Collections.NativeArray<ComponentTypes.AliveState.Eight> EnemyAliveState;
+            public float PlayerPositionX;
+            public float PlayerPositionY;
+            public float CollisionRadiusSquare;
+            public global::Unity.Collections.NativeArray<int> CollisionCount;
 
             public void Execute()
             {
                 if (global::Unity.Burst.Intrinsics.X86.Fma.IsFmaSupported)
                 {
-                    var other0 = new global::Unity.Burst.Intrinsics.v256(Other0, Other0, Other0, Other0, Other0, Other0, Other0, Other0);
-                    var other1 = new global::Unity.Burst.Intrinsics.v256(Other1, Other1, Other1, Other1, Other1, Other1, Other1, Other1);
-                    var other2 = new global::Unity.Burst.Intrinsics.v256(Other2, Other2, Other2, Other2, Other2, Other2, Other2, Other2);
-                    var other3 = Other3[0];
-                    var outerPointer0 = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(Outer0);
-                    var outerPointer1 = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(Outer1);
+                    var other0 = new global::Unity.Burst.Intrinsics.v256(PlayerPositionX, PlayerPositionX, PlayerPositionX, PlayerPositionX, PlayerPositionX, PlayerPositionX, PlayerPositionX, PlayerPositionX);
+                    var other1 = new global::Unity.Burst.Intrinsics.v256(PlayerPositionY, PlayerPositionY, PlayerPositionY, PlayerPositionY, PlayerPositionY, PlayerPositionY, PlayerPositionY, PlayerPositionY);
+                    var other2 = new global::Unity.Burst.Intrinsics.v256(CollisionRadiusSquare, CollisionRadiusSquare, CollisionRadiusSquare, CollisionRadiusSquare, CollisionRadiusSquare, CollisionRadiusSquare, CollisionRadiusSquare, CollisionRadiusSquare);
+                    var other3 = CollisionCount[0];
+                    var outerPointer0 = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(EnemyPosition2D);
+                    var outerPointer1 = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(EnemyAliveState);
 
                     for (
                         var outerIndex = 0;
-                        outerIndex < Outer0.Length;
+                        outerIndex < EnemyPosition2D.Length;
                         ++outerIndex,
                         outerPointer0 += sizeof(ComponentTypes.Position2D.Eight),
                         outerPointer1 += sizeof(ComponentTypes.AliveState.Eight)
@@ -965,26 +965,26 @@ namespace Unity1Week.Hit
                         global::Unity.Burst.Intrinsics.X86.Avx.mm256_store_ps(outerPointer1 + (0 << 5), outer1_Value);
                     }
 
-                    Other3[0] = other3;
+                    CollisionCount[0] = other3;
                     return;
                 }
 
                 {
-                    var other0 = new global::Unity.Mathematics.float4(Other0, Other0, Other0, Other0);
-                    var other1 = new global::Unity.Mathematics.float4(Other1, Other1, Other1, Other1);
-                    var other2 = new global::Unity.Mathematics.float4(Other2, Other2, Other2, Other2);
-                    var other3 = Other3[0];
+                    var other0 = new global::Unity.Mathematics.float4(PlayerPositionX, PlayerPositionX, PlayerPositionX, PlayerPositionX);
+                    var other1 = new global::Unity.Mathematics.float4(PlayerPositionY, PlayerPositionY, PlayerPositionY, PlayerPositionY);
+                    var other2 = new global::Unity.Mathematics.float4(CollisionRadiusSquare, CollisionRadiusSquare, CollisionRadiusSquare, CollisionRadiusSquare);
+                    var other3 = CollisionCount[0];
 
-                    for (var outerIndex = 0; outerIndex < Outer0.Length; ++outerIndex)
+                    for (var outerIndex = 0; outerIndex < EnemyPosition2D.Length; ++outerIndex)
                     {
-                        var outer0 = Outer0[outerIndex];
-                        var outer1 = Outer1[outerIndex];
+                        var outer0 = EnemyPosition2D[outerIndex];
+                        var outer1 = EnemyAliveState[outerIndex];
                         Exe(ref outer0.X.c0, ref outer0.Y.c0, ref outer1.Value.c0, ref other0, ref other1, ref other2, ref other3);
                         Exe(ref outer0.X.c1, ref outer0.Y.c1, ref outer1.Value.c1, ref other0, ref other1, ref other2, ref other3);
-                        Outer1[outerIndex] = outer1;
+                        EnemyAliveState[outerIndex] = outer1;
                     }
 
-                    Other3[0] = other3;
+                    CollisionCount[0] = other3;
                 }
             }
         }
@@ -998,21 +998,21 @@ namespace Unity1Week
         [global::Unity.Burst.BurstCompile]
         public unsafe partial struct Job : global::Unity.Jobs.IJob
         {
-            public global::Unity.Collections.NativeArray<ComponentTypes.Position2D.Eight> Outer0;
-            [global::Unity.Collections.ReadOnly] public global::Unity.Collections.NativeArray<ComponentTypes.Speed2D.Eight> Outer1;
-            public float Other0;
+            public global::Unity.Collections.NativeArray<ComponentTypes.Position2D.Eight> Position2D;
+            [global::Unity.Collections.ReadOnly] public global::Unity.Collections.NativeArray<ComponentTypes.Speed2D.Eight> Speed2D;
+            public float DeltaTime;
 
             public void Execute()
             {
                 if (global::Unity.Burst.Intrinsics.X86.Fma.IsFmaSupported)
                 {
-                    var other0 = new global::Unity.Burst.Intrinsics.v256(Other0, Other0, Other0, Other0, Other0, Other0, Other0, Other0);
-                    var outerPointer0 = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(Outer0);
-                    var outerPointer1 = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(Outer1);
+                    var other0 = new global::Unity.Burst.Intrinsics.v256(DeltaTime, DeltaTime, DeltaTime, DeltaTime, DeltaTime, DeltaTime, DeltaTime, DeltaTime);
+                    var outerPointer0 = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(Position2D);
+                    var outerPointer1 = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(Speed2D);
 
                     for (
                         var outerIndex = 0;
-                        outerIndex < Outer0.Length;
+                        outerIndex < Position2D.Length;
                         ++outerIndex,
                         outerPointer0 += sizeof(ComponentTypes.Position2D.Eight),
                         outerPointer1 += sizeof(ComponentTypes.Speed2D.Eight)
@@ -1030,15 +1030,15 @@ namespace Unity1Week
                 }
 
                 {
-                    var other0 = new global::Unity.Mathematics.float4(Other0, Other0, Other0, Other0);
+                    var other0 = new global::Unity.Mathematics.float4(DeltaTime, DeltaTime, DeltaTime, DeltaTime);
 
-                    for (var outerIndex = 0; outerIndex < Outer0.Length; ++outerIndex)
+                    for (var outerIndex = 0; outerIndex < Position2D.Length; ++outerIndex)
                     {
-                        var outer0 = Outer0[outerIndex];
-                        var outer1 = Outer1[outerIndex];
+                        var outer0 = Position2D[outerIndex];
+                        var outer1 = Speed2D[outerIndex];
                         Exe(ref outer0.X.c0, ref outer0.Y.c0, ref outer1.X.c0, ref outer1.Y.c0, ref other0);
                         Exe(ref outer0.X.c1, ref outer0.Y.c1, ref outer1.X.c1, ref outer1.Y.c1, ref other0);
-                        Outer0[outerIndex] = outer0;
+                        Position2D[outerIndex] = outer0;
                     }
                 }
             }
@@ -1053,234 +1053,32 @@ namespace Unity1Week
         [global::Unity.Burst.BurstCompile]
         public unsafe partial struct Job : global::Unity.Jobs.IJob
         {
-            [global::Unity.Collections.ReadOnly] public global::Unity.Collections.NativeArray<ComponentTypes.Position2D.Eight> Outer0;
-            public global::Unity.Collections.NativeArray<ComponentTypes.Speed2D.Eight> Outer1;
-            public float Other0;
-            public int Other1;
-            public int Other2;
-            public int Other3;
-            [global::Unity.Collections.ReadOnly] public global::Unity.Collections.NativeArray<float> Table0;
-            [global::Unity.Collections.ReadOnly] public global::Unity.Collections.NativeArray<int> Table1;
+            [global::Unity.Collections.ReadOnly] public global::Unity.Collections.NativeArray<ComponentTypes.Position2D.Eight> Position2D;
+            public global::Unity.Collections.NativeArray<ComponentTypes.Speed2D.Eight> Speed2D;
+            public float RcpCellSize;
+            public int CellWidthCount;
+            public int CellCountAdjustment;
+            public int MaxCellCountInclusive;
+            [global::Unity.Collections.ReadOnly] public global::Unity.Collections.NativeArray<float> SpeedSetting;
+            [global::Unity.Collections.ReadOnly] public global::Unity.Collections.NativeArray<int> ChipKind;
 
             public void Execute()
             {
-                var tablePointer0 = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeReadOnlyPtr(Table0);
-                var tablePointer1 = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeReadOnlyPtr(Table1);
+                var tablePointer0 = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeReadOnlyPtr(SpeedSetting);
+                var tablePointer1 = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeReadOnlyPtr(ChipKind);
                 {
-                    var other0 = new global::Unity.Mathematics.float4(Other0, Other0, Other0, Other0);
-                    var other1 = new global::Unity.Mathematics.int4(Other1, Other1, Other1, Other1);
-                    var other2 = new global::Unity.Mathematics.int4(Other2, Other2, Other2, Other2);
-                    var other3 = new global::Unity.Mathematics.int4(Other3, Other3, Other3, Other3);
+                    var other0 = new global::Unity.Mathematics.float4(RcpCellSize, RcpCellSize, RcpCellSize, RcpCellSize);
+                    var other1 = new global::Unity.Mathematics.int4(CellWidthCount, CellWidthCount, CellWidthCount, CellWidthCount);
+                    var other2 = new global::Unity.Mathematics.int4(CellCountAdjustment, CellCountAdjustment, CellCountAdjustment, CellCountAdjustment);
+                    var other3 = new global::Unity.Mathematics.int4(MaxCellCountInclusive, MaxCellCountInclusive, MaxCellCountInclusive, MaxCellCountInclusive);
 
-                    for (var outerIndex = 0; outerIndex < Outer0.Length; ++outerIndex)
+                    for (var outerIndex = 0; outerIndex < Position2D.Length; ++outerIndex)
                     {
-                        var outer0 = Outer0[outerIndex];
-                        var outer1 = Outer1[outerIndex];
-                        Exe(ref outer0.X.c0, ref outer0.Y.c0, ref outer1.X.c0, ref outer1.Y.c0, ref other0, ref other1, ref other2, ref other3, tablePointer0, Table0.Length, tablePointer1, Table1.Length);
-                        Exe(ref outer0.X.c1, ref outer0.Y.c1, ref outer1.X.c1, ref outer1.Y.c1, ref other0, ref other1, ref other2, ref other3, tablePointer0, Table0.Length, tablePointer1, Table1.Length);
-                        Outer1[outerIndex] = outer1;
-                    }
-                }
-            }
-        }
-    }
-}
-
-other0, ref other1, ref other2, ref other3, ref other0, ref other1, ref other2, ref other3);
-                        global::Unity.Burst.Intrinsics.X86.Avx.mm256_store_ps(outerPointer1 + (0 << 5), outer1_Value);
-                        global::Unity.Burst.Intrinsics.X86.Avx.mm256_store_ps(outerPointer1 + (0 << 5), outer1_Value);
-                    }
-
-                    Other3[0] = other3;
-                    return;
-                }
-
-                {
-                    var other0 = new global::Unity.Mathematics.float4(Other0, Other0, Other0, Other0);
-                    var other1 = new global::Unity.Mathematics.float4(Other1, Other1, Other1, Other1);
-                    var other2 = new global::Unity.Mathematics.float4(Other2, Other2, Other2, Other2);
-                    var other3 = Other3[0];
-
-                    for (var outerIndex = 0; outerIndex < Outer0.Length; ++outerIndex)
-                    {
-                        var outer0 = Outer0[outerIndex];
-                        var outer1 = Outer1[outerIndex];
-                        Exe(ref outer0.X.c0, ref outer0.Y.c0, ref outer1.Value.c0, ref other0, ref other1, ref other2, ref other3);
-                        Exe(ref outer0.X.c1, ref outer0.Y.c1, ref outer1.Value.c1, ref other0, ref other1, ref other2, ref other3);
-                        Outer1[outerIndex] = outer1;
-                    }
-
-                    Other3[0] = other3;
-                }
-            }
-        }
-    }
-}
-
-namespace Unity1Week.Hit
-{
-    static partial class  EnemyAttackPlayerHitJob
-    {
-        [global::Unity.Burst.BurstCompile]
-        public unsafe partial struct Job : global::Unity.Jobs.IJob
-        {
-            [global::Unity.Collections.ReadOnly] public global::Unity.Collections.NativeArray<ComponentTypes.Position2D.Eight> Outer0;
-            public global::Unity.Collections.NativeArray<ComponentTypes.AliveState.Eight> Outer1;
-            public float Other0;
-            public float Other1;
-            public float Other2;
-            public global::Unity.Collections.NativeArray<int> Other3;
-
-            public void Execute()
-            {
-                if (global::Unity.Burst.Intrinsics.X86.Fma.IsFmaSupported)
-                {
-                    var other0 = new global::Unity.Burst.Intrinsics.v256(Other0, Other0, Other0, Other0, Other0, Other0, Other0, Other0);
-                    var other1 = new global::Unity.Burst.Intrinsics.v256(Other1, Other1, Other1, Other1, Other1, Other1, Other1, Other1);
-                    var other2 = new global::Unity.Burst.Intrinsics.v256(Other2, Other2, Other2, Other2, Other2, Other2, Other2, Other2);
-                    var other3 = Other3[0];
-                    var outerPointer0 = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(Outer0);
-                    var outerPointer1 = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(Outer1);
-
-                    for (
-                        var outerIndex = 0;
-                        outerIndex < Outer0.Length;
-                        ++outerIndex,
-                        outerPointer0 += sizeof(ComponentTypes.Position2D.Eight),
-                        outerPointer1 += sizeof(ComponentTypes.AliveState.Eight)
-                    )
-                    {
-                        var outer0_X = global::Unity.Burst.Intrinsics.X86.Avx.mm256_load_ps(outerPointer0 + (0 << 5));
-                        var outer0_Y = global::Unity.Burst.Intrinsics.X86.Avx.mm256_load_ps(outerPointer0 + (1 << 5));
-                        var outer1_Value = global::Unity.Burst.Intrinsics.X86.Avx.mm256_load_ps(outerPointer1 + (0 << 5));
-                        var outer0_X = global::Unity.Burst.Intrinsics.X86.Avx.mm256_load_ps(outerPointer0 + (0 << 5));
-                        var outer0_Y = global::Unity.Burst.Intrinsics.X86.Avx.mm256_load_ps(outerPointer0 + (1 << 5));
-                        var outer1_Value = global::Unity.Burst.Intrinsics.X86.Avx.mm256_load_ps(outerPointer1 + (0 << 5));
-                        Exe2(ref outer0_X, ref outer0_Y, ref outer1_Value, ref outer0_X, ref outer0_Y, ref outer1_Value, ref other0, ref other1, ref other2, ref other3, ref other0, ref other1, ref other2, ref other3);
-                        global::Unity.Burst.Intrinsics.X86.Avx.mm256_store_ps(outerPointer1 + (0 << 5), outer1_Value);
-                        global::Unity.Burst.Intrinsics.X86.Avx.mm256_store_ps(outerPointer1 + (0 << 5), outer1_Value);
-                    }
-
-                    Other3[0] = other3;
-                    return;
-                }
-
-                {
-                    var other0 = new global::Unity.Mathematics.float4(Other0, Other0, Other0, Other0);
-                    var other1 = new global::Unity.Mathematics.float4(Other1, Other1, Other1, Other1);
-                    var other2 = new global::Unity.Mathematics.float4(Other2, Other2, Other2, Other2);
-                    var other3 = Other3[0];
-
-                    for (var outerIndex = 0; outerIndex < Outer0.Length; ++outerIndex)
-                    {
-                        var outer0 = Outer0[outerIndex];
-                        var outer1 = Outer1[outerIndex];
-                        Exe(ref outer0.X.c0, ref outer0.Y.c0, ref outer1.Value.c0, ref other0, ref other1, ref other2, ref other3);
-                        Exe(ref outer0.X.c1, ref outer0.Y.c1, ref outer1.Value.c1, ref other0, ref other1, ref other2, ref other3);
-                        Outer1[outerIndex] = outer1;
-                    }
-
-                    Other3[0] = other3;
-                }
-            }
-        }
-    }
-}
-
-namespace Unity1Week
-{
-    static partial class  MultiMove
-    {
-        [global::Unity.Burst.BurstCompile]
-        public unsafe partial struct Job : global::Unity.Jobs.IJob
-        {
-            public global::Unity.Collections.NativeArray<ComponentTypes.Position2D.Eight> Outer0;
-            [global::Unity.Collections.ReadOnly] public global::Unity.Collections.NativeArray<ComponentTypes.Speed2D.Eight> Outer1;
-            public float Other0;
-
-            public void Execute()
-            {
-                if (global::Unity.Burst.Intrinsics.X86.Fma.IsFmaSupported)
-                {
-                    var other0 = new global::Unity.Burst.Intrinsics.v256(Other0, Other0, Other0, Other0, Other0, Other0, Other0, Other0);
-                    var outerPointer0 = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(Outer0);
-                    var outerPointer1 = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(Outer1);
-
-                    for (
-                        var outerIndex = 0;
-                        outerIndex < Outer0.Length;
-                        ++outerIndex,
-                        outerPointer0 += sizeof(ComponentTypes.Position2D.Eight),
-                        outerPointer1 += sizeof(ComponentTypes.Speed2D.Eight)
-                    )
-                    {
-                        var outer0_X = global::Unity.Burst.Intrinsics.X86.Avx.mm256_load_ps(outerPointer0 + (0 << 5));
-                        var outer0_Y = global::Unity.Burst.Intrinsics.X86.Avx.mm256_load_ps(outerPointer0 + (1 << 5));
-                        var outer1_X = global::Unity.Burst.Intrinsics.X86.Avx.mm256_load_ps(outerPointer1 + (0 << 5));
-                        var outer1_Y = global::Unity.Burst.Intrinsics.X86.Avx.mm256_load_ps(outerPointer1 + (1 << 5));
-                        var outer0_X = global::Unity.Burst.Intrinsics.X86.Avx.mm256_load_ps(outerPointer0 + (0 << 5));
-                        var outer0_Y = global::Unity.Burst.Intrinsics.X86.Avx.mm256_load_ps(outerPointer0 + (1 << 5));
-                        var outer1_X = global::Unity.Burst.Intrinsics.X86.Avx.mm256_load_ps(outerPointer1 + (0 << 5));
-                        var outer1_Y = global::Unity.Burst.Intrinsics.X86.Avx.mm256_load_ps(outerPointer1 + (1 << 5));
-                        Exe(ref outer0_X, ref outer0_Y, ref outer1_X, ref outer1_Y, ref outer0_X, ref outer0_Y, ref outer1_X, ref outer1_Y, ref other0, ref other0);
-                        global::Unity.Burst.Intrinsics.X86.Avx.mm256_store_ps(outerPointer0 + (0 << 5), outer0_X);
-                        global::Unity.Burst.Intrinsics.X86.Avx.mm256_store_ps(outerPointer0 + (1 << 5), outer0_Y);
-                        global::Unity.Burst.Intrinsics.X86.Avx.mm256_store_ps(outerPointer0 + (0 << 5), outer0_X);
-                        global::Unity.Burst.Intrinsics.X86.Avx.mm256_store_ps(outerPointer0 + (1 << 5), outer0_Y);
-                    }
-                    return;
-                }
-
-                {
-                    var other0 = new global::Unity.Mathematics.float4(Other0, Other0, Other0, Other0);
-
-                    for (var outerIndex = 0; outerIndex < Outer0.Length; ++outerIndex)
-                    {
-                        var outer0 = Outer0[outerIndex];
-                        var outer1 = Outer1[outerIndex];
-                        Exe(ref outer0.X.c0, ref outer0.Y.c0, ref outer1.X.c0, ref outer1.Y.c0, ref other0);
-                        Exe(ref outer0.X.c1, ref outer0.Y.c1, ref outer1.X.c1, ref outer1.Y.c1, ref other0);
-                        Outer0[outerIndex] = outer0;
-                    }
-                }
-            }
-        }
-    }
-}
-
-namespace Unity1Week
-{
-    static partial class  CalculateMoveSpeedJob
-    {
-        [global::Unity.Burst.BurstCompile]
-        public unsafe partial struct Job : global::Unity.Jobs.IJob
-        {
-            [global::Unity.Collections.ReadOnly] public global::Unity.Collections.NativeArray<ComponentTypes.Position2D.Eight> Outer0;
-            public global::Unity.Collections.NativeArray<ComponentTypes.Speed2D.Eight> Outer1;
-            public float Other0;
-            public int Other1;
-            public int Other2;
-            public int Other3;
-            [global::Unity.Collections.ReadOnly] public global::Unity.Collections.NativeArray<float> Table0;
-            [global::Unity.Collections.ReadOnly] public global::Unity.Collections.NativeArray<int> Table1;
-
-            public void Execute()
-            {
-                var tablePointer0 = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeReadOnlyPtr(Table0);
-                var tablePointer1 = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeReadOnlyPtr(Table1);
-                {
-                    var other0 = new global::Unity.Mathematics.float4(Other0, Other0, Other0, Other0);
-                    var other1 = new global::Unity.Mathematics.int4(Other1, Other1, Other1, Other1);
-                    var other2 = new global::Unity.Mathematics.int4(Other2, Other2, Other2, Other2);
-                    var other3 = new global::Unity.Mathematics.int4(Other3, Other3, Other3, Other3);
-
-                    for (var outerIndex = 0; outerIndex < Outer0.Length; ++outerIndex)
-                    {
-                        var outer0 = Outer0[outerIndex];
-                        var outer1 = Outer1[outerIndex];
-                        Exe(ref outer0.X.c0, ref outer0.Y.c0, ref outer1.X.c0, ref outer1.Y.c0, ref other0, ref other1, ref other2, ref other3, tablePointer0, Table0.Length, tablePointer1, Table1.Length);
-                        Exe(ref outer0.X.c1, ref outer0.Y.c1, ref outer1.X.c1, ref outer1.Y.c1, ref other0, ref other1, ref other2, ref other3, tablePointer0, Table0.Length, tablePointer1, Table1.Length);
-                        Outer1[outerIndex] = outer1;
+                        var outer0 = Position2D[outerIndex];
+                        var outer1 = Speed2D[outerIndex];
+                        Exe(ref outer0.X.c0, ref outer0.Y.c0, ref outer1.X.c0, ref outer1.Y.c0, ref other0, ref other1, ref other2, ref other3, tablePointer0, SpeedSetting.Length, tablePointer1, ChipKind.Length);
+                        Exe(ref outer0.X.c1, ref outer0.Y.c1, ref outer1.X.c1, ref outer1.Y.c1, ref other0, ref other1, ref other2, ref other3, tablePointer0, SpeedSetting.Length, tablePointer1, ChipKind.Length);
+                        Speed2D[outerIndex] = outer1;
                     }
                 }
             }

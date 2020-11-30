@@ -12,19 +12,19 @@ namespace <#= TypeSymbol.ContainingNamespace.ToDisplayString() #>
         {
 <# for (var index = 0; index < Outers.Length; ++index) {
     var item = Outers[index]; #>
-            <# if (item.IsReadOnly) { #>[global::Unity.Collections.ReadOnly] <# } #>public global::Unity.Collections.NativeArray<<#= item.Symbol.ToDisplayString() #>.Eight> Outer<#= index #>;
+            <# if (item.IsReadOnly) { #>[global::Unity.Collections.ReadOnly] <# } #>public global::Unity.Collections.NativeArray<<#= item.Symbol.ToDisplayString() #>.Eight> <#= item.Name #>;
 <# } #>
 <# for (var index = 0; index < Others.Length; ++index) {
     var item = Others[index]; 
     if (item.IsReadOnly) { #>
-            public <#= item.Symbol.ToDisplayString() #> Other<#= index #>;
+            public <#= item.Symbol.ToDisplayString() #> <#= item.Name #>;
 <# } else { #>
-            public global::Unity.Collections.NativeArray<<#= item.Symbol.ToDisplayString() #>> Other<#= index #>;
+            public global::Unity.Collections.NativeArray<<#= item.Symbol.ToDisplayString() #>> <#= item.Name #>;
 <# } #>
 <# } #>
 <# for (var index = 0; index < Tables.Length; ++index) {
     var item = Tables[index]; #>
-            <# if (item.IsReadOnly) { #>[global::Unity.Collections.ReadOnly] <# } #>public global::Unity.Collections.NativeArray<<#= item.Symbol.ToDisplayString() #>> Table<#= index #>;
+            <# if (item.IsReadOnly) { #>[global::Unity.Collections.ReadOnly] <# } #>public global::Unity.Collections.NativeArray<<#= item.Symbol.ToDisplayString() #>> <#= item.Name #>;
 <# } #>
 
             public void Execute()
@@ -32,9 +32,9 @@ namespace <#= TypeSymbol.ContainingNamespace.ToDisplayString() #>
 <# for (var index = 0; index < Tables.Length; ++index) {
     var item = Tables[index];
     if (item.IsReadOnly) { #>
-                var tablePointer<#= index #> = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeReadOnlyPtr(Table<#= index #>);
+                var tablePointer<#= index #> = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeReadOnlyPtr(<#= item.Name #>);
 <# } else { #>
-                var tablePointer<#= index #> = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(Table<#= index #>);
+                var tablePointer<#= index #> = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(<#= item.Name #>);
 <# } #>
 <# } #>
 <# if (Fma.HasValue) { var method = Fma.Value; #>
@@ -43,19 +43,19 @@ namespace <#= TypeSymbol.ContainingNamespace.ToDisplayString() #>
 <# for (var index = 0; index < Others.Length; ++index) {
     var item = Others[index];
     if (item.IsReadOnly) { #>
-                    var other<#= index #> = new global::Unity.Burst.Intrinsics.v256(Other<#= index #>, Other<#= index #>, Other<#= index #>, Other<#= index #>, Other<#= index #>, Other<#= index #>, Other<#= index #>, Other<#= index #>);
+                    var other<#= index #> = new global::Unity.Burst.Intrinsics.v256(<#= item.Name #>, <#= item.Name #>, <#= item.Name #>, <#= item.Name #>, <#= item.Name #>, <#= item.Name #>, <#= item.Name #>, <#= item.Name #>);
 <# } else { #>
-                    var other<#= index #> = Other<#= index #>[0];
+                    var other<#= index #> = <#= item.Name #>[0];
 <# } #>
 <# } #>
 <# for (var index = 0; index < Outers.Length; ++index) {
     var item = Outers[index]; #>
-                    var outerPointer<#= index #> = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(Outer<#= index #>);
+                    var outerPointer<#= index #> = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(<#= item.Name #>);
 <# } #>
 
                     for (
                         var outerIndex = 0;
-                        outerIndex < Outer0.Length;
+                        outerIndex < <#= Outers[0].Name #>.Length;
                         ++outerIndex<# for (var index = 0; index < Outers.Length; ++index) { #>,
                         outerPointer<#= index #> += sizeof(<#= Outers[index].Symbol.ToDisplayString() #>.Eight)<# } #>
 
@@ -68,7 +68,7 @@ namespace <#= TypeSymbol.ContainingNamespace.ToDisplayString() #>
 <# } #>
 <# { 
       var parameter = method.Outers[0]; #>
-                        <#= method.Symbol.Name #>(ref outer<#= parameter.Index #>_<#= parameter.Name #><# for (var index = 1; index < method.Outers.Length; ++index) { parameter = method.Outers[index]; #>, ref outer<#= parameter.Index #>_<#= parameter.Name #><# } for (var index = 0; index < method.Others.Length; ++index) { parameter = method.Others[index]; #>, ref other<#= parameter.Index #><# } for (var index = 0; index < method.Tables.Length; ++index) { parameter = method.Tables[index]; #>, tablePointer<#= parameter.Index #>, Table<#= parameter.Index #>.Length<# } #>);
+                        <#= method.Symbol.Name #>(ref outer<#= parameter.Index #>_<#= parameter.Name #><# for (var index = 1; index < method.Outers.Length; ++index) { parameter = method.Outers[index]; #>, ref outer<#= parameter.Index #>_<#= parameter.Name #><# } for (var index = 0; index < method.Others.Length; ++index) { parameter = method.Others[index]; #>, ref other<#= parameter.Index #><# } for (var index = 0; index < method.Tables.Length; ++index) { parameter = method.Tables[index]; #>, tablePointer<#= parameter.Index #>, <#= Tables[parameter.Index].Name #>.Length<# } #>);
 <# } #>
 <# for (var index = 0; index < method.Outers.Length; ++index) {
     var item = method.Outers[index];
@@ -82,7 +82,7 @@ namespace <#= TypeSymbol.ContainingNamespace.ToDisplayString() #>
     var item = Others[index];
     if (item.IsReadOnly) { continue; } #>
 
-                    Other<#= index #>[0] = other<#= index #>;
+                    <#= item.Name #>[0] = other<#= index #>;
 <# } #>
                     return;
                 }
@@ -93,33 +93,33 @@ namespace <#= TypeSymbol.ContainingNamespace.ToDisplayString() #>
 <# for (var index = 0; index < Others.Length; ++index) {
     var item = Others[index];
     if (item.IsReadOnly) { #>
-                    var other<#= index #> = new global::Unity.Mathematics.<#= item.Symbol.ToDisplayString() #>4(Other<#= index #>, Other<#= index #>, Other<#= index #>, Other<#= index #>);
+                    var other<#= index #> = new global::Unity.Mathematics.<#= item.Symbol.ToDisplayString() #>4(<#= item.Name #>, <#= item.Name #>, <#= item.Name #>, <#= item.Name #>);
 <# } else { #>
-                    var other<#= index #> = Other<#= index #>[0];
+                    var other<#= index #> = <#= item.Name #>[0];
 <# } #>
 <# } #>
 
-                    for (var outerIndex = 0; outerIndex < Outer0.Length; ++outerIndex)
+                    for (var outerIndex = 0; outerIndex < <#= Outers[0].Name #>.Length; ++outerIndex)
                     {
 <# for (var index = 0; index < Outers.Length; ++index) {
     var item = Outers[index]; #>
-                        var outer<#= index #> = Outer<#= index #>[outerIndex];
+                        var outer<#= index #> = <#= item.Name #>[outerIndex];
 <# } #>
 <# for (var cIndex0 = 0; cIndex0 < 2; ++cIndex0) {
       var parameter = method.Outers[0]; #>
-                        <#= method.Symbol.Name #>(ref outer<#= parameter.Index #>.<#= parameter.Name #>.c<#= cIndex0 #><# for (var index = 1; index < method.Outers.Length; ++index) { parameter = method.Outers[index]; #>, ref outer<#= parameter.Index #>.<#= parameter.Name #>.c<#= cIndex0 #><# } for (var index = 0; index < method.Others.Length; ++index) { parameter = method.Others[index]; #>, ref other<#= parameter.Index #><# } for (var index = 0; index < method.Tables.Length; ++index) { parameter = method.Tables[index]; #>, tablePointer<#= parameter.Index #>, Table<#= parameter.Index #>.Length<# } #>);
+                        <#= method.Symbol.Name #>(ref outer<#= parameter.Index #>.<#= parameter.Name #>.c<#= cIndex0 #><# for (var index = 1; index < method.Outers.Length; ++index) { parameter = method.Outers[index]; #>, ref outer<#= parameter.Index #>.<#= parameter.Name #>.c<#= cIndex0 #><# } for (var index = 0; index < method.Others.Length; ++index) { parameter = method.Others[index]; #>, ref other<#= parameter.Index #><# } for (var index = 0; index < method.Tables.Length; ++index) { parameter = method.Tables[index]; #>, tablePointer<#= parameter.Index #>, <#= Tables[parameter.Index].Name #>.Length<# } #>);
 <# } #>
 <# for (var index = 0; index < Outers.Length; ++index) {
     var item = Outers[index];
     if (item.IsReadOnly) { continue; } #>
-                        Outer<#= index #>[outerIndex] = outer<#= index #>;
+                        <#= item.Name #>[outerIndex] = outer<#= index #>;
 <# } #>
                     }
 <# for (var index = 0; index < Others.Length; ++index) {
     var item = Others[index];
     if (item.IsReadOnly) { continue; } #>
 
-                    Other<#= index #>[0] = other<#= index #>;
+                    <#= item.Name #>[0] = other<#= index #>;
 <# } #>
                 }
 <# } #>

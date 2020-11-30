@@ -86,10 +86,10 @@ namespace MyAnalyzer.Templates
             
             #line default
             #line hidden
-            this.Write(".Eight> Outer");
+            this.Write(".Eight> ");
             
             #line 15 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Name));
             
             #line default
             #line hidden
@@ -115,10 +115,10 @@ namespace MyAnalyzer.Templates
             
             #line default
             #line hidden
-            this.Write(" Other");
+            this.Write(" ");
             
             #line 20 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Name));
             
             #line default
             #line hidden
@@ -136,10 +136,10 @@ namespace MyAnalyzer.Templates
             
             #line default
             #line hidden
-            this.Write("> Other");
+            this.Write("> ");
             
             #line 22 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Name));
             
             #line default
             #line hidden
@@ -184,10 +184,10 @@ namespace MyAnalyzer.Templates
             
             #line default
             #line hidden
-            this.Write("> Table");
+            this.Write("> ");
             
             #line 27 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Name));
             
             #line default
             #line hidden
@@ -215,10 +215,10 @@ namespace MyAnalyzer.Templates
             #line default
             #line hidden
             this.Write(" = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeRe" +
-                    "adOnlyPtr(Table");
+                    "adOnlyPtr(");
             
             #line 35 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Name));
             
             #line default
             #line hidden
@@ -237,10 +237,10 @@ namespace MyAnalyzer.Templates
             #line default
             #line hidden
             this.Write(" = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBu" +
-                    "fferPointerWithoutChecks(Table");
+                    "fferPointerWithoutChecks(");
             
             #line 37 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Name));
             
             #line default
             #line hidden
@@ -280,59 +280,59 @@ namespace MyAnalyzer.Templates
             
             #line default
             #line hidden
-            this.Write(" = new global::Unity.Burst.Intrinsics.v256(Other");
+            this.Write(" = new global::Unity.Burst.Intrinsics.v256(");
             
             #line 46 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Name));
             
             #line default
             #line hidden
-            this.Write(", Other");
+            this.Write(", ");
             
             #line 46 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Name));
             
             #line default
             #line hidden
-            this.Write(", Other");
+            this.Write(", ");
             
             #line 46 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Name));
             
             #line default
             #line hidden
-            this.Write(", Other");
+            this.Write(", ");
             
             #line 46 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Name));
             
             #line default
             #line hidden
-            this.Write(", Other");
+            this.Write(", ");
             
             #line 46 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Name));
             
             #line default
             #line hidden
-            this.Write(", Other");
+            this.Write(", ");
             
             #line 46 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Name));
             
             #line default
             #line hidden
-            this.Write(", Other");
+            this.Write(", ");
             
             #line 46 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Name));
             
             #line default
             #line hidden
-            this.Write(", Other");
+            this.Write(", ");
             
             #line 46 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Name));
             
             #line default
             #line hidden
@@ -350,10 +350,10 @@ namespace MyAnalyzer.Templates
             
             #line default
             #line hidden
-            this.Write(" = Other");
+            this.Write(" = ");
             
             #line 48 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Name));
             
             #line default
             #line hidden
@@ -385,10 +385,10 @@ namespace MyAnalyzer.Templates
             #line default
             #line hidden
             this.Write(" = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetU" +
-                    "nsafeBufferPointerWithoutChecks(Outer");
+                    "nsafeBufferPointerWithoutChecks(");
             
             #line 53 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Name));
             
             #line default
             #line hidden
@@ -400,7 +400,7 @@ namespace MyAnalyzer.Templates
             #line default
             #line hidden
             this.Write("\r\n                    for (\r\n                        var outerIndex = 0;\r\n       " +
-                    "                 outerIndex < Outer0.Length;\r\n                        ++outerInd" +
+                    "                 outerIndex < " + Outers[0].Name + ".Length;\r\n                        ++outerInd" +
                     "ex");
             
             #line 59 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
@@ -547,10 +547,10 @@ namespace MyAnalyzer.Templates
             
             #line default
             #line hidden
-            this.Write(", Table");
+            this.Write(", ");
             
             #line 71 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(parameter.Index));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Tables[parameter.Index].Name));
             
             #line default
             #line hidden
@@ -623,10 +623,10 @@ namespace MyAnalyzer.Templates
             
             #line default
             #line hidden
-            this.Write("\r\n                    Other");
+            this.Write("\r\n                    ");
             
             #line 85 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Name));
             
             #line default
             #line hidden
@@ -680,31 +680,31 @@ namespace MyAnalyzer.Templates
             
             #line default
             #line hidden
-            this.Write("4(Other");
+            this.Write("4(");
             
             #line 96 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Name));
             
             #line default
             #line hidden
-            this.Write(", Other");
+            this.Write(", ");
             
             #line 96 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Name));
             
             #line default
             #line hidden
-            this.Write(", Other");
+            this.Write(", ");
             
             #line 96 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Name));
             
             #line default
             #line hidden
-            this.Write(", Other");
+            this.Write(", ");
             
             #line 96 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Name));
             
             #line default
             #line hidden
@@ -722,10 +722,10 @@ namespace MyAnalyzer.Templates
             
             #line default
             #line hidden
-            this.Write(" = Other");
+            this.Write(" = ");
             
             #line 98 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Name));
             
             #line default
             #line hidden
@@ -742,7 +742,7 @@ namespace MyAnalyzer.Templates
             
             #line default
             #line hidden
-            this.Write("\r\n                    for (var outerIndex = 0; outerIndex < Outer0.Length; ++oute" +
+            this.Write("\r\n                    for (var outerIndex = 0; outerIndex < " + Outers[0].Name + ".Length; ++oute" +
                     "rIndex)\r\n                    {\r\n");
             
             #line 104 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
@@ -758,10 +758,10 @@ namespace MyAnalyzer.Templates
             
             #line default
             #line hidden
-            this.Write(" = Outer");
+            this.Write(" = ");
             
             #line 106 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Name));
             
             #line default
             #line hidden
@@ -860,10 +860,10 @@ namespace MyAnalyzer.Templates
             
             #line default
             #line hidden
-            this.Write(", Table");
+            this.Write(", ");
             
             #line 110 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(parameter.Index));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Tables[parameter.Index].Name));
             
             #line default
             #line hidden
@@ -889,10 +889,10 @@ namespace MyAnalyzer.Templates
             
             #line default
             #line hidden
-            this.Write("                        Outer");
+            this.Write("                        ");
             
             #line 115 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Name));
             
             #line default
             #line hidden
@@ -919,10 +919,10 @@ namespace MyAnalyzer.Templates
             
             #line default
             #line hidden
-            this.Write("\r\n                    Other");
+            this.Write("\r\n                    ");
             
             #line 122 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\SingleLoopTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(index));
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Name));
             
             #line default
             #line hidden
