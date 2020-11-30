@@ -1,3 +1,4 @@
+using System;
 using ComponentTypes;
 using MyAttribute;
 using Unity.Burst;
@@ -5,6 +6,7 @@ using Unity.Burst.Intrinsics;
 using Unity.Collections;
 using Unity.Jobs;
 using Unity.Mathematics;
+using Random = Unity.Mathematics.Random;
 
 namespace Unity1Week
 {
@@ -15,7 +17,7 @@ namespace Unity1Week
     public static partial class MultiMove
     {
         [MethodIntrinsicsKind(IntrinsicsKind.Ordinal)]
-        public static void Exe(
+        private static void Exe(
             ref float4 x,
             ref float4 y,
             ref float4 speedX,
@@ -28,7 +30,7 @@ namespace Unity1Week
         }
 
         [MethodIntrinsicsKind(IntrinsicsKind.Fma)]
-        public static void Exe(
+        private static void Exe(
             ref v256 x,
             ref v256 y,
             ref v256 speedX,
@@ -51,7 +53,7 @@ namespace Unity1Week
     public static unsafe partial class CalculateMoveSpeedJob
     {
         [MethodIntrinsicsKind(IntrinsicsKind.Ordinal)]
-        public static void Exe(
+        private static void Exe(
             ref float4 positionX,
             ref float4 positionY,
             ref float4 speedX,
@@ -66,118 +68,155 @@ namespace Unity1Week
             int chipKindsLength
         )
         {
+            var lengthSquared = speedX * speedX + speedY * speedY;
+            var rSqrt = math.rsqrt(lengthSquared);
+            var indexX = (int4)(positionX * rcpCellSize) + cellCountAdjustment;
+            var indexY = (int4)(positionY * rcpCellSize) + cellCountAdjustment;
+            var cellIndex = math.clamp(indexY * cellWidthCount + indexX, int4.zero, maxCellCountInclusive);
+            var speedNew = rSqrt * new float4(
+                ((float*)speedSettings)[((int*)chipKinds)[cellIndex.x]],
+                ((float*)speedSettings)[((int*)chipKinds)[cellIndex.y]],
+                ((float*)speedSettings)[((int*)chipKinds)[cellIndex.z]],
+                ((float*)speedSettings)[((int*)chipKinds)[cellIndex.w]]
+            );
+            speedX *= speedNew;
+            speedY *= speedNew;
+        }
+
+        [MethodIntrinsicsKind(IntrinsicsKind.Fma)]
+        private static void Exe2(
+            ref v256 positionX,
+            ref v256 positionY,
+            ref v256 speedX,
+            ref v256 speedY,
+            ref v256 rcpCellSize,
+            ref v256 cellWidthCount,
+            ref v256 cellCountAdjustment,
+            ref v256 maxCellCountInclusive,
+            void* speedSettings,
+            int speedSettingsLength,
+            void* chipKinds,
+            int chipKindsLength
+        )
+        {
+            if (!X86.Fma.IsFmaSupported) return;
             
+            var lengthSquared = X86.Fma.mm256_fmadd_ps(speedY, speedY, X86.Avx.mm256_mul_ps(speedX, speedX));
+            var rSqrt = X86.Avx.mm256_rsqrt_ps(lengthSquared);
+            var indexX = X86.Avx2.mm256_add_epi32(X86.Avx.mm256_cvtps_epi32(X86.Avx.mm256_mul_ps(positionX, rcpCellSize)), cellCountAdjustment);
+            var indexY = X86.Avx2.mm256_add_epi32(X86.Avx.mm256_cvtps_epi32(X86.Avx.mm256_mul_ps(positionY, rcpCellSize)), cellCountAdjustment);
+            var cellIndex = X86.Avx2.mm256_min_epi32(X86.Avx2.mm256_max_epi32(X86.Avx2.mm256_add_epi32(indexX, X86.Avx2.mm256_mul_epi32(indexY, cellWidthCount)), default), maxCellCountInclusive);
+            var newSpeed = X86.Avx.mm256_mul_ps(rSqrt, new v256(
+                ((float*)speedSettings)[((int*)chipKinds)[cellIndex.SInt0]],
+                ((float*)speedSettings)[((int*)chipKinds)[cellIndex.SInt1]],
+                ((float*)speedSettings)[((int*)chipKinds)[cellIndex.SInt2]],
+                ((float*)speedSettings)[((int*)chipKinds)[cellIndex.SInt3]],
+                ((float*)speedSettings)[((int*)chipKinds)[cellIndex.SInt4]],
+                ((float*)speedSettings)[((int*)chipKinds)[cellIndex.SInt5]],
+                ((float*)speedSettings)[((int*)chipKinds)[cellIndex.SInt6]],
+                ((float*)speedSettings)[((int*)chipKinds)[cellIndex.SInt7]]
+            ));
+            speedX = X86.Avx.mm256_mul_ps(speedX, newSpeed);
+            speedY = X86.Avx.mm256_mul_ps(speedY, newSpeed);
         }
     }
-
-    /*[BurstCompile]
-    public struct CalculateMoveSpeedJob : IJob
+    
+    [SingleLoopType(
+        new[]{ typeof(Destination2D)}, new[] { false }, "",
+        new[] { typeof(float), typeof(float) }, new[] { true, true }, new[] { "TargetX", "TargetY" }
+    )]
+    public static partial class ChangeDestination
     {
-        [ReadOnly] public NativeArray<float> SpeedSettings;
-        [ReadOnly] public NativeArray<int> ChipKind;
-        [ReadOnly] public NativeArray<Position2D.Eight> Position;
-        public NativeArray<Speed2D.Eight> Speed;
-        private int4x2 cellCountAdjustment;
-        private int4x2 cellWidthCount;
-        private int4 maxCellCountInclusive;
-        private float4x2 rcpCellSize;
-
-        public void Execute()
+        [MethodIntrinsicsKind(IntrinsicsKind.Ordinal)]
+        private static void Exe(
+            ref float4 x,
+            ref float4 y,
+            ref float4 targetX,
+            ref float4 targetY
+        )
         {
-            for (var index = 0; index < Position.Length; index++)
-            {
-                var speed = Speed[index];
-                {
-                    // speed = Normalize(speed);
-                    var speedSquare = speed.X * speed.X + speed.Y + speed.Y;
-                    var speedOldLengthRcp = new float4x2(math.rcp(math.sqrt(speedSquare.c0)), math.rcp(math.sqrt(speedSquare.c1)));
-                    speed.X *= speedOldLengthRcp;
-                    speed.Y *= speedOldLengthRcp;
-                }
-
-                var position = Position[index];
-                {
-                    var xIndex = (int4x2)(position.X * rcpCellSize) + cellCountAdjustment;
-                    var yIndex = (int4x2)(position.Y * rcpCellSize) + cellCountAdjustment;
-                    var cellIndex = yIndex * cellWidthCount + xIndex;
-                    var speedSetting = GetSpeed(cellIndex.c0);
-                    speed.X.c0 *= speedSetting;
-                    speed.Y.c0 *= speedSetting;
-                    speedSetting = GetSpeed(cellIndex.c1);
-                    speed.X.c1 *= speedSetting;
-                    speed.Y.c1 *= speedSetting;
-                }
-
-                Speed[index] = speed;
-            }
+            x = targetX;
+            y = targetY;
         }
-
-        private float GetSpeed(int cellIndex)
+        
+        [MethodIntrinsicsKind(IntrinsicsKind.Fma)]
+        private static void Exe2(
+            ref v256 x,
+            ref v256 y,
+            ref v256 targetX,
+            ref v256 targetY
+        )
         {
-            return SpeedSettings[ChipKind[cellIndex]];
-        }
-
-        private float4 GetSpeed(int4 cellIndex)
-        {
-            cellIndex = math.clamp(cellIndex, int4.zero, maxCellCountInclusive);
-            return new float4(
-                GetSpeed(cellIndex.x),
-                GetSpeed(cellIndex.y),
-                GetSpeed(cellIndex.z),
-                GetSpeed(cellIndex.w));
-        }
-    }*/
-
-    [BurstCompile]
-    public struct ChangeDestinationJob : IJob
-    {
-        public NativeArray<Destination2D.Eight> Destination;
-        public float TargetX;
-        public float TargetY;
-
-        public unsafe void Execute()
-        {
-            if (X86.Avx.IsAvxSupported)
-            {
-                var targetX = new v256(TargetX, TargetX, TargetX, TargetX, TargetX, TargetX, TargetX, TargetX);
-                var targetY = new v256(TargetY, TargetY, TargetY, TargetY, TargetY, TargetY, TargetY, TargetY);
-                var destinationReinterpret = Destination.Reinterpret<v256>(sizeof(v256));
-                for (var index = 0; index < Destination.Length; index++)
-                {
-                    destinationReinterpret[index << 1] = targetX;
-                    destinationReinterpret[(index << 1) + 1] = targetY;
-                }
-                return;
-            }
-
-            for (var index = 0; index < Destination.Length; index++)
-                Destination[index] = new Destination2D.Eight
-                {
-                    X = TargetX,
-                    Y = TargetY
-                };
+            x = targetX;
+            y = targetY;
         }
     }
-
-    [BurstCompile]
-    public struct RandomlyChangeDestinationJob : IJob
+    
+    [SingleLoopType(
+        new[] { typeof(Destination2D)}, new[]{false}, "",
+        new[]{typeof(Random), typeof(float), typeof(float)}, new[]{ false, true, true}, new[]{ "RandomArray", "TwoMinInclusiveMinusMaxExclusive", "MaxExclusiveMinusMinInclusive" }
+    )]
+    public static partial class RandomlyChangeDestination
     {
-        public NativeArray<Destination2D.Eight> Destination;
-        public NativeArray<Random> Random;
-        public float MinInclusive;
-        public float MaxExclusive;
+        private const int ConstMask = 0x3f800000;
 
-        public void Execute()
+        [MethodIntrinsicsKind(IntrinsicsKind.Ordinal)]
+        private static void Exe(
+            ref float4 destinationX,    
+            ref float4 destinationY,
+            ref Random random,
+            ref float4 twoMinInclusiveMinusMaxExclusive,
+            ref float4 maxExclusiveMinusMinInclusive
+        )
         {
-            var random = Random[0];
-            for (var index = 0; index < Destination.Length; index++)
-                Destination[index] = new Destination2D.Eight
-                {
-                    X = new float4x2(random.NextFloat4(MinInclusive, MaxExclusive), random.NextFloat4(MinInclusive, MaxExclusive)),
-                    Y = new float4x2(random.NextFloat4(MinInclusive, MaxExclusive), random.NextFloat4(MinInclusive, MaxExclusive))
-                };
+            var state = random.state;
+            uint Next()
+            {
+                state ^= state << 13;
+                state ^= state >> 17;
+                state ^= state << 5;
+                return state;
+            }
 
-            Random[0] = random;
+            destinationX = math.asfloat((new uint4(Next(), Next(), Next(), Next()) >> 9) | ConstMask) * maxExclusiveMinusMinInclusive + twoMinInclusiveMinusMaxExclusive;
+            destinationY = math.asfloat((new uint4(Next(), Next(), Next(), Next()) >> 9) | ConstMask) * maxExclusiveMinusMinInclusive + twoMinInclusiveMinusMaxExclusive;
+            
+            random.state = state;
+        }
+        
+        [MethodIntrinsicsKind(IntrinsicsKind.Fma)]
+        private static void Exe2(
+            ref v256 destinationX,
+            ref v256 destinationY,
+            ref Random random,
+            ref v256 twoMinInclusiveMinusMaxExclusive,
+            ref v256 maxExclusiveMinusMinInclusive
+        )
+        {
+            if (!X86.Fma.IsFmaSupported) return;
+
+            var state = random.state;
+            uint Next()
+            {
+                state ^= state << 13;
+                state ^= state >> 17;
+                state ^= state << 5;
+                return state;
+            }
+
+            var constantMask = new v256(ConstMask, ConstMask, ConstMask, ConstMask, ConstMask, ConstMask, ConstMask, ConstMask);
+            
+            destinationX = new v256(Next(), Next(), Next(), Next(), Next(), Next(), Next(), Next());
+            destinationY = new v256(Next(), Next(), Next(), Next(), Next(), Next(), Next(), Next());
+            destinationX = X86.Avx2.mm256_srli_epi32(destinationX, 9);
+            destinationX = X86.Avx.mm256_or_ps(destinationX, constantMask);
+            destinationX = X86.Fma.mm256_fmadd_ps(destinationX, maxExclusiveMinusMinInclusive, twoMinInclusiveMinusMaxExclusive);
+            
+            destinationY = X86.Avx2.mm256_srli_epi32(destinationY, 9);
+            destinationY = X86.Avx.mm256_or_ps(destinationY, constantMask);
+            destinationY = X86.Fma.mm256_fmadd_ps(destinationY, maxExclusiveMinusMinInclusive, twoMinInclusiveMinusMaxExclusive);
+            
+            random.state = state;
         }
     }
 
@@ -199,30 +238,6 @@ namespace Unity1Week
 
         public unsafe void Execute()
         {
-            if (X86.Avx.IsAvxSupported)
-            {
-                var positionReinterpret = Position.Reinterpret<v256>(sizeof(v256));
-                var isAliveReinterpret = IsAlive.Reinterpret<v256>(sizeof(v256));
-                var minInclusive256 = new v256(minInclusive.c0.x, minInclusive.c0.x, minInclusive.c0.x, minInclusive.c0.x, minInclusive.c0.x, minInclusive.c0.x, minInclusive.c0.x, minInclusive.c0.x);
-                var maxExclusive256 = new v256(maxExclusive.c0.x, maxExclusive.c0.x, maxExclusive.c0.x, maxExclusive.c0.x, maxExclusive.c0.x, maxExclusive.c0.x, maxExclusive.c0.x, maxExclusive.c0.x);
-                for (var index = 0; index < isAliveReinterpret.Length; index++)
-                {
-                    var isOutOfBounds = isAliveReinterpret[index];
-                    
-                    var position = positionReinterpret[index << 1];
-                    isOutOfBounds = X86.Avx.mm256_or_ps(isOutOfBounds, X86.Avx.mm256_cmp_ps(position, minInclusive256, (int)X86.Avx.CMP.LE_OQ));
-                    isOutOfBounds = X86.Avx.mm256_and_ps(X86.Avx.mm256_cmp_ps(position, maxExclusive256, (int)X86.Avx.CMP.NLT_UQ), isOutOfBounds);
-
-                    position = positionReinterpret[(index << 1) + 1];
-                    isOutOfBounds = X86.Avx.mm256_or_ps(isOutOfBounds, X86.Avx.mm256_cmp_ps(position, minInclusive256, (int)X86.Avx.CMP.LE_OQ));
-                    isOutOfBounds = X86.Avx.mm256_and_ps(X86.Avx.mm256_cmp_ps(position, maxExclusive256, (int)X86.Avx.CMP.NLT_UQ), isOutOfBounds);
-                    
-                    isAliveReinterpret[index] = isOutOfBounds;
-                }
-                
-                return;
-            }
-            
             var minus1 = new int4(-1, -1, -1, -1);
             for (var index = 0; index < Position.Length; index++)
             {

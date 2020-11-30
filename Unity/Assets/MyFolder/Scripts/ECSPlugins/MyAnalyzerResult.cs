@@ -1066,6 +1066,34 @@ namespace Unity1Week
             {
                 var tablePointer0 = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeReadOnlyPtr(SpeedSetting);
                 var tablePointer1 = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeReadOnlyPtr(ChipKind);
+                if (global::Unity.Burst.Intrinsics.X86.Fma.IsFmaSupported)
+                {
+                    var other0 = new global::Unity.Burst.Intrinsics.v256(RcpCellSize, RcpCellSize, RcpCellSize, RcpCellSize, RcpCellSize, RcpCellSize, RcpCellSize, RcpCellSize);
+                    var other1 = new global::Unity.Burst.Intrinsics.v256(CellWidthCount, CellWidthCount, CellWidthCount, CellWidthCount, CellWidthCount, CellWidthCount, CellWidthCount, CellWidthCount);
+                    var other2 = new global::Unity.Burst.Intrinsics.v256(CellCountAdjustment, CellCountAdjustment, CellCountAdjustment, CellCountAdjustment, CellCountAdjustment, CellCountAdjustment, CellCountAdjustment, CellCountAdjustment);
+                    var other3 = new global::Unity.Burst.Intrinsics.v256(MaxCellCountInclusive, MaxCellCountInclusive, MaxCellCountInclusive, MaxCellCountInclusive, MaxCellCountInclusive, MaxCellCountInclusive, MaxCellCountInclusive, MaxCellCountInclusive);
+                    var outerPointer0 = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(Position2D);
+                    var outerPointer1 = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(Speed2D);
+
+                    for (
+                        var outerIndex = 0;
+                        outerIndex < Position2D.Length;
+                        ++outerIndex,
+                        outerPointer0 += sizeof(ComponentTypes.Position2D.Eight),
+                        outerPointer1 += sizeof(ComponentTypes.Speed2D.Eight)
+                    )
+                    {
+                        var outer0_X = global::Unity.Burst.Intrinsics.X86.Avx.mm256_load_ps(outerPointer0 + (0 << 5));
+                        var outer0_Y = global::Unity.Burst.Intrinsics.X86.Avx.mm256_load_ps(outerPointer0 + (1 << 5));
+                        var outer1_X = global::Unity.Burst.Intrinsics.X86.Avx.mm256_load_ps(outerPointer1 + (0 << 5));
+                        var outer1_Y = global::Unity.Burst.Intrinsics.X86.Avx.mm256_load_ps(outerPointer1 + (1 << 5));
+                        Exe2(ref outer0_X, ref outer0_Y, ref outer1_X, ref outer1_Y, ref other0, ref other1, ref other2, ref other3, tablePointer0, SpeedSetting.Length, tablePointer1, ChipKind.Length);
+                        global::Unity.Burst.Intrinsics.X86.Avx.mm256_store_ps(outerPointer1 + (0 << 5), outer1_X);
+                        global::Unity.Burst.Intrinsics.X86.Avx.mm256_store_ps(outerPointer1 + (1 << 5), outer1_Y);
+                    }
+                    return;
+                }
+
                 {
                     var other0 = new global::Unity.Mathematics.float4(RcpCellSize, RcpCellSize, RcpCellSize, RcpCellSize);
                     var other1 = new global::Unity.Mathematics.int4(CellWidthCount, CellWidthCount, CellWidthCount, CellWidthCount);
@@ -1080,6 +1108,117 @@ namespace Unity1Week
                         Exe(ref outer0.X.c1, ref outer0.Y.c1, ref outer1.X.c1, ref outer1.Y.c1, ref other0, ref other1, ref other2, ref other3, tablePointer0, SpeedSetting.Length, tablePointer1, ChipKind.Length);
                         Speed2D[outerIndex] = outer1;
                     }
+                }
+            }
+        }
+    }
+}
+
+namespace Unity1Week
+{
+    static partial class  ChangeDestination
+    {
+        [global::Unity.Burst.BurstCompile]
+        public unsafe partial struct Job : global::Unity.Jobs.IJob
+        {
+            public global::Unity.Collections.NativeArray<ComponentTypes.Destination2D.Eight> Destination2D;
+            public float TargetX;
+            public float TargetY;
+
+            public void Execute()
+            {
+                if (global::Unity.Burst.Intrinsics.X86.Fma.IsFmaSupported)
+                {
+                    var other0 = new global::Unity.Burst.Intrinsics.v256(TargetX, TargetX, TargetX, TargetX, TargetX, TargetX, TargetX, TargetX);
+                    var other1 = new global::Unity.Burst.Intrinsics.v256(TargetY, TargetY, TargetY, TargetY, TargetY, TargetY, TargetY, TargetY);
+                    var outerPointer0 = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(Destination2D);
+
+                    for (
+                        var outerIndex = 0;
+                        outerIndex < Destination2D.Length;
+                        ++outerIndex,
+                        outerPointer0 += sizeof(ComponentTypes.Destination2D.Eight)
+                    )
+                    {
+                        var outer0_X = global::Unity.Burst.Intrinsics.X86.Avx.mm256_load_ps(outerPointer0 + (0 << 5));
+                        var outer0_Y = global::Unity.Burst.Intrinsics.X86.Avx.mm256_load_ps(outerPointer0 + (1 << 5));
+                        Exe2(ref outer0_X, ref outer0_Y, ref other0, ref other1);
+                        global::Unity.Burst.Intrinsics.X86.Avx.mm256_store_ps(outerPointer0 + (0 << 5), outer0_X);
+                        global::Unity.Burst.Intrinsics.X86.Avx.mm256_store_ps(outerPointer0 + (1 << 5), outer0_Y);
+                    }
+                    return;
+                }
+
+                {
+                    var other0 = new global::Unity.Mathematics.float4(TargetX, TargetX, TargetX, TargetX);
+                    var other1 = new global::Unity.Mathematics.float4(TargetY, TargetY, TargetY, TargetY);
+
+                    for (var outerIndex = 0; outerIndex < Destination2D.Length; ++outerIndex)
+                    {
+                        var outer0 = Destination2D[outerIndex];
+                        Exe(ref outer0.X.c0, ref outer0.Y.c0, ref other0, ref other1);
+                        Exe(ref outer0.X.c1, ref outer0.Y.c1, ref other0, ref other1);
+                        Destination2D[outerIndex] = outer0;
+                    }
+                }
+            }
+        }
+    }
+}
+
+namespace Unity1Week
+{
+    static partial class  RandomlyChangeDestination
+    {
+        [global::Unity.Burst.BurstCompile]
+        public unsafe partial struct Job : global::Unity.Jobs.IJob
+        {
+            public global::Unity.Collections.NativeArray<ComponentTypes.Destination2D.Eight> Destination2D;
+            public global::Unity.Collections.NativeArray<Unity.Mathematics.Random> RandomArray;
+            public float TwoMinInclusiveMinusMaxInclusive;
+            public float MaxExclusiveMinusMinInclusive;
+
+            public void Execute()
+            {
+                if (global::Unity.Burst.Intrinsics.X86.Fma.IsFmaSupported)
+                {
+                    var other0 = RandomArray[0];
+                    var other1 = new global::Unity.Burst.Intrinsics.v256(TwoMinInclusiveMinusMaxInclusive, TwoMinInclusiveMinusMaxInclusive, TwoMinInclusiveMinusMaxInclusive, TwoMinInclusiveMinusMaxInclusive, TwoMinInclusiveMinusMaxInclusive, TwoMinInclusiveMinusMaxInclusive, TwoMinInclusiveMinusMaxInclusive, TwoMinInclusiveMinusMaxInclusive);
+                    var other2 = new global::Unity.Burst.Intrinsics.v256(MaxExclusiveMinusMinInclusive, MaxExclusiveMinusMinInclusive, MaxExclusiveMinusMinInclusive, MaxExclusiveMinusMinInclusive, MaxExclusiveMinusMinInclusive, MaxExclusiveMinusMinInclusive, MaxExclusiveMinusMinInclusive, MaxExclusiveMinusMinInclusive);
+                    var outerPointer0 = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(Destination2D);
+
+                    for (
+                        var outerIndex = 0;
+                        outerIndex < Destination2D.Length;
+                        ++outerIndex,
+                        outerPointer0 += sizeof(ComponentTypes.Destination2D.Eight)
+                    )
+                    {
+                        var outer0_X = global::Unity.Burst.Intrinsics.X86.Avx.mm256_load_ps(outerPointer0 + (0 << 5));
+                        var outer0_Y = global::Unity.Burst.Intrinsics.X86.Avx.mm256_load_ps(outerPointer0 + (1 << 5));
+                        Exe2(ref outer0_X, ref outer0_Y, ref other0, ref other1, ref other2);
+                        global::Unity.Burst.Intrinsics.X86.Avx.mm256_store_ps(outerPointer0 + (0 << 5), outer0_X);
+                        global::Unity.Burst.Intrinsics.X86.Avx.mm256_store_ps(outerPointer0 + (1 << 5), outer0_Y);
+                    }
+
+                    RandomArray[0] = other0;
+                    return;
+                }
+
+                {
+                    var other0 = RandomArray[0];
+                    var other1 = new global::Unity.Mathematics.float4(TwoMinInclusiveMinusMaxInclusive, TwoMinInclusiveMinusMaxInclusive, TwoMinInclusiveMinusMaxInclusive, TwoMinInclusiveMinusMaxInclusive);
+                    var other2 = new global::Unity.Mathematics.float4(MaxExclusiveMinusMinInclusive, MaxExclusiveMinusMinInclusive, MaxExclusiveMinusMinInclusive, MaxExclusiveMinusMinInclusive);
+
+                    for (var outerIndex = 0; outerIndex < Destination2D.Length; ++outerIndex)
+                    {
+                        var outer0 = Destination2D[outerIndex];
+                        Exe(ref outer0.X.c0, ref outer0.Y.c0, ref other0, ref other1, ref other2);
+                        Exe(ref outer0.X.c1, ref outer0.Y.c1, ref other0, ref other1, ref other2);
+                        Destination2D[outerIndex] = outer0;
+                    }
+
+                    RandomArray[0] = other0;
                 }
             }
         }

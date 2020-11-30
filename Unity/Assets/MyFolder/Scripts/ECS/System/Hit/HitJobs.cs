@@ -239,7 +239,7 @@ namespace Unity1Week.Hit
         {
             var diffX = bulletPositionX - enemyPositionX;
             var diffY = bulletPositionY - enemyPositionY;
-            var lenSq = math.distancesq(diffX, diffY);
+            var lenSq = diffX * diffX + diffY * diffY;
             var hit = lenSq < collisionRadiusSquare & enemyAliveState == 0 & bulletAliveState == 0;
             enemyAliveState = math.select(bulletAliveState, -1, hit);
             for (var i = 0; i < 4; ++i)
@@ -303,7 +303,7 @@ namespace Unity1Week.Hit
         {
             var diffX = playerPositionX - enemyPositionX;
             var diffY = playerPositionY - enemyPositionY;
-            var hit = enemyAliveState == 0 & (math.distancesq(diffX, diffY) < collisionRadiusSquare);
+            var hit = enemyAliveState == 0 & (diffX * diffX + diffY * diffY < collisionRadiusSquare);
             enemyAliveState = math.select(enemyAliveState, -1, hit);
             for (var i = 0; i < 4; i++)
             {
@@ -359,7 +359,7 @@ namespace Unity1Week.Hit
         {
             var diffX = firePositionX - enemyPositionX;
             var diffY = firePositionY - enemyPositionY;
-            var lengthSquared = math.distancesq(diffX, diffY);
+            var lengthSquared = diffX * diffX + diffY * diffY;
             var hit = lengthSquared < collisionRadiusSquare & enemyAliveState == 0 & fireStartTime > fireDeadTime;
             enemyAliveState = math.select(enemyAliveState, -1, hit);
             for (var i = 0; i < 4; ++i)
