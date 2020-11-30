@@ -1,12 +1,7 @@
-using System;
 using ComponentTypes;
 using MyAttribute;
-using Unity.Burst;
 using Unity.Burst.Intrinsics;
-using Unity.Collections;
-using Unity.Jobs;
 using Unity.Mathematics;
-using Random = Unity.Mathematics.Random;
 
 namespace Unity1Week
 {
@@ -100,7 +95,7 @@ namespace Unity1Week
         )
         {
             if (!X86.Fma.IsFmaSupported) return;
-            
+
             var lengthSquared = X86.Fma.mm256_fmadd_ps(speedY, speedY, X86.Avx.mm256_mul_ps(speedX, speedX));
             var rSqrt = X86.Avx.mm256_rsqrt_ps(lengthSquared);
             var indexX = X86.Avx2.mm256_add_epi32(X86.Avx.mm256_cvtps_epi32(X86.Avx.mm256_mul_ps(positionX, rcpCellSize)), cellCountAdjustment);
@@ -120,9 +115,9 @@ namespace Unity1Week
             speedY = X86.Avx.mm256_mul_ps(speedY, newSpeed);
         }
     }
-    
+
     [SingleLoopType(
-        new[]{ typeof(Destination2D)}, new[] { false }, "",
+        new[] { typeof(Destination2D) }, new[] { false }, "",
         new[] { typeof(float), typeof(float) }, new[] { true, true }, new[] { "TargetX", "TargetY" }
     )]
     public static partial class ChangeDestination
@@ -138,7 +133,7 @@ namespace Unity1Week
             x = targetX;
             y = targetY;
         }
-        
+
         [MethodIntrinsicsKind(IntrinsicsKind.Fma)]
         private static void Exe2(
             ref v256 x,
@@ -151,10 +146,10 @@ namespace Unity1Week
             y = targetY;
         }
     }
-    
+
     [SingleLoopType(
-        new[] { typeof(Destination2D)}, new[]{false}, "",
-        new[]{typeof(Random), typeof(float), typeof(float)}, new[]{ false, true, true}, new[]{ "RandomArray", "TwoMinInclusiveMinusMaxExclusive", "MaxExclusiveMinusMinInclusive" }
+        new[] { typeof(Destination2D) }, new[] { false }, "",
+        new[] { typeof(Random), typeof(float), typeof(float) }, new[] { false, true, true }, new[] { "RandomArray", "TwoMinInclusiveMinusMaxExclusive", "MaxExclusiveMinusMinInclusive" }
     )]
     public static partial class RandomlyChangeDestination
     {
@@ -162,7 +157,7 @@ namespace Unity1Week
 
         [MethodIntrinsicsKind(IntrinsicsKind.Ordinal)]
         private static void Exe(
-            ref float4 destinationX,    
+            ref float4 destinationX,
             ref float4 destinationY,
             ref Random random,
             ref float4 twoMinInclusiveMinusMaxExclusive,
@@ -170,6 +165,7 @@ namespace Unity1Week
         )
         {
             var state = random.state;
+
             uint Next()
             {
                 state ^= state << 13;
@@ -180,10 +176,10 @@ namespace Unity1Week
 
             destinationX = math.asfloat((new uint4(Next(), Next(), Next(), Next()) >> 9) | ConstMask) * maxExclusiveMinusMinInclusive + twoMinInclusiveMinusMaxExclusive;
             destinationY = math.asfloat((new uint4(Next(), Next(), Next(), Next()) >> 9) | ConstMask) * maxExclusiveMinusMinInclusive + twoMinInclusiveMinusMaxExclusive;
-            
+
             random.state = state;
         }
-        
+
         [MethodIntrinsicsKind(IntrinsicsKind.Fma)]
         private static void Exe2(
             ref v256 destinationX,
@@ -196,6 +192,7 @@ namespace Unity1Week
             if (!X86.Fma.IsFmaSupported) return;
 
             var state = random.state;
+
             uint Next()
             {
                 state ^= state << 13;
@@ -205,49 +202,58 @@ namespace Unity1Week
             }
 
             var constantMask = new v256(ConstMask, ConstMask, ConstMask, ConstMask, ConstMask, ConstMask, ConstMask, ConstMask);
-            
+
             destinationX = new v256(Next(), Next(), Next(), Next(), Next(), Next(), Next(), Next());
             destinationY = new v256(Next(), Next(), Next(), Next(), Next(), Next(), Next(), Next());
             destinationX = X86.Avx2.mm256_srli_epi32(destinationX, 9);
             destinationX = X86.Avx.mm256_or_ps(destinationX, constantMask);
             destinationX = X86.Fma.mm256_fmadd_ps(destinationX, maxExclusiveMinusMinInclusive, twoMinInclusiveMinusMaxExclusive);
-            
+
             destinationY = X86.Avx2.mm256_srli_epi32(destinationY, 9);
             destinationY = X86.Avx.mm256_or_ps(destinationY, constantMask);
             destinationY = X86.Fma.mm256_fmadd_ps(destinationY, maxExclusiveMinusMinInclusive, twoMinInclusiveMinusMaxExclusive);
-            
+
             random.state = state;
         }
     }
 
-    [BurstCompile]
-    public struct KillOutOfBoundsJob : IJob
+    [SingleLoopType(
+        new[] { typeof(Position2D), typeof(AliveState) }, new[] { true, false }, "",
+        new[] { typeof(float), typeof(float) }, new[] { true, true }, new[] { "MinInclusive", "MaxExclusive" }
+    )]
+    public static partial class KillOutOfBounds
     {
-        [ReadOnly] public NativeArray<Position2D.Eight> Position;
-        [ReadOnly] public NativeArray<AliveState.Eight> IsAlive;
-        private readonly float4x2 minInclusive;
-        private readonly float4x2 maxExclusive;
-
-        public KillOutOfBoundsJob(NativeArray<Position2D.Eight> position, NativeArray<AliveState.Eight> isAlive, float minInclusive, float maxExclusive)
+        [MethodIntrinsicsKind(IntrinsicsKind.Ordinal)]
+        private static void Exe(
+            ref float4 x,
+            ref float4 y,
+            ref int4 alive,
+            ref float4 minInclusive,
+            ref float4 maxExclusive
+        )
         {
-            Position = position;
-            IsAlive = isAlive;
-            this.minInclusive = minInclusive;
-            this.maxExclusive = maxExclusive;
+            var outOfRange = (minInclusive > x) | (minInclusive > y) | (x >= maxExclusive) | (y >= maxExclusive);
+            alive = math.select(alive, -1, outOfRange);
         }
 
-        public unsafe void Execute()
+        [MethodIntrinsicsKind(IntrinsicsKind.Fma)]
+        private static void Exe2(
+            ref v256 x,
+            ref v256 y,
+            ref v256 alive,
+            ref v256 minInclusive,
+            ref v256 maxExclusive
+        )
         {
-            var minus1 = new int4(-1, -1, -1, -1);
-            for (var index = 0; index < Position.Length; index++)
-            {
-                var position = Position[index];
-                var isAlive = IsAlive[index];
-                var isInRange = position.X >= minInclusive & position.Y >= minInclusive & position.X < maxExclusive & position.Y < maxExclusive;
-                isAlive.Value.c0 = math.@select(int4.zero, minus1, isInRange.c0);
-                isAlive.Value.c1 = math.@select(int4.zero, minus1, isInRange.c1);
-                IsAlive[index] = isAlive;
-            }
+            if (!X86.Fma.IsFmaSupported) return;
+            var outOfRange = X86.Avx.mm256_or_ps(
+                X86.Avx.mm256_or_ps(
+                    X86.Avx.mm256_cmp_ps(minInclusive, x, (int)X86.Avx.CMP.GT_OQ), 
+                    X86.Avx.mm256_cmp_ps(minInclusive, y, (int)X86.Avx.CMP.GT_OQ)),
+                X86.Avx.mm256_or_ps(
+                    X86.Avx.mm256_cmp_ps(x, maxExclusive, (int)X86.Avx.CMP.GE_OQ), 
+                    X86.Avx.mm256_cmp_ps(y, maxExclusive, (int)X86.Avx.CMP.GE_OQ)));
+            alive = X86.Avx.mm256_or_ps(alive, outOfRange);
         }
     }
 }
