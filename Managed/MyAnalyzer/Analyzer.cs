@@ -53,10 +53,9 @@ namespace MyAnalyzer
             var eight = compilation.GetTypeByMetadataName("MyAttribute.EightAttribute") ?? throw new System.NullReferenceException();
             var countable = compilation.GetTypeByMetadataName("MyAttribute.CountableAttribute") ?? throw new System.NullReferenceException();
             var collisionType = compilation.GetTypeByMetadataName("MyAttribute.CollisionTypeAttribute") ?? throw new System.NullReferenceException();
-            var collisionMethod = compilation.GetTypeByMetadataName("MyAttribute.CollisionMethodAttribute") ?? throw new System.NullReferenceException();
+            var intrinsicsKindMethod = compilation.GetTypeByMetadataName("MyAttribute.MethodIntrinsicsKindAttribute") ?? throw new System.NullReferenceException();
             var collisionCloseMethod = compilation.GetTypeByMetadataName("MyAttribute.CollisionCloseMethodAttribute") ?? throw new System.NullReferenceException();
             var loopType = compilation.GetTypeByMetadataName("MyAttribute.SingleLoopTypeAttribute") ?? throw new System.NullReferenceException();
-            var loopMethod = compilation.GetTypeByMetadataName("MyAttribute.SingleLoopMethodAttribute") ?? throw new System.NullReferenceException();
 
             var candidateTypesCount = receiver.CandidateTypes.Count;
             eightBaseTypes = new(candidateTypesCount);
@@ -98,14 +97,14 @@ namespace MyAnalyzer
                 else
                 {
                     {
-                        var template = CollisionTemplate.TryCreate(collisionType, collisionMethod, collisionCloseMethod, type);
+                        var template = CollisionTemplate.TryCreate(collisionType, intrinsicsKindMethod, collisionCloseMethod, type);
                         if (template is not null)
                         {
                             collisionTemplates.Add(template);
                         }
                     }
                     {
-                        var template = SingleLoopTemplate.TryCreate(loopType, loopMethod, type);
+                        var template = SingleLoopTemplate.TryCreate(loopType, intrinsicsKindMethod, type);
                         if (template is not null)
                         {
                             singleLoopTemplates.Add(template);

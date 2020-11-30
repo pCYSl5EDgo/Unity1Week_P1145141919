@@ -15,41 +15,30 @@ namespace MyAttribute
     {
         public readonly Type[] TypeArray;
         public readonly bool[] IsReadOnlyArray;
+        public readonly string NamePrefix;
         public readonly Type[] OtherTypeArray;
         public readonly bool[] OtherIsReadOnlyArray;
+        public readonly string[] OtherNameArray;
         public readonly Type[] TableTypeArray;
         public readonly bool[] TableIsReadOnlyArray;
+        public readonly string[] TableNameArray;
 
-        public SingleLoopTypeAttribute(Type[] typeArray, bool[] isReadOnlyArray) : this(typeArray, isReadOnlyArray, Array.Empty<Type>(), Array.Empty<bool>(), Array.Empty<Type>(), Array.Empty<bool>()) { }
+        public SingleLoopTypeAttribute(Type[] typeArray, bool[] isReadOnlyArray, string namePrefix) : this(typeArray, isReadOnlyArray, namePrefix, Array.Empty<Type>(), Array.Empty<bool>(), Array.Empty<string>()) { }
 
-        public SingleLoopTypeAttribute(Type[] typeArray, bool[] isReadOnlyArray, Type[] otherTypeArray, bool[] otherIsReadOnlyArray) : this(typeArray, isReadOnlyArray, otherTypeArray, otherIsReadOnlyArray, Array.Empty<Type>(), Array.Empty<bool>()) { }
+        public SingleLoopTypeAttribute(Type[] typeArray, bool[] isReadOnlyArray, string namePrefix, Type[] otherTypeArray, bool[] otherIsReadOnlyArray, string[] otherNameArray) : this(typeArray, isReadOnlyArray, namePrefix, otherTypeArray, otherIsReadOnlyArray, otherNameArray, Array.Empty<Type>(), Array.Empty<bool>(), Array.Empty<string>()) { }
 
-        public SingleLoopTypeAttribute(Type[] typeArray, bool[] isReadOnlyArray, Type[] otherTypeArray, bool[] otherIsReadOnlyArray, Type[] tableTypeArray, bool[] tableIsReadOnlyArray)
+        public SingleLoopTypeAttribute(Type[] typeArray, bool[] isReadOnlyArray, string namePrefix, Type[] otherTypeArray, bool[] otherIsReadOnlyArray, string[] otherNameArray, Type[] tableTypeArray, bool[] tableIsReadOnlyArray, string[] tableNameArray)
         {
             TypeArray = typeArray;
             IsReadOnlyArray = isReadOnlyArray;
+            NamePrefix = namePrefix;
             OtherTypeArray = otherTypeArray;
             OtherIsReadOnlyArray = otherIsReadOnlyArray;
+            OtherNameArray = otherNameArray;
             TableTypeArray = tableTypeArray;
             TableIsReadOnlyArray = tableIsReadOnlyArray;
+            TableNameArray = tableNameArray;
         }
-    }
-
-    [AttributeUsage(AttributeTargets.Method)]
-    public class SingleLoopMethodAttribute : Attribute
-    {
-        public readonly IntrinsicsKind Intrinsics;
-        public readonly int OuterCount;
-        public readonly int OtherCount;
-
-        public SingleLoopMethodAttribute(IntrinsicsKind intrinsics, int outerCount, int otherCount)
-        {
-            Intrinsics = intrinsics;
-            OuterCount = outerCount;
-            OtherCount = otherCount;
-        }
-
-        public SingleLoopMethodAttribute(IntrinsicsKind kind, int outerCount) : this(kind, outerCount, 0) { }
     }
 
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
@@ -57,71 +46,59 @@ namespace MyAttribute
     {
         public readonly Type[] OuterTypeArray;
         public readonly bool[] OuterIsReadOnlyArray;
+        public readonly string OuterNamePrefix;
         public readonly Type[] InnerTypeArray;
         public readonly bool[] InnerIsReadOnlyArray;
+        public readonly string InnerNamePrefix;
         public readonly Type[] OtherTypeArray;
         public readonly bool[] OtherIsReadOnlyArray;
+        public readonly string[] OtherNameArray;
         public readonly Type[] TableTypeArray;
         public readonly bool[] TableIsReadOnlyArray;
+        public readonly string[] TableNameArray;
 
-        public CollisionTypeAttribute(Type[] outerTypeArray, bool[] outerIsReadOnlyArray, Type[] innerTypeArray, bool[] innerIsReadOnlyArray) : this(outerTypeArray, outerIsReadOnlyArray, innerTypeArray, innerIsReadOnlyArray, Array.Empty<Type>(), Array.Empty<bool>(), Array.Empty<Type>(), Array.Empty<bool>()) { }
+        public CollisionTypeAttribute(Type[] outerTypeArray, bool[] outerIsReadOnlyArray, string outerNamePrefix, Type[] innerTypeArray, bool[] innerIsReadOnlyArray, string innerNamePrefix) : this(outerTypeArray, outerIsReadOnlyArray, outerNamePrefix, innerTypeArray, innerIsReadOnlyArray, innerNamePrefix, Array.Empty<Type>(), Array.Empty<bool>(), Array.Empty<string>()) { }
 
-        public CollisionTypeAttribute(Type[] outerTypeArray, bool[] outerIsReadOnlyArray, Type[] innerTypeArray, bool[] innerIsReadOnlyArray, Type[] otherTypeArray, bool[] otherIsReadOnlyArray) : this(outerTypeArray, outerIsReadOnlyArray, innerTypeArray, innerIsReadOnlyArray, otherTypeArray, otherIsReadOnlyArray, Array.Empty<Type>(), Array.Empty<bool>()) { }
+        public CollisionTypeAttribute(Type[] outerTypeArray, bool[] outerIsReadOnlyArray, string outerNamePrefix, Type[] innerTypeArray, bool[] innerIsReadOnlyArray, string innerNamePrefix, Type[] otherTypeArray, bool[] otherIsReadOnlyArray, string[] otherNameArray) : this(outerTypeArray, outerIsReadOnlyArray, outerNamePrefix, innerTypeArray, innerIsReadOnlyArray, innerNamePrefix, otherTypeArray, otherIsReadOnlyArray, otherNameArray, Array.Empty<Type>(), Array.Empty<bool>(), Array.Empty<string>()) { }
 
-        public CollisionTypeAttribute(Type[] outerTypeArray, bool[] outerIsReadOnlyArray, Type[] innerTypeArray, bool[] innerIsReadOnlyArray, Type[] otherTypeArray, bool[] otherIsReadOnlyArray, Type[] tableTypeArray, bool[] tableIsReadOnlyArray)
+        public CollisionTypeAttribute(Type[] outerTypeArray, bool[] outerIsReadOnlyArray, string outerNamePrefix, Type[] innerTypeArray, bool[] innerIsReadOnlyArray, string innerNamePrefix, Type[] otherTypeArray, bool[] otherIsReadOnlyArray, string[] otherNameArray, Type[] tableTypeArray, bool[] tableIsReadOnlyArray, string[] tableNameArray)
         {
             OuterTypeArray = outerTypeArray;
             OuterIsReadOnlyArray = outerIsReadOnlyArray;
+            OuterNamePrefix = outerNamePrefix;
             InnerTypeArray = innerTypeArray;
             InnerIsReadOnlyArray = innerIsReadOnlyArray;
+            InnerNamePrefix = innerNamePrefix;
             OtherTypeArray = otherTypeArray;
             OtherIsReadOnlyArray = otherIsReadOnlyArray;
+            OtherNameArray = otherNameArray;
             TableTypeArray = tableTypeArray;
             TableIsReadOnlyArray = tableIsReadOnlyArray;
+            TableNameArray = tableNameArray;
         }
     }
 
     [AttributeUsage(AttributeTargets.Method)]
-    public class CollisionMethodAttribute : Attribute
+    public class MethodIntrinsicsKindAttribute : Attribute
     {
         public readonly IntrinsicsKind Intrinsics;
-        public readonly int OuterCount;
-        public readonly int InnerCount;
-        public readonly int OtherCount;
 
-        public CollisionMethodAttribute(IntrinsicsKind intrinsics, int outerCount, int innerCount, int otherCount)
+        public MethodIntrinsicsKindAttribute(IntrinsicsKind intrinsics)
         {
             Intrinsics = intrinsics;
-            OuterCount = outerCount;
-            InnerCount = innerCount;
-            OtherCount = otherCount;
         }
-
-        public CollisionMethodAttribute(IntrinsicsKind kind, int outerCount, int innerCount) : this(kind, outerCount, innerCount, 0) { }
-
-        public CollisionMethodAttribute(IntrinsicsKind kind, int outerCount) : this(kind, outerCount, 0, 0) { }
-    }
-
-    public enum CollisionFieldKind
-    {
-        Outer,
-        Inner,
-        Other,
-        Table,
     }
 
     [AttributeUsage(AttributeTargets.Method)]
     public class CollisionCloseMethodAttribute : Attribute
     {
         public readonly IntrinsicsKind Intrinsics;
-        public readonly CollisionFieldKind FieldKind;
         public readonly int FieldIndex;
         public readonly string FieldName;
 
-        public CollisionCloseMethodAttribute(IntrinsicsKind intrinsics, CollisionFieldKind fieldKind, int fieldIndex, string fieldName)
+        public CollisionCloseMethodAttribute(IntrinsicsKind intrinsics, int fieldIndex, string fieldName)
         {
             Intrinsics = intrinsics;
-            FieldKind = fieldKind;
             FieldIndex = fieldIndex;
             FieldName = fieldName;
         }

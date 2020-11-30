@@ -1,5 +1,5 @@
 using ComponentTypes;
-using MyFolder.Scripts.ECS.Types;
+using MyAttribute;
 using Unity.Burst;
 using Unity.Burst.Intrinsics;
 using Unity.Collections;
@@ -8,36 +8,69 @@ using Unity.Mathematics;
 
 namespace Unity1Week
 {
-    [BurstCompile]
-    public struct MultiMoveJob : IJob
+    [SingleLoopType(
+        new[] { typeof(Position2D), typeof(Speed2D) }, new[] { false, true }, "",
+        new[] { typeof(float) }, new[] { true }, new[] { "DeltaTime" }
+    )]
+    public static partial class MultiMove
     {
-        public NativeArray<Position2D.Eight> Position;
-        [ReadOnly] public NativeArray<Speed2D.Eight> Speed;
-        public float DeltaTime;
-
-        public unsafe void Execute()
+        [MethodIntrinsicsKind(IntrinsicsKind.Ordinal)]
+        public static void Exe(
+            ref float4 x,
+            ref float4 y,
+            ref float4 speedX,
+            ref float4 speedY,
+            ref float4 deltaTime
+        )
         {
-            if (X86.Fma.IsFmaSupported)
-            {
-                var positionReinterpret = Position.Reinterpret<v256>(sizeof(v256));
-                var speedReinterpret = Speed.Reinterpret<v256>(sizeof(v256));
-                var deltaTime = new v256(DeltaTime, DeltaTime, DeltaTime, DeltaTime, DeltaTime, DeltaTime, DeltaTime, DeltaTime);
-                for (var index = 0; index < positionReinterpret.Length; index++) positionReinterpret[index] = X86.Fma.mm256_fmadd_ps(deltaTime, speedReinterpret[index], positionReinterpret[index]);
+            x += speedX * deltaTime;
+            y += speedY * deltaTime;
+        }
 
-                return;
-            }
+        [MethodIntrinsicsKind(IntrinsicsKind.Fma)]
+        public static void Exe(
+            ref v256 x,
+            ref v256 y,
+            ref v256 speedX,
+            ref v256 speedY,
+            ref v256 deltaTime
+        )
+        {
+            if (!X86.Fma.IsFmaSupported) return;
 
-            for (var index = 0; index < Position.Length; index++)
-            {
-                var position = Position[index];
-                position.X += DeltaTime * Speed[index].X;
-                position.Y += DeltaTime * Speed[index].Y;
-                Position[index] = position;
-            }
+            x = X86.Fma.mm256_fmadd_ps(speedX, deltaTime, x);
+            y = X86.Fma.mm256_fmadd_ps(speedX, deltaTime, y);
         }
     }
 
-    [BurstCompile]
+    [SingleLoopType(
+        new[] { typeof(Position2D), typeof(Speed2D) }, new[] { true, false }, "",
+        new[] { typeof(float), typeof(int), typeof(int), typeof(int) }, new[] { true, true, true, true }, new[] { "RcpCellSize", "CellWidthCount", "CellCountAdjustment", "MaxCellCountInclusive" },
+        new[] { typeof(float), typeof(int) }, new[] { true, true }, new[] { "SpeedSetting", "ChipKind" }
+    )]
+    public static unsafe partial class CalculateMoveSpeedJob
+    {
+        [MethodIntrinsicsKind(IntrinsicsKind.Ordinal)]
+        public static void Exe(
+            ref float4 positionX,
+            ref float4 positionY,
+            ref float4 speedX,
+            ref float4 speedY,
+            ref float4 rcpCellSize,
+            ref int4 cellWidthCount,
+            ref int4 cellCountAdjustment,
+            ref int4 maxCellCountInclusive,
+            void* speedSettings,
+            int speedSettingsLength,
+            void* chipKinds,
+            int chipKindsLength
+        )
+        {
+            
+        }
+    }
+
+    /*[BurstCompile]
     public struct CalculateMoveSpeedJob : IJob
     {
         [ReadOnly] public NativeArray<float> SpeedSettings;
@@ -93,7 +126,7 @@ namespace Unity1Week
                 GetSpeed(cellIndex.z),
                 GetSpeed(cellIndex.w));
         }
-    }
+    }*/
 
     [BurstCompile]
     public struct ChangeDestinationJob : IJob

@@ -146,7 +146,6 @@ namespace <#= TypeSymbol.ContainingNamespace.ToDisplayString() #>
                         }
 
 <# foreach (var item in method.Closers) {
-    if (item.FieldKind != CollisionFieldKind.Outer) continue;
     var name = "outer" + item.Index + "_" + item.Name; #>
                         <#= name #>0 = <#= item.Symbol.Name #>(<#= name #>0, global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute2f128_ps(<#= name #>4, <#= name #>4, 0b0000_0001));
                         <#= name #>1 = <#= item.Symbol.Name #>(<#= name #>1, global::Unity.Burst.Intrinsics.X86.Avx.mm256_permute2f128_ps(<#= name #>5, <#= name #>5, 0b0000_0001));
@@ -224,7 +223,6 @@ namespace <#= TypeSymbol.ContainingNamespace.ToDisplayString() #>
 <# } #>
                         }
 <# foreach (var item in method.Closers) {
-    if (item.FieldKind != CollisionFieldKind.Outer) continue;
     var name = "outer" + item.Index + "_" + item.Name; #>
 
                         <#= name #>0.c0 = <#= item.Symbol.Name #>(<#= item.Symbol.Name #>(<#= name #>0.c0, <#= name #>1_c0.yzwx), <#= item.Symbol.Name #>(<#= name #>2_c0.zwxy, <#= name #>3_c0.wxyz));

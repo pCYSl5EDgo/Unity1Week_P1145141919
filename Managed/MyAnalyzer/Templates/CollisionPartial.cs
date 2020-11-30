@@ -27,7 +27,7 @@ namespace MyAnalyzer.Templates
             Fma = fma;
         }
 
-        public static CollisionTemplate? TryCreate(ISymbol collisionType, ISymbol collisionMethod, ISymbol collisionCloseMethod, INamedTypeSymbol typeSymbol)
+        public static CollisionTemplate? TryCreate(ISymbol collisionType, ISymbol intrinsicsKindMethod, ISymbol collisionCloseMethod, INamedTypeSymbol typeSymbol)
         {
             var comparer = SymbolEqualityComparer.Default;
             if (!InterpretCollisionType(collisionType, typeSymbol, comparer, out var outers, out var inners, out var others, out var tables))
@@ -35,7 +35,7 @@ namespace MyAnalyzer.Templates
                 return default;
             }
 
-            if (!CollectCollisionMethodAndCollisionCloseMethod(collisionMethod, collisionCloseMethod, typeSymbol, comparer, outers, inners, others, tables, out var ordinal, out var fma))
+            if (!CollectCollisionMethodAndCollisionCloseMethod(intrinsicsKindMethod, collisionCloseMethod, typeSymbol, comparer, outers, inners, others, tables, out var ordinal, out var fma))
             {
                 return default;
             }
@@ -57,44 +57,17 @@ namespace MyAnalyzer.Templates
 
             var isOrdinalInitialized = false;
             fma = default;
-            ParameterStruct[] parameterOuters;
-            ParameterStruct[] parameterInners;
-            ParameterStruct[] parameterOthers;
-            ParameterStruct[] parameterTables;
+            List<ParameterStruct> parameterOuters = new();
+            List<ParameterStruct> parameterInners = new();
+            List<ParameterStruct> parameterOthers = new();
+            List<ParameterStruct> parameterTables = new();
             foreach (var (methodSymbol, attributeData) in executeCandidates)
             {
                 var array = attributeData.ConstructorArguments;
-                if (array.Length < 1 || array[0].Value is not int kind || array.Length < 2 || array[1].Value is not int outerCount || outerCount == 0)
+                if (array.Length < 1 || array[0].Value is not int kind)
                 {
                     continue;
                 }
-
-                var parameters = methodSymbol.Parameters;
-                var innerCount = parameters.Length - outerCount;
-                var otherCount = 0;
-
-                if (array.Length >= 3)
-                {
-                    if (array[2].Value is not int x)
-                    {
-                        return false;
-                    }
-
-                    innerCount = x;
-                    otherCount = parameters.Length - outerCount - innerCount;
-
-                    if (array.Length >= 4)
-                    {
-                        if (array[3].Value is not int y)
-                        {
-                            return false;
-                        }
-
-                        otherCount = y;
-                    }
-                }
-
-                var tableCount = (parameters.Length - outerCount - innerCount - otherCount) >> 1;
 
                 var intrinsicsKind = (IntrinsicsKind)kind;
                 switch (intrinsicsKind)
@@ -105,13 +78,14 @@ namespace MyAnalyzer.Templates
                     default:
                         return false;
                 }
-
-                parameterOuters = new ParameterStruct[outerCount];
-                parameterInners = new ParameterStruct[innerCount];
-                parameterOthers = otherCount == 0 ? Array.Empty<ParameterStruct>() : new ParameterStruct[otherCount];
-                parameterTables = tableCount == 0 ? Array.Empty<ParameterStruct>() : new ParameterStruct[tableCount];
+                
+                parameterOuters.Clear();
+                parameterInners.Clear();
+                parameterOthers.Clear();
+                parameterTables.Clear();
+                var parameters = methodSymbol.Parameters;
                 var parameterIndex = 0;
-                for (int memberIndex = 0, typeIndex = 0; typeIndex < outers.Length; ++typeIndex)
+                for (var typeIndex = 0; typeIndex < outers.Length; ++typeIndex)
                 {
                     var typeStruct = outers[typeIndex];
                     foreach (var member in typeStruct.Symbol.GetMembers())
@@ -121,11 +95,11 @@ namespace MyAnalyzer.Templates
                             continue;
                         }
 
-                        parameterOuters[memberIndex++] = new ParameterStruct(parameters[parameterIndex++], typeIndex, member.Name);
+                        parameterOuters.Add(new(parameters[parameterIndex++], typeIndex, member.Name));
                     }
                 }
 
-                for (int memberIndex = 0, typeIndex = 0; typeIndex < inners.Length; ++typeIndex)
+                for (var typeIndex = 0; typeIndex < inners.Length; ++typeIndex)
                 {
                     var typeStruct = inners[typeIndex];
                     foreach (var member in typeStruct.Symbol.GetMembers())
@@ -135,28 +109,28 @@ namespace MyAnalyzer.Templates
                             continue;
                         }
 
-                        parameterInners[memberIndex++] = new ParameterStruct(parameters[parameterIndex++], typeIndex, member.Name);
+                        parameterInners.Add(new(parameters[parameterIndex++], typeIndex, member.Name));
                     }
                 }
 
-                for (int memberIndex = 0, typeIndex = 0; typeIndex < others.Length; ++typeIndex)
+                for (var typeIndex = 0; typeIndex < others.Length; ++typeIndex)
                 {
-                    parameterOthers[memberIndex++] = new ParameterStruct(parameters[parameterIndex++], typeIndex, string.Empty);
+                    parameterOthers.Add(new(parameters[parameterIndex++], typeIndex, string.Empty));
                 }
 
-                for (int memberIndex = 0, typeIndex = 0; typeIndex < tables.Length; ++typeIndex, parameterIndex += 2)
+                for (var typeIndex = 0; typeIndex < tables.Length; ++typeIndex, parameterIndex += 2)
                 {
-                    parameterTables[memberIndex++] = new ParameterStruct(parameters[parameterIndex], typeIndex, string.Empty);
+                    parameterTables.Add(new(parameters[parameterIndex], typeIndex, string.Empty));
                 }
 
                 switch (intrinsicsKind)
                 {
                     case IntrinsicsKind.Ordinal:
                         isOrdinalInitialized = true;
-                        ordinal = new MethodStruct(methodSymbol, parameterOuters, parameterInners, parameterOthers, parameterTables, ordinalCloses.ToArray());
+                        ordinal = new(methodSymbol, parameterOuters.ToArray(), parameterInners.ToArray(), parameterOthers.ToArray(), parameterTables.ToArray(), ordinalCloses.ToArray());
                         break;
                     case IntrinsicsKind.Fma:
-                        fma = new MethodStruct(methodSymbol, parameterOuters, parameterInners, parameterOthers, parameterTables, fmaCloses.ToArray());
+                        fma = new(methodSymbol, parameterOuters.ToArray(), parameterInners.ToArray(), parameterOthers.ToArray(), parameterTables.ToArray(), fmaCloses.ToArray());
                         break;
                 }
             }
@@ -201,20 +175,19 @@ namespace MyAnalyzer.Templates
                 }
 
                 var arguments = attr.ConstructorArguments;
-                if (arguments[0].Value is not int kind || arguments[1].Value is not int fieldKind || arguments[2].Value is not int index || arguments[3].Value is not string name)
+                if (arguments[0].Value is not int kind || arguments[1].Value is not int index || arguments[2].Value is not string name)
                 {
                     return;
                 }
 
                 var collisionIntrinsicsKind = (IntrinsicsKind)kind;
-                var collisionFieldKind = (CollisionFieldKind)fieldKind;
                 switch (collisionIntrinsicsKind)
                 {
                     case IntrinsicsKind.Ordinal:
-                        ordinalCloses.Add(new(methodSymbol, collisionIntrinsicsKind, collisionFieldKind, index, name));
+                        ordinalCloses.Add(new(methodSymbol, collisionIntrinsicsKind, index, name));
                         break;
                     case IntrinsicsKind.Fma:
-                        fmaCloses.Add(new(methodSymbol, collisionIntrinsicsKind, collisionFieldKind, index, name));
+                        fmaCloses.Add(new(methodSymbol, collisionIntrinsicsKind, index, name));
                         break;
                     default:
                         return;
@@ -236,28 +209,13 @@ namespace MyAnalyzer.Templates
 
             var arguments = typeAttr.ConstructorArguments;
             var length = arguments.Length;
-            if (length < 4)
-            {
-                return false;
-            }
-
-            if (!TypeStruct.InterpretCollisionTypeLoopFields(arguments[0].Values, arguments[1].Values, out outers)
-                || !TypeStruct.InterpretCollisionTypeLoopFields(arguments[2].Values, arguments[3].Values, out inners))
-            {
-                return false;
-            }
-
-            if (length == 4)
-            {
-                return true;
-            }
-
             if (length < 6)
             {
                 return false;
             }
 
-            if (!TypeStruct.InterpretCollisionTypeLoopFields(arguments[4].Values, arguments[5].Values, out others))
+            if (!TypeStruct.InterpretCollisionTypeLoopFields(arguments[0].Values, arguments[1].Values, arguments[2].Value as string, out outers)
+                || !TypeStruct.InterpretCollisionTypeLoopFields(arguments[3].Values, arguments[4].Values, arguments[5].Value as string, out inners))
             {
                 return false;
             }
@@ -267,12 +225,27 @@ namespace MyAnalyzer.Templates
                 return true;
             }
 
-            if (length < 8)
+            if (length < 9)
             {
                 return false;
             }
 
-            return TypeStruct.InterpretCollisionTypeLoopFields(arguments[6].Values, arguments[7].Values, out tables);
+            if (!TypeStruct.InterpretCollisionTypeLoopFields(arguments[6].Values, arguments[7].Values, arguments[8].Values, out others))
+            {
+                return false;
+            }
+
+            if (length == 9)
+            {
+                return true;
+            }
+
+            if (length < 12)
+            {
+                return false;
+            }
+
+            return TypeStruct.InterpretCollisionTypeLoopFields(arguments[9].Values, arguments[10].Values, arguments[11].Values, out tables);
         }
 
         public readonly struct MethodStruct
@@ -300,17 +273,15 @@ namespace MyAnalyzer.Templates
         {
             public readonly IMethodSymbol Symbol;
             public readonly IntrinsicsKind Kind;
-            public readonly CollisionFieldKind FieldKind;
             public readonly int Index;
             public readonly string Name;
 
-            public CloseMethodStruct(IMethodSymbol symbol, IntrinsicsKind kind, CollisionFieldKind fieldKind, int index, string name)
+            public CloseMethodStruct(IMethodSymbol symbol, IntrinsicsKind kind, int index, string name)
             {
                 Kind = kind;
                 Symbol = symbol;
                 Index = index;
                 Name = name;
-                FieldKind = fieldKind;
             }
         }
     }

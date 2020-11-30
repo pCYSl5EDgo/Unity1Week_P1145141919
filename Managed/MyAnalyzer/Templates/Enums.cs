@@ -5,12 +5,4 @@ namespace MyAnalyzer.Templates
         Ordinal,
         Fma,
     }
-
-    public enum CollisionFieldKind
-    {
-        Outer,
-        Inner,
-        Other,
-        Table,
-    }
 }

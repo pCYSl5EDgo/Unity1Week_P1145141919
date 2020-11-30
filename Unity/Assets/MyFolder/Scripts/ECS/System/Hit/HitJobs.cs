@@ -1,5 +1,4 @@
 ﻿using ComponentTypes;
-using MyFolder.Scripts.ECS.Types;
 using MyAttribute;
 using Unity.Burst;
 using Unity.Burst.Intrinsics;
@@ -11,14 +10,14 @@ using Unity.Mathematics;
 namespace Unity1Week.Hit
 {
     [CollisionType(
-        new[] { typeof(Position2D), typeof(AliveState) }, new[] { true, false },
-        new[] { typeof(Position2D), typeof(AliveState) }, new[] { true, true },
-        new[] { typeof(float), typeof(float), typeof(int) }, new[] { true, true, false },
-        new[] { typeof(Position2D.Eight), typeof(FireStartTime.Eight) }, new[] { false, false }
+        new[] { typeof(Position2D), typeof(AliveState) }, new[] { true, false }, "Bullet",
+        new[] { typeof(Position2D), typeof(AliveState) }, new[] { true, true }, "Enemy",
+        new[] { typeof(float), typeof(float), typeof(int) }, new[] { true, true, false }, new[] { "CollisionRadiusSquare", "CurrentTime", "FireCount" },
+        new[] { typeof(Position2D.Eight), typeof(FireStartTime.Eight) }, new[] { false, false }, new[] { "FirePositionArray", "FireStartTimeArray" }
     )]
     public static unsafe partial class BulletEnemyHit
     {
-        [CollisionMethod(IntrinsicsKind.Fma, 3, 3, 3)]
+        [MethodIntrinsicsKind(IntrinsicsKind.Fma)]
         public static void Exe2(
             ref v256 bulletPositionX,
             ref v256 bulletPositionY,
@@ -221,7 +220,7 @@ namespace Unity1Week.Hit
             }
         }
 
-        [CollisionMethod(IntrinsicsKind.Ordinal, 3, 3, 3)]
+        [MethodIntrinsicsKind(IntrinsicsKind.Ordinal)]
         public static void Exe(
             ref float4 bulletPositionX,
             ref float4 bulletPositionY,
@@ -264,19 +263,19 @@ namespace Unity1Week.Hit
                         position.Y.c1[fireRow] = bulletPositionY[i];
                         time.Value.c1[fireRow] = currentTime.x;
                     }
-                    
+
                     ++fireCount;
                 }
             }
         }
 
-        [CollisionCloseMethod(IntrinsicsKind.Ordinal, CollisionFieldKind.Outer, 1, "Value")]
+        [CollisionCloseMethod(IntrinsicsKind.Ordinal, 1, "Value")]
         public static int4 CloseAlive(int4 a, int4 b)
         {
             return a | b;
         }
 
-        [CollisionCloseMethod(IntrinsicsKind.Fma, CollisionFieldKind.Outer, 1, "Value")]
+        [CollisionCloseMethod(IntrinsicsKind.Fma, 1, "Value")]
         public static v256 CloseAlive2(v256 a, v256 b)
         {
             if (!X86.Fma.IsFmaSupported) return a;
@@ -286,13 +285,12 @@ namespace Unity1Week.Hit
     }
 
     [SingleLoopType(
-        new[] { typeof(Position2D), typeof(AliveState) }, new[] { true, false },
-        // PlayerPositionX, PlayerPositionY, CollisionRadiusSquare, CollisionCount
-        new[] { typeof(float), typeof(float), typeof(float), typeof(int) }, new[] { true, true, true, false }
+        new[] { typeof(Position2D), typeof(AliveState) }, new[] { true, false }, "Enemy",
+        new[] { typeof(float), typeof(float), typeof(float), typeof(int) }, new[] { true, true, true, false }, new[] { "PlayerPositionX", "PlayerPositionY", "CollisionRadiusSquare", "CollisionCount" }
     )]
     public static partial class PlayerEnemyHitJob
     {
-        [SingleLoopMethod(IntrinsicsKind.Ordinal, 3)]
+        [MethodIntrinsicsKind(IntrinsicsKind.Ordinal)]
         public static void Exe(
             ref float4 enemyPositionX,
             ref float4 enemyPositionY,
@@ -316,7 +314,7 @@ namespace Unity1Week.Hit
             }
         }
 
-        [SingleLoopMethod(IntrinsicsKind.Fma, 3)]
+        [MethodIntrinsicsKind(IntrinsicsKind.Fma)]
         public static void Exe2(
             ref v256 enemyPositionX,
             ref v256 enemyPositionY,
@@ -340,16 +338,13 @@ namespace Unity1Week.Hit
     }
 
     [CollisionType(
-        // FirePositionArray, FireStartTimeArray
-        new[] { typeof(Position2D), typeof(FireStartTime) }, new[] { true, true },
-        // EnemyPositionArray, EnemyAliveStateArray
-        new[] { typeof(Position2D), typeof(AliveState) }, new[] { true, false },
-        // CollisionRadiusSquare, FireDeadTime, EnemyKillCount
-        new[] { typeof(float), typeof(float), typeof(int) }, new[] { true, true, false }
+        new[] { typeof(Position2D), typeof(FireStartTime) }, new[] { true, true }, "Fire",
+        new[] { typeof(Position2D), typeof(AliveState) }, new[] { true, false }, "Enemy",
+        new[] { typeof(float), typeof(float), typeof(int) }, new[] { true, true, false }, new[] { "CollisionRadiusSquare", "FireDeadTime", "EnemyKillCount" }
     )]
     public static partial class PlayerFireEnemyHitJob
     {
-        [CollisionMethod(IntrinsicsKind.Ordinal, 3, 3)]
+        [MethodIntrinsicsKind(IntrinsicsKind.Ordinal)]
         public static void Exe(
             ref float4 firePositionX,
             ref float4 firePositionY,
@@ -376,7 +371,7 @@ namespace Unity1Week.Hit
             }
         }
 
-        [CollisionMethod(IntrinsicsKind.Fma, 3, 3)]
+        [MethodIntrinsicsKind(IntrinsicsKind.Fma)]
         public static void Exe2(
             ref v256 firePositionX,
             ref v256 firePositionY,
@@ -402,13 +397,12 @@ namespace Unity1Week.Hit
     }
 
     [SingleLoopType(
-        new[] { typeof(Position2D), typeof(AliveState) }, new[] { true, false },
-        // PlayerPositionX, PlayerPositionY, CollisionRadiusSquare, CollisionCount
-        new[] { typeof(float), typeof(float), typeof(float), typeof(int) }, new[] { true, true, true, false }
+        new[] { typeof(Position2D), typeof(AliveState) }, new[] { true, false }, "Enemy",
+        new[] { typeof(float), typeof(float), typeof(float), typeof(int) }, new[] { true, true, true, false }, new[] { "PlayerPositionX", "PlayerPositionY", "CollisionRadiusSquare", "CollisionCount" }
     )]
     public static partial class EnemyAttackPlayerHitJob
     {
-        [SingleLoopMethod(IntrinsicsKind.Ordinal, 3)]
+        [MethodIntrinsicsKind(IntrinsicsKind.Ordinal)]
         public static void Exe(
             ref float4 attackX,
             ref float4 attackY,
@@ -431,7 +425,7 @@ namespace Unity1Week.Hit
             }
         }
 
-        [SingleLoopMethod(IntrinsicsKind.Fma, 3)]
+        [MethodIntrinsicsKind(IntrinsicsKind.Fma)]
         public static void Exe2(
             ref v256 attackX,
             ref v256 attackY,

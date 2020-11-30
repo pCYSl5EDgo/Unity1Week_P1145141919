@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 
@@ -24,7 +25,7 @@ namespace MyAnalyzer.Templates
             Fma = fma;
         }
 
-        public static SingleLoopTemplate? TryCreate(ISymbol loopType, ISymbol loopMethod, INamedTypeSymbol typeSymbol)
+        public static SingleLoopTemplate? TryCreate(ISymbol loopType, ISymbol intrinsicsKindMethod, INamedTypeSymbol typeSymbol)
         {
             var comparer = SymbolEqualityComparer.Default;
             if (!InterpretLoopType(loopType, typeSymbol, comparer, out var outers, out var others, out var tables))
@@ -32,7 +33,7 @@ namespace MyAnalyzer.Templates
                 return default;
             }
 
-            if (!CollectLoop(loopMethod, typeSymbol, comparer, outers, others, tables, out var ordinal, out var fma))
+            if (!CollectLoop(intrinsicsKindMethod, typeSymbol, comparer, outers, others, tables, out var ordinal, out var fma))
             {
                 return default;
             }
@@ -59,27 +60,12 @@ namespace MyAnalyzer.Templates
                 return false;
             }
 
-            if (!TypeStruct.InterpretCollisionTypeLoopFields(arguments[0].Values, arguments[1].Values, out outers))
+            if (!TypeStruct.InterpretCollisionTypeLoopFields(arguments[0].Values, arguments[1].Values, arguments[2].Value as string, out outers))
             {
                 return false;
             }
 
-            if (length == 2)
-            {
-                return true;
-            }
-
-            if (length < 4)
-            {
-                return false;
-            }
-
-            if (!TypeStruct.InterpretCollisionTypeLoopFields(arguments[2].Values, arguments[3].Values, out others))
-            {
-                return false;
-            }
-
-            if (length == 4)
+            if (length == 3)
             {
                 return true;
             }
@@ -89,7 +75,22 @@ namespace MyAnalyzer.Templates
                 return false;
             }
 
-            return TypeStruct.InterpretCollisionTypeLoopFields(arguments[4].Values, arguments[5].Values, out tables);
+            if (!TypeStruct.InterpretCollisionTypeLoopFields(arguments[3].Values, arguments[4].Values, arguments[5].Values, out others))
+            {
+                return false;
+            }
+
+            if (length == 6)
+            {
+                return true;
+            }
+
+            if (length < 9)
+            {
+                return false;
+            }
+
+            return TypeStruct.InterpretCollisionTypeLoopFields(arguments[6].Values, arguments[7].Values, arguments[8].Values, out tables);
         }
 
 
@@ -98,9 +99,9 @@ namespace MyAnalyzer.Templates
             var isOrdinalInitialized = false;
             ordinal = default;
             fma = default;
-            ParameterStruct[] parameterOuters;
-            ParameterStruct[] parameterOthers;
-            ParameterStruct[] parameterTables;
+            List<ParameterStruct> parameterOuters = new();
+            List<ParameterStruct> parameterOthers = new();
+            List<ParameterStruct> parameterTables = new();
             foreach (var member in typeSymbol.GetMembers())
             {
                 if (member is not IMethodSymbol methodSymbol)
@@ -109,31 +110,11 @@ namespace MyAnalyzer.Templates
                 }
 
                 var attributeData = member.GetAttributes().SingleOrDefault(x => comparer.Equals(x.AttributeClass, loopMethod));
-                if (attributeData is null)
+                var array = attributeData?.ConstructorArguments;
+                if (array?[0].Value is not int kind)
                 {
                     continue;
                 }
-
-                var array = attributeData.ConstructorArguments;
-                if (array[0].Value is not int kind || array[1].Value is not int outerCount || outerCount == 0)
-                {
-                    continue;
-                }
-
-                var parameters = methodSymbol.Parameters;
-                var otherCount = parameters.Length - outerCount;
-
-                if (array.Length >= 3)
-                {
-                    if (array[2].Value is not int x)
-                    {
-                        return false;
-                    }
-
-                    otherCount = x;
-                }
-
-                var tableCount = (parameters.Length - outerCount - otherCount) >> 1;
 
                 var intrinsicsKind = (IntrinsicsKind)kind;
                 switch (intrinsicsKind)
@@ -145,11 +126,12 @@ namespace MyAnalyzer.Templates
                         return false;
                 }
 
-                parameterOuters = new ParameterStruct[outerCount];
-                parameterOthers = otherCount == 0 ? Array.Empty<ParameterStruct>() : new ParameterStruct[otherCount];
-                parameterTables = tableCount == 0 ? Array.Empty<ParameterStruct>() : new ParameterStruct[tableCount];
+                parameterOuters.Clear();
+                parameterOthers.Clear();
+                parameterTables.Clear();
+                var parameters = methodSymbol.Parameters;
                 var parameterIndex = 0;
-                for (int memberIndex = 0, typeIndex = 0; typeIndex < outers.Length; ++typeIndex)
+                for (var typeIndex = 0; typeIndex < outers.Length; ++typeIndex)
                 {
                     var typeStruct = outers[typeIndex];
                     foreach (var member2 in typeStruct.Symbol.GetMembers())
@@ -159,28 +141,28 @@ namespace MyAnalyzer.Templates
                             continue;
                         }
 
-                        parameterOuters[memberIndex++] = new ParameterStruct(parameters[parameterIndex++], typeIndex, fieldSymbol.Name);
+                        parameterOuters.Add(new(parameters[parameterIndex++], typeIndex, fieldSymbol.Name));
                     }
                 }
 
-                for (int memberIndex = 0, typeIndex = 0; typeIndex < others.Length; ++typeIndex)
+                for (var typeIndex = 0; typeIndex < others.Length; ++typeIndex)
                 {
-                    parameterOthers[memberIndex++] = new ParameterStruct(parameters[parameterIndex++], typeIndex, string.Empty);
+                    parameterOthers.Add(new(parameters[parameterIndex++], typeIndex, string.Empty));
                 }
 
-                for (int memberIndex = 0, typeIndex = 0; typeIndex < tables.Length; ++typeIndex, parameterIndex += 2)
+                for (var typeIndex = 0; typeIndex < tables.Length; ++typeIndex, parameterIndex += 2)
                 {
-                    parameterTables[memberIndex++] = new ParameterStruct(parameters[parameterIndex], typeIndex, string.Empty);
+                    parameterTables.Add(new(parameters[parameterIndex], typeIndex, string.Empty));
                 }
 
                 switch (intrinsicsKind)
                 {
                     case IntrinsicsKind.Ordinal:
                         isOrdinalInitialized = true;
-                        ordinal = new MethodStruct(methodSymbol, parameterOuters, parameterOthers, parameterTables);
+                        ordinal = new MethodStruct(methodSymbol, parameterOuters.ToArray(), parameterOthers.ToArray(), parameterTables.ToArray());
                         break;
                     case IntrinsicsKind.Fma:
-                        fma = new MethodStruct(methodSymbol, parameterOuters, parameterOthers, parameterTables);
+                        fma = new MethodStruct(methodSymbol, parameterOuters.ToArray(), parameterOthers.ToArray(), parameterTables.ToArray());
                         break;
                 }
             }
