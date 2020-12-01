@@ -169,29 +169,5 @@ namespace Unity1Week
             mesh.RecalculateNormals();
             return mesh;
         }
-
-        // unsafe
-        private Chip[] InitializePlane(uint width, uint height)
-        {
-            var answer = new Chip[width * height];
-            var random = Random.value * 5;
-            var index = 0;
-            for (uint y = 0; y < height; y++)
-            for (uint x = 0; x < width; x++)
-            {
-                var perlin = Mathf.PerlinNoise(x / (float) width * random, y / (float) height * random);
-                if (perlin > 0.8f)
-                    answer[index++] = new Chip {Value = 5};
-                else if (perlin > 0.6f)
-                    answer[index++] = new Chip {Value = 4};
-                else if (perlin > 0.4f)
-                    answer[index++] = new Chip {Value = 3};
-                else if (perlin > 0.2f)
-                    answer[index++] = new Chip {Value = 2};
-                else
-                    answer[index++] = new Chip {Value = 1};
-            }
-            return answer;
-        }
     }
 }

@@ -859,6 +859,76 @@ namespace Unity1Week.Hit
     }
 }
 
+namespace Unity1Week
+{
+    static partial class  EnemySnowShoot
+    {
+        [global::Unity.Burst.BurstCompile]
+        public unsafe partial struct Job : global::Unity.Jobs.IJob
+        {
+            [global::Unity.Collections.ReadOnly] public global::Unity.Collections.NativeArray<ComponentTypes.Position2D.Eight> EnemyPosition2D;
+            [global::Unity.Collections.ReadOnly] public global::Unity.Collections.NativeArray<ComponentTypes.AliveState.Eight> EnemyAliveState;
+            public float PlayerPositionX;
+            public float PlayerPositionY;
+            public float Speed;
+            public global::Unity.Collections.NativeArray<int> SnowCount;
+            public global::Unity.Collections.NativeArray<ComponentTypes.Position2D.Eight> SnowPosition;
+            public global::Unity.Collections.NativeArray<ComponentTypes.Speed2D.Eight> SnowSpeed;
+            public global::Unity.Collections.NativeArray<ComponentTypes.AliveState.Eight> SnowAliveState;
+
+            public void Execute()
+            {
+                var tablePointer0 = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(SnowPosition);
+                var tablePointer1 = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(SnowSpeed);
+                var tablePointer2 = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(SnowAliveState);
+                if (global::Unity.Burst.Intrinsics.X86.Fma.IsFmaSupported)
+                {
+                    var other0 = new global::Unity.Burst.Intrinsics.v256(PlayerPositionX, PlayerPositionX, PlayerPositionX, PlayerPositionX, PlayerPositionX, PlayerPositionX, PlayerPositionX, PlayerPositionX);
+                    var other1 = new global::Unity.Burst.Intrinsics.v256(PlayerPositionY, PlayerPositionY, PlayerPositionY, PlayerPositionY, PlayerPositionY, PlayerPositionY, PlayerPositionY, PlayerPositionY);
+                    var other2 = new global::Unity.Burst.Intrinsics.v256(Speed, Speed, Speed, Speed, Speed, Speed, Speed, Speed);
+                    var other3 = SnowCount[0];
+                    var outerPointer0 = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(EnemyPosition2D);
+                    var outerPointer1 = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(EnemyAliveState);
+
+                    for (
+                        var outerIndex = 0;
+                        outerIndex < EnemyPosition2D.Length;
+                        ++outerIndex,
+                        outerPointer0 += sizeof(ComponentTypes.Position2D.Eight),
+                        outerPointer1 += sizeof(ComponentTypes.AliveState.Eight)
+                    )
+                    {
+                        var outer0_X = global::Unity.Burst.Intrinsics.X86.Avx.mm256_load_ps(outerPointer0 + (0 << 5));
+                        var outer0_Y = global::Unity.Burst.Intrinsics.X86.Avx.mm256_load_ps(outerPointer0 + (1 << 5));
+                        var outer1_Value = global::Unity.Burst.Intrinsics.X86.Avx.mm256_load_ps(outerPointer1 + (0 << 5));
+                        Exe2(ref outer0_X, ref outer0_Y, ref outer1_Value, ref other0, ref other1, ref other2, ref other3, tablePointer0, SnowPosition.Length, tablePointer1, SnowSpeed.Length, tablePointer2, SnowAliveState.Length);
+                    }
+
+                    SnowCount[0] = other3;
+                    return;
+                }
+
+                {
+                    var other0 = new global::Unity.Mathematics.float4(PlayerPositionX, PlayerPositionX, PlayerPositionX, PlayerPositionX);
+                    var other1 = new global::Unity.Mathematics.float4(PlayerPositionY, PlayerPositionY, PlayerPositionY, PlayerPositionY);
+                    var other2 = new global::Unity.Mathematics.float4(Speed, Speed, Speed, Speed);
+                    var other3 = SnowCount[0];
+
+                    for (var outerIndex = 0; outerIndex < EnemyPosition2D.Length; ++outerIndex)
+                    {
+                        var outer0 = EnemyPosition2D[outerIndex];
+                        var outer1 = EnemyAliveState[outerIndex];
+                        Exe(ref outer0.X.c0, ref outer0.Y.c0, ref outer1.Value.c0, ref other0, ref other1, ref other2, ref other3, tablePointer0, SnowPosition.Length, tablePointer1, SnowSpeed.Length, tablePointer2, SnowAliveState.Length);
+                        Exe(ref outer0.X.c1, ref outer0.Y.c1, ref outer1.Value.c1, ref other0, ref other1, ref other2, ref other3, tablePointer0, SnowPosition.Length, tablePointer1, SnowSpeed.Length, tablePointer2, SnowAliveState.Length);
+                    }
+
+                    SnowCount[0] = other3;
+                }
+            }
+        }
+    }
+}
+
 namespace Unity1Week.Hit
 {
     static partial class  PlayerEnemyHitJob

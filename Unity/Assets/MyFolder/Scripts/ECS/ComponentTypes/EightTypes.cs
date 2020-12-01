@@ -3,6 +3,16 @@ using MyAttribute;
 
 namespace ComponentTypes
 {
+    public struct ChipKind
+    {
+        public int Value;
+    }
+    
+    public struct ChipTemperature
+    {
+        public float Value;
+    }
+    
     [Eight]
     public partial struct AliveState
     {
