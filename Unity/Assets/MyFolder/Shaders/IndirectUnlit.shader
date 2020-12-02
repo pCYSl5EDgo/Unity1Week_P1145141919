@@ -6,7 +6,7 @@
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" }
+        Tags {  }
         LOD 100
 
         Pass
@@ -23,7 +23,6 @@
             {
                 float3 vertex : POSITION;
                 float2 uv : TEXCOORD0;
-                UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
             struct v2f
@@ -47,6 +46,7 @@
                 const Position2D position = positions[id >> 3];
                 const uint big_index = (id >> 2) & 1;
                 const uint small_index = id & 3;
+                v.vertex.xy *= 100;
                 v.vertex.x += position.xy[big_index][small_index];
                 v.vertex.y += position.xy[2 + big_index][small_index];
                 

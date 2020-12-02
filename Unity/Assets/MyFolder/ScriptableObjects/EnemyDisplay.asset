@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2130658d5b379b45b50014dbdc66390, type: 3}
+  m_Name: EnemyDisplay
+  m_EditorClassIdentifier: 
+  EnemyMesh: {fileID: 4300000, guid: aa351f28b2b02644b885ef40c10fc191, type: 2}
+  EnemyMaterial: {fileID: 2100000, guid: a1fbec74aee90074b9335c5a4ddbd21d, type: 2}
+  NormalTexture: {fileID: 2800000, guid: 555970fc3d4a3414a826d562574fd93c, type: 3}
+  LeaderTexture: {fileID: 2800000, guid: 4231216c5cb4953418a38032fe3496b4, type: 3}
+  BossTexture: {fileID: 2800000, guid: 19a27d523dfb12d4b9d6558bc57ca34e, type: 3}

@@ -43,8 +43,8 @@ namespace MyAnalyzer.Templates
             
             #line default
             #line hidden
-            this.Write("\r\n    {\r\n        public partial struct Countable\r\n        {\r\n            public g" +
-                    "lobal::Unity.Collections.NativeArray<int> Count;\r\n");
+            this.Write("\r\n    {\r\n        public partial struct Countable : global::System.IDisposable\r\n  " +
+                    "      {\r\n            public global::Unity.Collections.NativeArray<int> Count;\r\n");
             
             #line 14 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
  var list = new List<IFieldSymbol>();
@@ -86,46 +86,129 @@ foreach (var member in TypeSymbol.GetMembers()) {
             
             #line default
             #line hidden
-            this.Write("\r\n            public Countable(int count)\r\n            {\r\n                Count =" +
-                    " new global::Unity.Collections.NativeArray<int>(1, global::Unity.Collections.All" +
-                    "ocator.Persistent);\r\n                var capacity = ((count - 1) >> 3) + 1;\r\n");
+            this.Write("\r\n            public int Capacity => ");
             
-            #line 29 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
+            #line 25 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(list[0].Name));
+            
+            #line default
+            #line hidden
+            this.Write("Array.Length;\r\n\r\n            public int ChunkCount => ((Count[0] - 1) >> 3) + 1;\r" +
+                    "\n\r\n            public void EnsureCapacity(int newCapacity)\r\n            {\r\n     " +
+                    "           if (Capacity >= newCapacity) return;\r\n\r\n");
+            
+            #line 33 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
  foreach (var fieldSymbol in list) { 
             
             #line default
             #line hidden
-            this.Write("                ");
+            this.Write("                {\r\n                    var tmp = new global::Unity.Collections.Na" +
+                    "tiveArray<global::");
             
-            #line 30 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(fieldSymbol.Name));
-            
-            #line default
-            #line hidden
-            this.Write("Array = new global::Unity.Collections.NativeArray<global::");
-            
-            #line 30 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
+            #line 35 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(fieldSymbol.Type.ContainingNamespace.ToDisplayString()));
             
             #line default
             #line hidden
             this.Write(".");
             
-            #line 30 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
+            #line 35 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(fieldSymbol.Type.Name));
+            
+            #line default
+            #line hidden
+            this.Write(".Eight>(newCapacity, global::Unity.Collections.Allocator.Persistent);\r\n          " +
+                    "          ");
+            
+            #line 36 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(fieldSymbol.Name));
+            
+            #line default
+            #line hidden
+            this.Write("Array.CopyTo(tmp);\r\n                    ");
+            
+            #line 37 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(fieldSymbol.Name));
+            
+            #line default
+            #line hidden
+            this.Write("Array.Dispose();\r\n                    ");
+            
+            #line 38 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(fieldSymbol.Name));
+            
+            #line default
+            #line hidden
+            this.Write("Array = tmp;\r\n                }\r\n");
+            
+            #line 40 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
+ } 
+            
+            #line default
+            #line hidden
+            this.Write("            }\r\n\r\n            public void Dispose()\r\n            {\r\n              " +
+                    "  Count.Dispose();\r\n");
+            
+            #line 46 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
+ foreach (var fieldSymbol in list) { 
+            
+            #line default
+            #line hidden
+            this.Write("                ");
+            
+            #line 47 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(fieldSymbol.Name));
+            
+            #line default
+            #line hidden
+            this.Write("Array.Dispose();\r\n");
+            
+            #line 48 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
+ } 
+            
+            #line default
+            #line hidden
+            this.Write("            }\r\n\r\n            public Countable(int count)\r\n            {\r\n        " +
+                    "        Count = new global::Unity.Collections.NativeArray<int>(1, global::Unity." +
+                    "Collections.Allocator.Persistent);\r\n                var capacity = ((count - 1) " +
+                    ">> 3) + 1;\r\n");
+            
+            #line 55 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
+ foreach (var fieldSymbol in list) { 
+            
+            #line default
+            #line hidden
+            this.Write("                ");
+            
+            #line 56 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(fieldSymbol.Name));
+            
+            #line default
+            #line hidden
+            this.Write("Array = new global::Unity.Collections.NativeArray<global::");
+            
+            #line 56 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(fieldSymbol.Type.ContainingNamespace.ToDisplayString()));
+            
+            #line default
+            #line hidden
+            this.Write(".");
+            
+            #line 56 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(fieldSymbol.Type.Name));
             
             #line default
             #line hidden
             this.Write(".Eight>(capacity, global::Unity.Collections.Allocator.Persistent);\r\n");
             
-            #line 31 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
+            #line 57 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
  } 
             
             #line default
             #line hidden
             this.Write("            }\r\n");
             
-            #line 33 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
+            #line 59 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
  var sortable = AttributeData.ConstructorArguments.Length != 0;
   if (sortable) {
     var additionalMemberTypes = AttributeData.ConstructorArguments[0].Values;
@@ -137,7 +220,7 @@ foreach (var member in TypeSymbol.GetMembers()) {
             #line hidden
             this.Write("\r\n            public bool IsAlive(int index");
             
-            #line 40 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
+            #line 66 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
  for (var i = 0; i < additionalArgumentMemberNames.Length; i++) { 
         var paramType = additionalMemberTypes[i].Value as INamedTypeSymbol;
         var paramName = additionalArgumentMemberNames[i].Value as string;
@@ -147,40 +230,40 @@ foreach (var member in TypeSymbol.GetMembers()) {
             #line hidden
             this.Write(", ");
             
-            #line 43 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
+            #line 69 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
  if (isNotSpecial){ 
             
             #line default
             #line hidden
             this.Write("global::");
             
-            #line 43 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
+            #line 69 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
  } 
             
             #line default
             #line hidden
             
-            #line 43 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
+            #line 69 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(paramType.ToDisplayString()));
             
             #line default
             #line hidden
             this.Write(" ");
             
-            #line 43 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
+            #line 69 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(paramName));
             
             #line default
             #line hidden
             
-            #line 43 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
+            #line 69 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
  } 
             
             #line default
             #line hidden
             this.Write(")\r\n            {\r\n                ");
             
-            #line 45 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
+            #line 71 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(isAliveFunctionString));
             
             #line default
@@ -189,7 +272,7 @@ foreach (var member in TypeSymbol.GetMembers()) {
                     " public partial struct SortJob : global::Unity.Jobs.IJob\r\n        {\r\n           " +
                     " public Countable This;\r\n");
             
-            #line 53 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
+            #line 79 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
  for (var i = 0; i < additionalFieldMemberNames.Length; i++) { 
       var fieldType = additionalMemberTypes[i].Value as INamedTypeSymbol;
       var fieldName = additionalFieldMemberNames[i].Value as string;
@@ -199,34 +282,34 @@ foreach (var member in TypeSymbol.GetMembers()) {
             #line hidden
             this.Write("            public ");
             
-            #line 57 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
+            #line 83 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
  if (isNotSpecial){ 
             
             #line default
             #line hidden
             this.Write("global::");
             
-            #line 57 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
+            #line 83 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
  } 
             
             #line default
             #line hidden
             
-            #line 57 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
+            #line 83 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(fieldType.ToDisplayString()));
             
             #line default
             #line hidden
             this.Write(" ");
             
-            #line 57 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
+            #line 83 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(fieldName));
             
             #line default
             #line hidden
             this.Write(";\r\n");
             
-            #line 58 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
+            #line 84 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
  } 
             
             #line default
@@ -235,20 +318,20 @@ foreach (var member in TypeSymbol.GetMembers()) {
                     " = This.Count[0];\r\n                for (var ____index = 0; ____index < ____count" +
                     "; )\r\n                {\r\n                    if (This.IsAlive(____index");
             
-            #line 65 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
+            #line 91 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
  for (var i = 0; i < additionalFieldMemberNames.Length; i++) { var fieldName = additionalFieldMemberNames[i].Value as string; 
             
             #line default
             #line hidden
             this.Write(", this.");
             
-            #line 65 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
+            #line 91 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(fieldName));
             
             #line default
             #line hidden
             
-            #line 65 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
+            #line 91 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
  } 
             
             #line default
@@ -257,20 +340,20 @@ foreach (var member in TypeSymbol.GetMembers()) {
                     "        continue;\r\n                    }\r\n\r\n                    while (!This.IsA" +
                     "live(--____count");
             
-            #line 71 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
+            #line 97 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
  for (var i = 0; i < additionalFieldMemberNames.Length; i++) { var fieldName = additionalFieldMemberNames[i].Value as string; 
             
             #line default
             #line hidden
             this.Write(", this.");
             
-            #line 71 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
+            #line 97 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(fieldName));
             
             #line default
             #line hidden
             
-            #line 71 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
+            #line 97 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
  } 
             
             #line default
@@ -292,21 +375,21 @@ foreach (var member in TypeSymbol.GetMembers()) {
 
 ");
             
-            #line 86 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
+            #line 112 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
  foreach (var fieldSymbol in list) { 
             
             #line default
             #line hidden
             this.Write("                    {\r\n                        var ____dst = This.");
             
-            #line 88 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
+            #line 114 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(fieldSymbol.Name));
             
             #line default
             #line hidden
             this.Write("Array[____dstIndex];\r\n                        var ____src = This.");
             
-            #line 89 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
+            #line 115 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(fieldSymbol.Name));
             
             #line default
@@ -315,14 +398,14 @@ foreach (var member in TypeSymbol.GetMembers()) {
                     "lumn, ____srcRow, ref ____dst, ____dstColumn, ____dstRow);\r\n                    " +
                     "    This.");
             
-            #line 91 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
+            #line 117 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(fieldSymbol.Name));
             
             #line default
             #line hidden
             this.Write("Array[____dstIndex] = ____dst;\r\n                    }\r\n");
             
-            #line 93 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
+            #line 119 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
  } 
             
             #line default
@@ -330,14 +413,14 @@ foreach (var member in TypeSymbol.GetMembers()) {
             this.Write("                }\r\n\r\n            END:\r\n                This.Count[0] = ____count;" +
                     "\r\n            }\r\n        }\r\n");
             
-            #line 100 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
+            #line 126 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
  } else {
             
             #line default
             #line hidden
             this.Write("        }\r\n");
             
-            #line 102 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
+            #line 128 "C:\Users\conve\source\repos\Unity1Week_P1145141919\Managed\MyAnalyzer\Templates\CountableTemplate.tt"
  } 
             
             #line default

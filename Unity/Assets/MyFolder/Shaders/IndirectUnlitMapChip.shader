@@ -4,7 +4,6 @@
     {
         _MainTex ("Tex", 2DArray) = "" {}
         _WidthCountShift ("WidthCountShift", Int) = 8
-        _AdjustPosition ("AdjustPosition", Float) = 0
         _ChipSize ("ChipSize", Float) = 32
     }
     SubShader
@@ -19,6 +18,7 @@
             #pragma vertex vert
             #pragma fragment frag
             #pragma multi_compile_instancing
+            #pragma require 2darray
             
             #include "UnityCG.cginc"
 
@@ -34,6 +34,7 @@
                 float4 vertex : SV_POSITION;
             };
 
+            UNITY_DECLARE_TEX2DARRAY(_MainTex);
             StructuredBuffer<uint> kinds;
             uint _WidthCountShift;
             float _AdjustPosition;
@@ -43,18 +44,19 @@
             {
                 const uint y = id >> _WidthCountShift;
                 const uint x = id ^ (y << _WidthCountShift);
-                v.vertex.xy = mad(float2(x, y), _ChipSize, v.vertex.xy + _AdjustPosition);
+                v.vertex.x += x;
+                v.vertex.y += y;
+                v.vertex.xy -= 1 << (_WidthCountShift - 1);
+                v.vertex.xy *= _ChipSize;
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
-                o.uv = float3(v.uv, kinds[id]);
+                o.uv.xy = v.uv;
+                o.uv.z = kinds[id];
                 return o;
             }
-
-            UNITY_DECLARE_TEX2DARRAY(_MainTex);
             
             fixed4 frag (v2f i) : SV_Target
             {
-                // sample the texture
                 return UNITY_SAMPLE_TEX2DARRAY(_MainTex, i.uv);
             }
             ENDCG

@@ -158,13 +158,56 @@ namespace ComponentTypes
 {
     partial struct Enemy
     {
-        public partial struct Countable
+        public partial struct Countable : global::System.IDisposable
         {
             public global::Unity.Collections.NativeArray<int> Count;
             public global::Unity.Collections.NativeArray<global::ComponentTypes.Position2D.Eight> PositionArray;
             public global::Unity.Collections.NativeArray<global::ComponentTypes.Destination2D.Eight> DestinationArray;
             public global::Unity.Collections.NativeArray<global::ComponentTypes.Speed2D.Eight> SpeedArray;
             public global::Unity.Collections.NativeArray<global::ComponentTypes.AliveState.Eight> IsAliveArray;
+
+            public int Capacity => PositionArray.Length;
+
+            public int ChunkCount => ((Count[0] - 1) >> 3) + 1;
+
+            public void EnsureCapacity(int newCapacity)
+            {
+                if (Capacity >= newCapacity) return;
+
+                {
+                    var tmp = new global::Unity.Collections.NativeArray<global::ComponentTypes.Position2D.Eight>(newCapacity, global::Unity.Collections.Allocator.Persistent);
+                    PositionArray.CopyTo(tmp);
+                    PositionArray.Dispose();
+                    PositionArray = tmp;
+                }
+                {
+                    var tmp = new global::Unity.Collections.NativeArray<global::ComponentTypes.Destination2D.Eight>(newCapacity, global::Unity.Collections.Allocator.Persistent);
+                    DestinationArray.CopyTo(tmp);
+                    DestinationArray.Dispose();
+                    DestinationArray = tmp;
+                }
+                {
+                    var tmp = new global::Unity.Collections.NativeArray<global::ComponentTypes.Speed2D.Eight>(newCapacity, global::Unity.Collections.Allocator.Persistent);
+                    SpeedArray.CopyTo(tmp);
+                    SpeedArray.Dispose();
+                    SpeedArray = tmp;
+                }
+                {
+                    var tmp = new global::Unity.Collections.NativeArray<global::ComponentTypes.AliveState.Eight>(newCapacity, global::Unity.Collections.Allocator.Persistent);
+                    IsAliveArray.CopyTo(tmp);
+                    IsAliveArray.Dispose();
+                    IsAliveArray = tmp;
+                }
+            }
+
+            public void Dispose()
+            {
+                Count.Dispose();
+                PositionArray.Dispose();
+                DestinationArray.Dispose();
+                SpeedArray.Dispose();
+                IsAliveArray.Dispose();
+            }
 
             public Countable(int count)
             {
@@ -250,12 +293,48 @@ namespace ComponentTypes
 {
     partial struct EnemyAttack
     {
-        public partial struct Countable
+        public partial struct Countable : global::System.IDisposable
         {
             public global::Unity.Collections.NativeArray<int> Count;
             public global::Unity.Collections.NativeArray<global::ComponentTypes.Position2D.Eight> PositionArray;
             public global::Unity.Collections.NativeArray<global::ComponentTypes.Speed2D.Eight> SpeedArray;
             public global::Unity.Collections.NativeArray<global::ComponentTypes.AliveState.Eight> IsAliveArray;
+
+            public int Capacity => PositionArray.Length;
+
+            public int ChunkCount => ((Count[0] - 1) >> 3) + 1;
+
+            public void EnsureCapacity(int newCapacity)
+            {
+                if (Capacity >= newCapacity) return;
+
+                {
+                    var tmp = new global::Unity.Collections.NativeArray<global::ComponentTypes.Position2D.Eight>(newCapacity, global::Unity.Collections.Allocator.Persistent);
+                    PositionArray.CopyTo(tmp);
+                    PositionArray.Dispose();
+                    PositionArray = tmp;
+                }
+                {
+                    var tmp = new global::Unity.Collections.NativeArray<global::ComponentTypes.Speed2D.Eight>(newCapacity, global::Unity.Collections.Allocator.Persistent);
+                    SpeedArray.CopyTo(tmp);
+                    SpeedArray.Dispose();
+                    SpeedArray = tmp;
+                }
+                {
+                    var tmp = new global::Unity.Collections.NativeArray<global::ComponentTypes.AliveState.Eight>(newCapacity, global::Unity.Collections.Allocator.Persistent);
+                    IsAliveArray.CopyTo(tmp);
+                    IsAliveArray.Dispose();
+                    IsAliveArray = tmp;
+                }
+            }
+
+            public void Dispose()
+            {
+                Count.Dispose();
+                PositionArray.Dispose();
+                SpeedArray.Dispose();
+                IsAliveArray.Dispose();
+            }
 
             public Countable(int count)
             {
@@ -334,12 +413,48 @@ namespace ComponentTypes
 {
     partial struct PlayerBullet
     {
-        public partial struct Countable
+        public partial struct Countable : global::System.IDisposable
         {
             public global::Unity.Collections.NativeArray<int> Count;
             public global::Unity.Collections.NativeArray<global::ComponentTypes.Position2D.Eight> PositionArray;
             public global::Unity.Collections.NativeArray<global::ComponentTypes.Speed2D.Eight> SpeedArray;
             public global::Unity.Collections.NativeArray<global::ComponentTypes.AliveState.Eight> IsAliveArray;
+
+            public int Capacity => PositionArray.Length;
+
+            public int ChunkCount => ((Count[0] - 1) >> 3) + 1;
+
+            public void EnsureCapacity(int newCapacity)
+            {
+                if (Capacity >= newCapacity) return;
+
+                {
+                    var tmp = new global::Unity.Collections.NativeArray<global::ComponentTypes.Position2D.Eight>(newCapacity, global::Unity.Collections.Allocator.Persistent);
+                    PositionArray.CopyTo(tmp);
+                    PositionArray.Dispose();
+                    PositionArray = tmp;
+                }
+                {
+                    var tmp = new global::Unity.Collections.NativeArray<global::ComponentTypes.Speed2D.Eight>(newCapacity, global::Unity.Collections.Allocator.Persistent);
+                    SpeedArray.CopyTo(tmp);
+                    SpeedArray.Dispose();
+                    SpeedArray = tmp;
+                }
+                {
+                    var tmp = new global::Unity.Collections.NativeArray<global::ComponentTypes.AliveState.Eight>(newCapacity, global::Unity.Collections.Allocator.Persistent);
+                    IsAliveArray.CopyTo(tmp);
+                    IsAliveArray.Dispose();
+                    IsAliveArray = tmp;
+                }
+            }
+
+            public void Dispose()
+            {
+                Count.Dispose();
+                PositionArray.Dispose();
+                SpeedArray.Dispose();
+                IsAliveArray.Dispose();
+            }
 
             public Countable(int count)
             {
@@ -418,12 +533,48 @@ namespace ComponentTypes
 {
     partial struct PlayerFire
     {
-        public partial struct Countable
+        public partial struct Countable : global::System.IDisposable
         {
             public global::Unity.Collections.NativeArray<int> Count;
             public global::Unity.Collections.NativeArray<global::ComponentTypes.Position2D.Eight> PositionArray;
             public global::Unity.Collections.NativeArray<global::ComponentTypes.Speed2D.Eight> SpeedArray;
             public global::Unity.Collections.NativeArray<global::ComponentTypes.FireStartTime.Eight> StartTimeArray;
+
+            public int Capacity => PositionArray.Length;
+
+            public int ChunkCount => ((Count[0] - 1) >> 3) + 1;
+
+            public void EnsureCapacity(int newCapacity)
+            {
+                if (Capacity >= newCapacity) return;
+
+                {
+                    var tmp = new global::Unity.Collections.NativeArray<global::ComponentTypes.Position2D.Eight>(newCapacity, global::Unity.Collections.Allocator.Persistent);
+                    PositionArray.CopyTo(tmp);
+                    PositionArray.Dispose();
+                    PositionArray = tmp;
+                }
+                {
+                    var tmp = new global::Unity.Collections.NativeArray<global::ComponentTypes.Speed2D.Eight>(newCapacity, global::Unity.Collections.Allocator.Persistent);
+                    SpeedArray.CopyTo(tmp);
+                    SpeedArray.Dispose();
+                    SpeedArray = tmp;
+                }
+                {
+                    var tmp = new global::Unity.Collections.NativeArray<global::ComponentTypes.FireStartTime.Eight>(newCapacity, global::Unity.Collections.Allocator.Persistent);
+                    StartTimeArray.CopyTo(tmp);
+                    StartTimeArray.Dispose();
+                    StartTimeArray = tmp;
+                }
+            }
+
+            public void Dispose()
+            {
+                Count.Dispose();
+                PositionArray.Dispose();
+                SpeedArray.Dispose();
+                StartTimeArray.Dispose();
+            }
 
             public Countable(int count)
             {

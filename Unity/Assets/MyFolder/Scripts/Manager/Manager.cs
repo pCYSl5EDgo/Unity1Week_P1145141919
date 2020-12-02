@@ -70,7 +70,7 @@ namespace Unity1Week
         #if UNITY_EDITOR
         private void Validate()
         {
-            if (mapTable.map.Length != enemySpeeds.Speeds.Length || enemySpeeds.Speeds.Length != playerSpeeds.Speeds.Length) throw new ArgumentException();
+            if (mapTable.ChipTemperatures.Length != enemySpeeds.Speeds.Length || enemySpeeds.Speeds.Length != playerSpeeds.Speeds.Length) throw new ArgumentException();
         }
         #endif
 
