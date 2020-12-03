@@ -79,8 +79,8 @@ namespace Unity1Week
                 else
                     Destroy(注意);
             });
-            this.UpdateAsObservable().Select(_ => Input.GetKeyDown(KeyCode.Backspace)).ThrottleFirst(TimeSpan.FromMilliseconds(200)).Where(_ => _).Subscribe(_ => { UICamera.enabled = !UICamera.enabled; });
-            cameraMoveObserver = this.UpdateAsObservable().Subscribe(_ =>
+            //this.UpdateAsObservable().Select(_ => Input.GetKeyDown(KeyCode.Backspace)).ThrottleFirst(TimeSpan.FromMilliseconds(200)).Where(_ => _).Subscribe(_ => { UICamera.enabled = !UICamera.enabled; });
+            /*cameraMoveObserver = this.UpdateAsObservable().Subscribe(_ =>
             {
                 var deltaY = Input.mouseScrollDelta.y;
                 if (deltaY != 0)
@@ -89,7 +89,7 @@ namespace Unity1Week
                     position.y = Math.Max(0.5f, position.y - deltaY);
                     mainCamera.transform.position = position;
                 }
-            });
+            });*/
             playerMoveObserver = this.UpdateAsObservable().Where(_ => UICamera.enabled).Subscribe(_ =>
             {
                 /*var settings = manager.GetComponentData<PlayerSettings>(player);

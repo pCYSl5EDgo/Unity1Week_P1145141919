@@ -25,7 +25,7 @@ namespace Unity1Week
         }
 
         [MethodIntrinsicsKind(IntrinsicsKind.Fma)]
-        private static void Exe(
+        private static void Exe2(
             ref v256 x,
             ref v256 y,
             ref v256 speedX,
@@ -36,7 +36,7 @@ namespace Unity1Week
             if (!X86.Fma.IsFmaSupported) return;
 
             x = X86.Fma.mm256_fmadd_ps(speedX, deltaTime, x);
-            y = X86.Fma.mm256_fmadd_ps(speedX, deltaTime, y);
+            y = X86.Fma.mm256_fmadd_ps(speedY, deltaTime, y);
         }
     }
 
@@ -232,11 +232,11 @@ namespace Unity1Week
             ref float4 maxExclusive
         )
         {
-            var outOfRange = (minInclusive > x) | (minInclusive > y) | (x >= maxExclusive) | (y >= maxExclusive);
+            var outOfRange = math.min(x, y) < minInclusive | math.max(x, y) >= maxExclusive;
             alive = math.select(alive, -1, outOfRange);
         }
 
-        [MethodIntrinsicsKind(IntrinsicsKind.Fma)]
+        //[MethodIntrinsicsKind(IntrinsicsKind.Fma)]
         private static void Exe2(
             ref v256 x,
             ref v256 y,
@@ -254,6 +254,35 @@ namespace Unity1Week
                     X86.Avx.mm256_cmp_ps(x, maxExclusive, (int)X86.Avx.CMP.GE_OQ), 
                     X86.Avx.mm256_cmp_ps(y, maxExclusive, (int)X86.Avx.CMP.GE_OQ)));
             alive = X86.Avx.mm256_or_ps(alive, outOfRange);
+        }
+    }
+    
+    [SingleLoopType(
+        new[] { typeof(Position2D), typeof(Speed2D), typeof(AliveState) }, new[] { false, false, false }, "",
+        new[] { typeof(float), typeof(float), typeof(float), typeof(Random) }, new[] { true, true, true, false }, new[] { "MinInclusive", "MaxExclusive", "MaxSpeed", "Random" }
+    )]
+    public static partial class RandomSpawn
+    {
+        [MethodIntrinsicsKind(IntrinsicsKind.Ordinal)]
+        private static void Exe(
+            ref float4 positionX,
+            ref float4 positionY,
+            ref float4 speedX,
+            ref float4 speedY,
+            ref int4 alive,
+            ref float4 minInclusive,
+            ref float4 maxExclusive,
+            ref float4 speedMax,
+            ref Random random
+        )
+        {
+            var state = random.state;
+            positionX = new float4(state++, state++, state++, state++) - 100f;
+            positionY = new float4(state++, state++, state++, state++) - 100f;
+            speedX = new float4(-3, -1, 1, 3) * 5f;
+            speedY = new float4(3, -1, 1, -3) * 5f;
+            random.state = state;
+            alive = 0;
         }
     }
 }

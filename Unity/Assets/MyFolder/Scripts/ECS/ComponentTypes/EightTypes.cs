@@ -20,7 +20,7 @@ namespace ComponentTypes
 
         public enum State
         {
-            Alive,
+            Alive = 0,
             Dead = -1,
         }
     }
