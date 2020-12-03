@@ -12,6 +12,8 @@
         Pass
         {
             CGPROGRAM
+            // Upgrade NOTE: excluded shader from OpenGL ES 2.0 because it uses non-square matrices
+            #pragma exclude_renderers gles
             #pragma target 5.0
             #pragma vertex vert
             #pragma fragment frag
@@ -34,21 +36,15 @@
             sampler2D _MainTex;
             float4 _MainTex_ST;
 
-            struct Position2D
-            {
-                float4x4 xy;
-            };
-
-            StructuredBuffer<Position2D> positions;
+            StructuredBuffer<float> positions;
 
             v2f vert (appdata v, const uint id : SV_INSTANCEID)
             {
-                const Position2D position = positions[id >> 3];
-                const uint big_index = (id >> 2) & 1;
-                const uint small_index = id & 3;
-                v.vertex.xy *= 100;
-                v.vertex.x += position.xy[big_index][small_index];
-                v.vertex.y += position.xy[2 + big_index][small_index];
+                const uint big_id = id >> 3 << 4;
+                const uint small_id = id & 7;
+                v.vertex.xy *= 10;
+                v.vertex.x += positions[big_id + small_id];
+                v.vertex.y += positions[big_id + small_id + 8];
                 
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
