@@ -24,36 +24,50 @@ foreach (var member in TypeSymbol.GetMembers()) {
 
             public int Capacity => <#= list[0].Name #>Array.Length;
 
-            public int ChunkCount => ((Count[0] - 1) >> 3) + 1;
+            public int ChunkCount => (Count[0] + 7) >> 3;
 
-            public void EnsureCapacity(int newCapacity)
+            public unsafe void EnsureCapacity(int newCapacity)
             {
                 if (Capacity >= newCapacity) return;
 
-<# foreach (var fieldSymbol in list) { #>
+<# foreach (var fieldSymbol in list) {
+    var typeName = "global::" + fieldSymbol.Type.ContainingNamespace.ToDisplayString() + '.' + fieldSymbol.Type.Name + ".Eight"; #>
                 {
-                    var tmp = new global::Unity.Collections.NativeArray<global::<#= fieldSymbol.Type.ContainingNamespace.ToDisplayString() #>.<#= fieldSymbol.Type.Name #>.Eight>(newCapacity, global::Unity.Collections.Allocator.Persistent);
-                    <#= fieldSymbol.Name #>Array.CopyTo(tmp);
+                    var pointer = global::Unity.Collections.LowLevel.Unsafe.UnsafeUtility.Malloc(sizeof(<#= typeName #>) * newCapacity, 32, global::Unity.Collections.Allocator.Persistent);
+                    var srcPointer = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(<#= fieldSymbol.Name #>Array);
+                    global::Unity.Collections.LowLevel.Unsafe.UnsafeUtility.MemCpy(pointer, srcPointer, <#= fieldSymbol.Name #>Array.Length * sizeof(<#= typeName #>));
                     <#= fieldSymbol.Name #>Array.Dispose();
-                    <#= fieldSymbol.Name #>Array = tmp;
+                    <#= fieldSymbol.Name #>Array = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.ConvertExistingDataToNativeArray<<#= typeName #>>(pointer, newCapacity, global::Unity.Collections.Allocator.Persistent);
+#if ENABLE_UNITY_COLLECTIONS_CHECKS
+                    global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.SetAtomicSafetyHandle(ref <#= fieldSymbol.Name #>Array, global::Unity.Collections.LowLevel.Unsafe.AtomicSafetyHandle.Create());
+#endif
                 }
 <# } #>
             }
 
             public void Dispose()
             {
+                if (!Count.IsCreated) return;
+
                 Count.Dispose();
+                Count = default;
 <# foreach (var fieldSymbol in list) { #>
                 <#= fieldSymbol.Name #>Array.Dispose();
 <# } #>
             }
 
-            public Countable(int count)
+            public unsafe Countable(int capacity)
             {
                 Count = new global::Unity.Collections.NativeArray<int>(1, global::Unity.Collections.Allocator.Persistent);
-                var capacity = ((count - 1) >> 3) + 1;
-<# foreach (var fieldSymbol in list) { #>
-                <#= fieldSymbol.Name #>Array = new global::Unity.Collections.NativeArray<global::<#= fieldSymbol.Type.ContainingNamespace.ToDisplayString() #>.<#= fieldSymbol.Type.Name #>.Eight>(capacity, global::Unity.Collections.Allocator.Persistent);
+<# foreach (var fieldSymbol in list) {
+    var typeName = "global::" + fieldSymbol.Type.ContainingNamespace.ToDisplayString() + '.' + fieldSymbol.Type.Name + ".Eight"; #>
+                {
+                    var pointer = global::Unity.Collections.LowLevel.Unsafe.UnsafeUtility.Malloc(sizeof(<#= typeName #>) * capacity, 32, global::Unity.Collections.Allocator.Persistent);
+                    <#= fieldSymbol.Name #>Array = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.ConvertExistingDataToNativeArray<<#= typeName #>>(pointer, capacity, global::Unity.Collections.Allocator.Persistent);
+#if ENABLE_UNITY_COLLECTIONS_CHECKS
+                    global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.SetAtomicSafetyHandle(ref <#= fieldSymbol.Name #>Array, global::Unity.Collections.LowLevel.Unsafe.AtomicSafetyHandle.Create());
+#endif
+                }
 <# } #>
             }
 <# var sortable = AttributeData.ConstructorArguments.Length != 0;

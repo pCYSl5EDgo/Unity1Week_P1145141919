@@ -168,60 +168,102 @@ namespace ComponentTypes
 
             public int Capacity => PositionArray.Length;
 
-            public int ChunkCount => ((Count[0] - 1) >> 3) + 1;
+            public int ChunkCount => (Count[0] + 7) >> 3;
 
-            public void EnsureCapacity(int newCapacity)
+            public unsafe void EnsureCapacity(int newCapacity)
             {
                 if (Capacity >= newCapacity) return;
 
                 {
-                    var tmp = new global::Unity.Collections.NativeArray<global::ComponentTypes.Position2D.Eight>(newCapacity, global::Unity.Collections.Allocator.Persistent);
-                    PositionArray.CopyTo(tmp);
+                    var pointer = global::Unity.Collections.LowLevel.Unsafe.UnsafeUtility.Malloc(sizeof(global::ComponentTypes.Position2D.Eight) * newCapacity, 32, global::Unity.Collections.Allocator.Persistent);
+                    var srcPointer = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(PositionArray);
+                    global::Unity.Collections.LowLevel.Unsafe.UnsafeUtility.MemCpy(pointer, srcPointer, PositionArray.Length * sizeof(global::ComponentTypes.Position2D.Eight));
                     PositionArray.Dispose();
-                    PositionArray = tmp;
+                    PositionArray = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.ConvertExistingDataToNativeArray<global::ComponentTypes.Position2D.Eight>(pointer, newCapacity, global::Unity.Collections.Allocator.Persistent);
+#if ENABLE_UNITY_COLLECTIONS_CHECKS
+                    global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.SetAtomicSafetyHandle(ref PositionArray, global::Unity.Collections.LowLevel.Unsafe.AtomicSafetyHandle.Create());
+#endif
                 }
                 {
-                    var tmp = new global::Unity.Collections.NativeArray<global::ComponentTypes.Destination2D.Eight>(newCapacity, global::Unity.Collections.Allocator.Persistent);
-                    DestinationArray.CopyTo(tmp);
+                    var pointer = global::Unity.Collections.LowLevel.Unsafe.UnsafeUtility.Malloc(sizeof(global::ComponentTypes.Destination2D.Eight) * newCapacity, 32, global::Unity.Collections.Allocator.Persistent);
+                    var srcPointer = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(DestinationArray);
+                    global::Unity.Collections.LowLevel.Unsafe.UnsafeUtility.MemCpy(pointer, srcPointer, DestinationArray.Length * sizeof(global::ComponentTypes.Destination2D.Eight));
                     DestinationArray.Dispose();
-                    DestinationArray = tmp;
+                    DestinationArray = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.ConvertExistingDataToNativeArray<global::ComponentTypes.Destination2D.Eight>(pointer, newCapacity, global::Unity.Collections.Allocator.Persistent);
+#if ENABLE_UNITY_COLLECTIONS_CHECKS
+                    global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.SetAtomicSafetyHandle(ref DestinationArray, global::Unity.Collections.LowLevel.Unsafe.AtomicSafetyHandle.Create());
+#endif
                 }
                 {
-                    var tmp = new global::Unity.Collections.NativeArray<global::ComponentTypes.Speed2D.Eight>(newCapacity, global::Unity.Collections.Allocator.Persistent);
-                    SpeedArray.CopyTo(tmp);
+                    var pointer = global::Unity.Collections.LowLevel.Unsafe.UnsafeUtility.Malloc(sizeof(global::ComponentTypes.Speed2D.Eight) * newCapacity, 32, global::Unity.Collections.Allocator.Persistent);
+                    var srcPointer = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(SpeedArray);
+                    global::Unity.Collections.LowLevel.Unsafe.UnsafeUtility.MemCpy(pointer, srcPointer, SpeedArray.Length * sizeof(global::ComponentTypes.Speed2D.Eight));
                     SpeedArray.Dispose();
-                    SpeedArray = tmp;
+                    SpeedArray = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.ConvertExistingDataToNativeArray<global::ComponentTypes.Speed2D.Eight>(pointer, newCapacity, global::Unity.Collections.Allocator.Persistent);
+#if ENABLE_UNITY_COLLECTIONS_CHECKS
+                    global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.SetAtomicSafetyHandle(ref SpeedArray, global::Unity.Collections.LowLevel.Unsafe.AtomicSafetyHandle.Create());
+#endif
                 }
                 {
-                    var tmp = new global::Unity.Collections.NativeArray<global::ComponentTypes.AliveState.Eight>(newCapacity, global::Unity.Collections.Allocator.Persistent);
-                    IsAliveArray.CopyTo(tmp);
+                    var pointer = global::Unity.Collections.LowLevel.Unsafe.UnsafeUtility.Malloc(sizeof(global::ComponentTypes.AliveState.Eight) * newCapacity, 32, global::Unity.Collections.Allocator.Persistent);
+                    var srcPointer = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(IsAliveArray);
+                    global::Unity.Collections.LowLevel.Unsafe.UnsafeUtility.MemCpy(pointer, srcPointer, IsAliveArray.Length * sizeof(global::ComponentTypes.AliveState.Eight));
                     IsAliveArray.Dispose();
-                    IsAliveArray = tmp;
+                    IsAliveArray = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.ConvertExistingDataToNativeArray<global::ComponentTypes.AliveState.Eight>(pointer, newCapacity, global::Unity.Collections.Allocator.Persistent);
+#if ENABLE_UNITY_COLLECTIONS_CHECKS
+                    global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.SetAtomicSafetyHandle(ref IsAliveArray, global::Unity.Collections.LowLevel.Unsafe.AtomicSafetyHandle.Create());
+#endif
                 }
             }
 
             public void Dispose()
             {
+                if (!Count.IsCreated) return;
+
                 Count.Dispose();
+                Count = default;
                 PositionArray.Dispose();
                 DestinationArray.Dispose();
                 SpeedArray.Dispose();
                 IsAliveArray.Dispose();
             }
 
-            public Countable(int count)
+            public unsafe Countable(int capacity)
             {
                 Count = new global::Unity.Collections.NativeArray<int>(1, global::Unity.Collections.Allocator.Persistent);
-                var capacity = ((count - 1) >> 3) + 1;
-                PositionArray = new global::Unity.Collections.NativeArray<global::ComponentTypes.Position2D.Eight>(capacity, global::Unity.Collections.Allocator.Persistent);
-                DestinationArray = new global::Unity.Collections.NativeArray<global::ComponentTypes.Destination2D.Eight>(capacity, global::Unity.Collections.Allocator.Persistent);
-                SpeedArray = new global::Unity.Collections.NativeArray<global::ComponentTypes.Speed2D.Eight>(capacity, global::Unity.Collections.Allocator.Persistent);
-                IsAliveArray = new global::Unity.Collections.NativeArray<global::ComponentTypes.AliveState.Eight>(capacity, global::Unity.Collections.Allocator.Persistent);
+                {
+                    var pointer = global::Unity.Collections.LowLevel.Unsafe.UnsafeUtility.Malloc(sizeof(global::ComponentTypes.Position2D.Eight) * capacity, 32, global::Unity.Collections.Allocator.Persistent);
+                    PositionArray = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.ConvertExistingDataToNativeArray<global::ComponentTypes.Position2D.Eight>(pointer, capacity, global::Unity.Collections.Allocator.Persistent);
+#if ENABLE_UNITY_COLLECTIONS_CHECKS
+                    global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.SetAtomicSafetyHandle(ref PositionArray, global::Unity.Collections.LowLevel.Unsafe.AtomicSafetyHandle.Create());
+#endif
+                }
+                {
+                    var pointer = global::Unity.Collections.LowLevel.Unsafe.UnsafeUtility.Malloc(sizeof(global::ComponentTypes.Destination2D.Eight) * capacity, 32, global::Unity.Collections.Allocator.Persistent);
+                    DestinationArray = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.ConvertExistingDataToNativeArray<global::ComponentTypes.Destination2D.Eight>(pointer, capacity, global::Unity.Collections.Allocator.Persistent);
+#if ENABLE_UNITY_COLLECTIONS_CHECKS
+                    global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.SetAtomicSafetyHandle(ref DestinationArray, global::Unity.Collections.LowLevel.Unsafe.AtomicSafetyHandle.Create());
+#endif
+                }
+                {
+                    var pointer = global::Unity.Collections.LowLevel.Unsafe.UnsafeUtility.Malloc(sizeof(global::ComponentTypes.Speed2D.Eight) * capacity, 32, global::Unity.Collections.Allocator.Persistent);
+                    SpeedArray = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.ConvertExistingDataToNativeArray<global::ComponentTypes.Speed2D.Eight>(pointer, capacity, global::Unity.Collections.Allocator.Persistent);
+#if ENABLE_UNITY_COLLECTIONS_CHECKS
+                    global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.SetAtomicSafetyHandle(ref SpeedArray, global::Unity.Collections.LowLevel.Unsafe.AtomicSafetyHandle.Create());
+#endif
+                }
+                {
+                    var pointer = global::Unity.Collections.LowLevel.Unsafe.UnsafeUtility.Malloc(sizeof(global::ComponentTypes.AliveState.Eight) * capacity, 32, global::Unity.Collections.Allocator.Persistent);
+                    IsAliveArray = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.ConvertExistingDataToNativeArray<global::ComponentTypes.AliveState.Eight>(pointer, capacity, global::Unity.Collections.Allocator.Persistent);
+#if ENABLE_UNITY_COLLECTIONS_CHECKS
+                    global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.SetAtomicSafetyHandle(ref IsAliveArray, global::Unity.Collections.LowLevel.Unsafe.AtomicSafetyHandle.Create());
+#endif
+                }
             }
 
             public bool IsAlive(int index)
             {
-                return IsAliveArray.Reinterpret<AliveState.State>()[index] == AliveState.State.Alive;
+                return IsAliveArray.Reinterpret<AliveState.State>(4)[index] == AliveState.State.Alive;
             }
         }
 
@@ -302,52 +344,84 @@ namespace ComponentTypes
 
             public int Capacity => PositionArray.Length;
 
-            public int ChunkCount => ((Count[0] - 1) >> 3) + 1;
+            public int ChunkCount => (Count[0] + 7) >> 3;
 
-            public void EnsureCapacity(int newCapacity)
+            public unsafe void EnsureCapacity(int newCapacity)
             {
                 if (Capacity >= newCapacity) return;
 
                 {
-                    var tmp = new global::Unity.Collections.NativeArray<global::ComponentTypes.Position2D.Eight>(newCapacity, global::Unity.Collections.Allocator.Persistent);
-                    PositionArray.CopyTo(tmp);
+                    var pointer = global::Unity.Collections.LowLevel.Unsafe.UnsafeUtility.Malloc(sizeof(global::ComponentTypes.Position2D.Eight) * newCapacity, 32, global::Unity.Collections.Allocator.Persistent);
+                    var srcPointer = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(PositionArray);
+                    global::Unity.Collections.LowLevel.Unsafe.UnsafeUtility.MemCpy(pointer, srcPointer, PositionArray.Length * sizeof(global::ComponentTypes.Position2D.Eight));
                     PositionArray.Dispose();
-                    PositionArray = tmp;
+                    PositionArray = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.ConvertExistingDataToNativeArray<global::ComponentTypes.Position2D.Eight>(pointer, newCapacity, global::Unity.Collections.Allocator.Persistent);
+#if ENABLE_UNITY_COLLECTIONS_CHECKS
+                    global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.SetAtomicSafetyHandle(ref PositionArray, global::Unity.Collections.LowLevel.Unsafe.AtomicSafetyHandle.Create());
+#endif
                 }
                 {
-                    var tmp = new global::Unity.Collections.NativeArray<global::ComponentTypes.Speed2D.Eight>(newCapacity, global::Unity.Collections.Allocator.Persistent);
-                    SpeedArray.CopyTo(tmp);
+                    var pointer = global::Unity.Collections.LowLevel.Unsafe.UnsafeUtility.Malloc(sizeof(global::ComponentTypes.Speed2D.Eight) * newCapacity, 32, global::Unity.Collections.Allocator.Persistent);
+                    var srcPointer = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(SpeedArray);
+                    global::Unity.Collections.LowLevel.Unsafe.UnsafeUtility.MemCpy(pointer, srcPointer, SpeedArray.Length * sizeof(global::ComponentTypes.Speed2D.Eight));
                     SpeedArray.Dispose();
-                    SpeedArray = tmp;
+                    SpeedArray = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.ConvertExistingDataToNativeArray<global::ComponentTypes.Speed2D.Eight>(pointer, newCapacity, global::Unity.Collections.Allocator.Persistent);
+#if ENABLE_UNITY_COLLECTIONS_CHECKS
+                    global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.SetAtomicSafetyHandle(ref SpeedArray, global::Unity.Collections.LowLevel.Unsafe.AtomicSafetyHandle.Create());
+#endif
                 }
                 {
-                    var tmp = new global::Unity.Collections.NativeArray<global::ComponentTypes.AliveState.Eight>(newCapacity, global::Unity.Collections.Allocator.Persistent);
-                    IsAliveArray.CopyTo(tmp);
+                    var pointer = global::Unity.Collections.LowLevel.Unsafe.UnsafeUtility.Malloc(sizeof(global::ComponentTypes.AliveState.Eight) * newCapacity, 32, global::Unity.Collections.Allocator.Persistent);
+                    var srcPointer = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(IsAliveArray);
+                    global::Unity.Collections.LowLevel.Unsafe.UnsafeUtility.MemCpy(pointer, srcPointer, IsAliveArray.Length * sizeof(global::ComponentTypes.AliveState.Eight));
                     IsAliveArray.Dispose();
-                    IsAliveArray = tmp;
+                    IsAliveArray = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.ConvertExistingDataToNativeArray<global::ComponentTypes.AliveState.Eight>(pointer, newCapacity, global::Unity.Collections.Allocator.Persistent);
+#if ENABLE_UNITY_COLLECTIONS_CHECKS
+                    global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.SetAtomicSafetyHandle(ref IsAliveArray, global::Unity.Collections.LowLevel.Unsafe.AtomicSafetyHandle.Create());
+#endif
                 }
             }
 
             public void Dispose()
             {
+                if (!Count.IsCreated) return;
+
                 Count.Dispose();
+                Count = default;
                 PositionArray.Dispose();
                 SpeedArray.Dispose();
                 IsAliveArray.Dispose();
             }
 
-            public Countable(int count)
+            public unsafe Countable(int capacity)
             {
                 Count = new global::Unity.Collections.NativeArray<int>(1, global::Unity.Collections.Allocator.Persistent);
-                var capacity = ((count - 1) >> 3) + 1;
-                PositionArray = new global::Unity.Collections.NativeArray<global::ComponentTypes.Position2D.Eight>(capacity, global::Unity.Collections.Allocator.Persistent);
-                SpeedArray = new global::Unity.Collections.NativeArray<global::ComponentTypes.Speed2D.Eight>(capacity, global::Unity.Collections.Allocator.Persistent);
-                IsAliveArray = new global::Unity.Collections.NativeArray<global::ComponentTypes.AliveState.Eight>(capacity, global::Unity.Collections.Allocator.Persistent);
+                {
+                    var pointer = global::Unity.Collections.LowLevel.Unsafe.UnsafeUtility.Malloc(sizeof(global::ComponentTypes.Position2D.Eight) * capacity, 32, global::Unity.Collections.Allocator.Persistent);
+                    PositionArray = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.ConvertExistingDataToNativeArray<global::ComponentTypes.Position2D.Eight>(pointer, capacity, global::Unity.Collections.Allocator.Persistent);
+#if ENABLE_UNITY_COLLECTIONS_CHECKS
+                    global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.SetAtomicSafetyHandle(ref PositionArray, global::Unity.Collections.LowLevel.Unsafe.AtomicSafetyHandle.Create());
+#endif
+                }
+                {
+                    var pointer = global::Unity.Collections.LowLevel.Unsafe.UnsafeUtility.Malloc(sizeof(global::ComponentTypes.Speed2D.Eight) * capacity, 32, global::Unity.Collections.Allocator.Persistent);
+                    SpeedArray = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.ConvertExistingDataToNativeArray<global::ComponentTypes.Speed2D.Eight>(pointer, capacity, global::Unity.Collections.Allocator.Persistent);
+#if ENABLE_UNITY_COLLECTIONS_CHECKS
+                    global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.SetAtomicSafetyHandle(ref SpeedArray, global::Unity.Collections.LowLevel.Unsafe.AtomicSafetyHandle.Create());
+#endif
+                }
+                {
+                    var pointer = global::Unity.Collections.LowLevel.Unsafe.UnsafeUtility.Malloc(sizeof(global::ComponentTypes.AliveState.Eight) * capacity, 32, global::Unity.Collections.Allocator.Persistent);
+                    IsAliveArray = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.ConvertExistingDataToNativeArray<global::ComponentTypes.AliveState.Eight>(pointer, capacity, global::Unity.Collections.Allocator.Persistent);
+#if ENABLE_UNITY_COLLECTIONS_CHECKS
+                    global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.SetAtomicSafetyHandle(ref IsAliveArray, global::Unity.Collections.LowLevel.Unsafe.AtomicSafetyHandle.Create());
+#endif
+                }
             }
 
             public bool IsAlive(int index)
             {
-                return IsAliveArray.Reinterpret<AliveState.State>()[index] == AliveState.State.Alive;
+                return IsAliveArray.Reinterpret<AliveState.State>(4)[index] == AliveState.State.Alive;
             }
         }
 
@@ -422,52 +496,84 @@ namespace ComponentTypes
 
             public int Capacity => PositionArray.Length;
 
-            public int ChunkCount => ((Count[0] - 1) >> 3) + 1;
+            public int ChunkCount => (Count[0] + 7) >> 3;
 
-            public void EnsureCapacity(int newCapacity)
+            public unsafe void EnsureCapacity(int newCapacity)
             {
                 if (Capacity >= newCapacity) return;
 
                 {
-                    var tmp = new global::Unity.Collections.NativeArray<global::ComponentTypes.Position2D.Eight>(newCapacity, global::Unity.Collections.Allocator.Persistent);
-                    PositionArray.CopyTo(tmp);
+                    var pointer = global::Unity.Collections.LowLevel.Unsafe.UnsafeUtility.Malloc(sizeof(global::ComponentTypes.Position2D.Eight) * newCapacity, 32, global::Unity.Collections.Allocator.Persistent);
+                    var srcPointer = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(PositionArray);
+                    global::Unity.Collections.LowLevel.Unsafe.UnsafeUtility.MemCpy(pointer, srcPointer, PositionArray.Length * sizeof(global::ComponentTypes.Position2D.Eight));
                     PositionArray.Dispose();
-                    PositionArray = tmp;
+                    PositionArray = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.ConvertExistingDataToNativeArray<global::ComponentTypes.Position2D.Eight>(pointer, newCapacity, global::Unity.Collections.Allocator.Persistent);
+#if ENABLE_UNITY_COLLECTIONS_CHECKS
+                    global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.SetAtomicSafetyHandle(ref PositionArray, global::Unity.Collections.LowLevel.Unsafe.AtomicSafetyHandle.Create());
+#endif
                 }
                 {
-                    var tmp = new global::Unity.Collections.NativeArray<global::ComponentTypes.Speed2D.Eight>(newCapacity, global::Unity.Collections.Allocator.Persistent);
-                    SpeedArray.CopyTo(tmp);
+                    var pointer = global::Unity.Collections.LowLevel.Unsafe.UnsafeUtility.Malloc(sizeof(global::ComponentTypes.Speed2D.Eight) * newCapacity, 32, global::Unity.Collections.Allocator.Persistent);
+                    var srcPointer = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(SpeedArray);
+                    global::Unity.Collections.LowLevel.Unsafe.UnsafeUtility.MemCpy(pointer, srcPointer, SpeedArray.Length * sizeof(global::ComponentTypes.Speed2D.Eight));
                     SpeedArray.Dispose();
-                    SpeedArray = tmp;
+                    SpeedArray = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.ConvertExistingDataToNativeArray<global::ComponentTypes.Speed2D.Eight>(pointer, newCapacity, global::Unity.Collections.Allocator.Persistent);
+#if ENABLE_UNITY_COLLECTIONS_CHECKS
+                    global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.SetAtomicSafetyHandle(ref SpeedArray, global::Unity.Collections.LowLevel.Unsafe.AtomicSafetyHandle.Create());
+#endif
                 }
                 {
-                    var tmp = new global::Unity.Collections.NativeArray<global::ComponentTypes.AliveState.Eight>(newCapacity, global::Unity.Collections.Allocator.Persistent);
-                    IsAliveArray.CopyTo(tmp);
+                    var pointer = global::Unity.Collections.LowLevel.Unsafe.UnsafeUtility.Malloc(sizeof(global::ComponentTypes.AliveState.Eight) * newCapacity, 32, global::Unity.Collections.Allocator.Persistent);
+                    var srcPointer = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(IsAliveArray);
+                    global::Unity.Collections.LowLevel.Unsafe.UnsafeUtility.MemCpy(pointer, srcPointer, IsAliveArray.Length * sizeof(global::ComponentTypes.AliveState.Eight));
                     IsAliveArray.Dispose();
-                    IsAliveArray = tmp;
+                    IsAliveArray = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.ConvertExistingDataToNativeArray<global::ComponentTypes.AliveState.Eight>(pointer, newCapacity, global::Unity.Collections.Allocator.Persistent);
+#if ENABLE_UNITY_COLLECTIONS_CHECKS
+                    global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.SetAtomicSafetyHandle(ref IsAliveArray, global::Unity.Collections.LowLevel.Unsafe.AtomicSafetyHandle.Create());
+#endif
                 }
             }
 
             public void Dispose()
             {
+                if (!Count.IsCreated) return;
+
                 Count.Dispose();
+                Count = default;
                 PositionArray.Dispose();
                 SpeedArray.Dispose();
                 IsAliveArray.Dispose();
             }
 
-            public Countable(int count)
+            public unsafe Countable(int capacity)
             {
                 Count = new global::Unity.Collections.NativeArray<int>(1, global::Unity.Collections.Allocator.Persistent);
-                var capacity = ((count - 1) >> 3) + 1;
-                PositionArray = new global::Unity.Collections.NativeArray<global::ComponentTypes.Position2D.Eight>(capacity, global::Unity.Collections.Allocator.Persistent);
-                SpeedArray = new global::Unity.Collections.NativeArray<global::ComponentTypes.Speed2D.Eight>(capacity, global::Unity.Collections.Allocator.Persistent);
-                IsAliveArray = new global::Unity.Collections.NativeArray<global::ComponentTypes.AliveState.Eight>(capacity, global::Unity.Collections.Allocator.Persistent);
+                {
+                    var pointer = global::Unity.Collections.LowLevel.Unsafe.UnsafeUtility.Malloc(sizeof(global::ComponentTypes.Position2D.Eight) * capacity, 32, global::Unity.Collections.Allocator.Persistent);
+                    PositionArray = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.ConvertExistingDataToNativeArray<global::ComponentTypes.Position2D.Eight>(pointer, capacity, global::Unity.Collections.Allocator.Persistent);
+#if ENABLE_UNITY_COLLECTIONS_CHECKS
+                    global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.SetAtomicSafetyHandle(ref PositionArray, global::Unity.Collections.LowLevel.Unsafe.AtomicSafetyHandle.Create());
+#endif
+                }
+                {
+                    var pointer = global::Unity.Collections.LowLevel.Unsafe.UnsafeUtility.Malloc(sizeof(global::ComponentTypes.Speed2D.Eight) * capacity, 32, global::Unity.Collections.Allocator.Persistent);
+                    SpeedArray = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.ConvertExistingDataToNativeArray<global::ComponentTypes.Speed2D.Eight>(pointer, capacity, global::Unity.Collections.Allocator.Persistent);
+#if ENABLE_UNITY_COLLECTIONS_CHECKS
+                    global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.SetAtomicSafetyHandle(ref SpeedArray, global::Unity.Collections.LowLevel.Unsafe.AtomicSafetyHandle.Create());
+#endif
+                }
+                {
+                    var pointer = global::Unity.Collections.LowLevel.Unsafe.UnsafeUtility.Malloc(sizeof(global::ComponentTypes.AliveState.Eight) * capacity, 32, global::Unity.Collections.Allocator.Persistent);
+                    IsAliveArray = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.ConvertExistingDataToNativeArray<global::ComponentTypes.AliveState.Eight>(pointer, capacity, global::Unity.Collections.Allocator.Persistent);
+#if ENABLE_UNITY_COLLECTIONS_CHECKS
+                    global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.SetAtomicSafetyHandle(ref IsAliveArray, global::Unity.Collections.LowLevel.Unsafe.AtomicSafetyHandle.Create());
+#endif
+                }
             }
 
             public bool IsAlive(int index)
             {
-                return IsAliveArray.Reinterpret<AliveState.State>()[index] == AliveState.State.Alive;
+                return IsAliveArray.Reinterpret<AliveState.State>(4)[index] == AliveState.State.Alive;
             }
         }
 
@@ -542,52 +648,84 @@ namespace ComponentTypes
 
             public int Capacity => PositionArray.Length;
 
-            public int ChunkCount => ((Count[0] - 1) >> 3) + 1;
+            public int ChunkCount => (Count[0] + 7) >> 3;
 
-            public void EnsureCapacity(int newCapacity)
+            public unsafe void EnsureCapacity(int newCapacity)
             {
                 if (Capacity >= newCapacity) return;
 
                 {
-                    var tmp = new global::Unity.Collections.NativeArray<global::ComponentTypes.Position2D.Eight>(newCapacity, global::Unity.Collections.Allocator.Persistent);
-                    PositionArray.CopyTo(tmp);
+                    var pointer = global::Unity.Collections.LowLevel.Unsafe.UnsafeUtility.Malloc(sizeof(global::ComponentTypes.Position2D.Eight) * newCapacity, 32, global::Unity.Collections.Allocator.Persistent);
+                    var srcPointer = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(PositionArray);
+                    global::Unity.Collections.LowLevel.Unsafe.UnsafeUtility.MemCpy(pointer, srcPointer, PositionArray.Length * sizeof(global::ComponentTypes.Position2D.Eight));
                     PositionArray.Dispose();
-                    PositionArray = tmp;
+                    PositionArray = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.ConvertExistingDataToNativeArray<global::ComponentTypes.Position2D.Eight>(pointer, newCapacity, global::Unity.Collections.Allocator.Persistent);
+#if ENABLE_UNITY_COLLECTIONS_CHECKS
+                    global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.SetAtomicSafetyHandle(ref PositionArray, global::Unity.Collections.LowLevel.Unsafe.AtomicSafetyHandle.Create());
+#endif
                 }
                 {
-                    var tmp = new global::Unity.Collections.NativeArray<global::ComponentTypes.Speed2D.Eight>(newCapacity, global::Unity.Collections.Allocator.Persistent);
-                    SpeedArray.CopyTo(tmp);
+                    var pointer = global::Unity.Collections.LowLevel.Unsafe.UnsafeUtility.Malloc(sizeof(global::ComponentTypes.Speed2D.Eight) * newCapacity, 32, global::Unity.Collections.Allocator.Persistent);
+                    var srcPointer = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(SpeedArray);
+                    global::Unity.Collections.LowLevel.Unsafe.UnsafeUtility.MemCpy(pointer, srcPointer, SpeedArray.Length * sizeof(global::ComponentTypes.Speed2D.Eight));
                     SpeedArray.Dispose();
-                    SpeedArray = tmp;
+                    SpeedArray = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.ConvertExistingDataToNativeArray<global::ComponentTypes.Speed2D.Eight>(pointer, newCapacity, global::Unity.Collections.Allocator.Persistent);
+#if ENABLE_UNITY_COLLECTIONS_CHECKS
+                    global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.SetAtomicSafetyHandle(ref SpeedArray, global::Unity.Collections.LowLevel.Unsafe.AtomicSafetyHandle.Create());
+#endif
                 }
                 {
-                    var tmp = new global::Unity.Collections.NativeArray<global::ComponentTypes.FireStartTime.Eight>(newCapacity, global::Unity.Collections.Allocator.Persistent);
-                    StartTimeArray.CopyTo(tmp);
+                    var pointer = global::Unity.Collections.LowLevel.Unsafe.UnsafeUtility.Malloc(sizeof(global::ComponentTypes.FireStartTime.Eight) * newCapacity, 32, global::Unity.Collections.Allocator.Persistent);
+                    var srcPointer = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(StartTimeArray);
+                    global::Unity.Collections.LowLevel.Unsafe.UnsafeUtility.MemCpy(pointer, srcPointer, StartTimeArray.Length * sizeof(global::ComponentTypes.FireStartTime.Eight));
                     StartTimeArray.Dispose();
-                    StartTimeArray = tmp;
+                    StartTimeArray = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.ConvertExistingDataToNativeArray<global::ComponentTypes.FireStartTime.Eight>(pointer, newCapacity, global::Unity.Collections.Allocator.Persistent);
+#if ENABLE_UNITY_COLLECTIONS_CHECKS
+                    global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.SetAtomicSafetyHandle(ref StartTimeArray, global::Unity.Collections.LowLevel.Unsafe.AtomicSafetyHandle.Create());
+#endif
                 }
             }
 
             public void Dispose()
             {
+                if (!Count.IsCreated) return;
+
                 Count.Dispose();
+                Count = default;
                 PositionArray.Dispose();
                 SpeedArray.Dispose();
                 StartTimeArray.Dispose();
             }
 
-            public Countable(int count)
+            public unsafe Countable(int capacity)
             {
                 Count = new global::Unity.Collections.NativeArray<int>(1, global::Unity.Collections.Allocator.Persistent);
-                var capacity = ((count - 1) >> 3) + 1;
-                PositionArray = new global::Unity.Collections.NativeArray<global::ComponentTypes.Position2D.Eight>(capacity, global::Unity.Collections.Allocator.Persistent);
-                SpeedArray = new global::Unity.Collections.NativeArray<global::ComponentTypes.Speed2D.Eight>(capacity, global::Unity.Collections.Allocator.Persistent);
-                StartTimeArray = new global::Unity.Collections.NativeArray<global::ComponentTypes.FireStartTime.Eight>(capacity, global::Unity.Collections.Allocator.Persistent);
+                {
+                    var pointer = global::Unity.Collections.LowLevel.Unsafe.UnsafeUtility.Malloc(sizeof(global::ComponentTypes.Position2D.Eight) * capacity, 32, global::Unity.Collections.Allocator.Persistent);
+                    PositionArray = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.ConvertExistingDataToNativeArray<global::ComponentTypes.Position2D.Eight>(pointer, capacity, global::Unity.Collections.Allocator.Persistent);
+#if ENABLE_UNITY_COLLECTIONS_CHECKS
+                    global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.SetAtomicSafetyHandle(ref PositionArray, global::Unity.Collections.LowLevel.Unsafe.AtomicSafetyHandle.Create());
+#endif
+                }
+                {
+                    var pointer = global::Unity.Collections.LowLevel.Unsafe.UnsafeUtility.Malloc(sizeof(global::ComponentTypes.Speed2D.Eight) * capacity, 32, global::Unity.Collections.Allocator.Persistent);
+                    SpeedArray = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.ConvertExistingDataToNativeArray<global::ComponentTypes.Speed2D.Eight>(pointer, capacity, global::Unity.Collections.Allocator.Persistent);
+#if ENABLE_UNITY_COLLECTIONS_CHECKS
+                    global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.SetAtomicSafetyHandle(ref SpeedArray, global::Unity.Collections.LowLevel.Unsafe.AtomicSafetyHandle.Create());
+#endif
+                }
+                {
+                    var pointer = global::Unity.Collections.LowLevel.Unsafe.UnsafeUtility.Malloc(sizeof(global::ComponentTypes.FireStartTime.Eight) * capacity, 32, global::Unity.Collections.Allocator.Persistent);
+                    StartTimeArray = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.ConvertExistingDataToNativeArray<global::ComponentTypes.FireStartTime.Eight>(pointer, capacity, global::Unity.Collections.Allocator.Persistent);
+#if ENABLE_UNITY_COLLECTIONS_CHECKS
+                    global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.SetAtomicSafetyHandle(ref StartTimeArray, global::Unity.Collections.LowLevel.Unsafe.AtomicSafetyHandle.Create());
+#endif
+                }
             }
 
             public bool IsAlive(int index, float deadTime)
             {
-                return StartTimeArray.Reinterpret<float>()[index] > deadTime;
+                return StartTimeArray.Reinterpret<float>(4)[index] > deadTime;
             }
         }
 

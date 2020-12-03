@@ -2,7 +2,7 @@
 
 namespace ComponentTypes
 {
-    [Countable(new System.Type[0], new string[0], new string[0], "return IsAliveArray.Reinterpret<AliveState.State>()[index] == AliveState.State.Alive;")]
+    [Countable(new System.Type[0], new string[0], new string[0], "return IsAliveArray.Reinterpret<AliveState.State>(4)[index] == AliveState.State.Alive;")]
     public partial struct Enemy
     {
         public Position2D Position;
@@ -11,7 +11,7 @@ namespace ComponentTypes
         public AliveState IsAlive;
     }
 
-    [Countable(new System.Type[0], new string[0], new string[0], "return IsAliveArray.Reinterpret<AliveState.State>()[index] == AliveState.State.Alive;")]
+    [Countable(new System.Type[0], new string[0], new string[0], "return IsAliveArray.Reinterpret<AliveState.State>(4)[index] == AliveState.State.Alive;")]
     public partial struct EnemyAttack
     {
         public Position2D Position;
@@ -19,7 +19,7 @@ namespace ComponentTypes
         public AliveState IsAlive;
     }
 
-    [Countable(new System.Type[0], new string[0], new string[0], "return IsAliveArray.Reinterpret<AliveState.State>()[index] == AliveState.State.Alive;")]
+    [Countable(new System.Type[0], new string[0], new string[0], "return IsAliveArray.Reinterpret<AliveState.State>(4)[index] == AliveState.State.Alive;")]
     public partial struct PlayerBullet
     {
         public Position2D Position;
@@ -27,7 +27,7 @@ namespace ComponentTypes
         public AliveState IsAlive;
     }
 
-    [Countable(new System.Type[] { typeof(float) }, new string[] { "deadTime" }, new string[] { "DeadTime" }, "return StartTimeArray.Reinterpret<float>()[index] > deadTime;")]
+    [Countable(new System.Type[] { typeof(float) }, new string[] { "deadTime" }, new string[] { "DeadTime" }, "return StartTimeArray.Reinterpret<float>(4)[index] > deadTime;")]
     public partial struct PlayerFire
     {
         public Position2D Position;
