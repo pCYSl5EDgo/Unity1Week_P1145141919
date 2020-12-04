@@ -436,6 +436,8 @@ namespace Unity1Week.Hit
             ref int collisionCount
         )
         {
+            if (!X86.Fma.IsFmaSupported) return;
+            
             var diffX = X86.Avx.mm256_sub_ps(attackX, playerPositionX);
             var diffY = X86.Avx.mm256_sub_ps(attackY, playerPositionY);
             var lengthSquared = X86.Fma.mm256_fmadd_ps(diffY, diffY, X86.Avx.mm256_mul_ps(diffX, diffX));
