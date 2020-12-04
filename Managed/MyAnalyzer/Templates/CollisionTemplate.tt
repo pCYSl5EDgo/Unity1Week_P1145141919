@@ -23,12 +23,15 @@ namespace <#= TypeSymbol.ContainingNamespace.ToDisplayString() #>
     if (item.IsReadOnly) { #>
             public <#= item.Symbol.ToDisplayString() #> <#= item.Name #>;
 <# } else { #>
+            [global::Unity.Collections.LowLevel.Unsafe.NativeDisableContainerSafetyRestrictionAttribute] 
             public global::Unity.Collections.NativeArray<<#= item.Symbol.ToDisplayString() #>> <#=item.Name #>;
 <# } #>
 <# } #>
 <# for (var index = 0; index < Tables.Length; ++index) {
     var item = Tables[index]; #>
-            <# if (item.IsReadOnly) { #>[global::Unity.Collections.ReadOnly] <# } #>public global::Unity.Collections.NativeArray<<#= item.Symbol.ToDisplayString() #>> <#= item.Name #>;
+            <# if (item.IsReadOnly) { #>[global::Unity.Collections.ReadOnly] <# } else { #>[global::Unity.Collections.LowLevel.Unsafe.NativeDisableContainerSafetyRestrictionAttribute] <# } #>
+
+            public global::Unity.Collections.NativeArray<<#= item.Symbol.ToDisplayString() #>> <#= item.Name #>;
 <# } #>
 
             public void Execute()
