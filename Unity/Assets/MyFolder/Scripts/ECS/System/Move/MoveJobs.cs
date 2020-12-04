@@ -236,7 +236,7 @@ namespace Unity1Week
             alive = math.select(alive, -1, outOfRange);
         }
 
-        //[MethodIntrinsicsKind(IntrinsicsKind.Fma)]
+        [MethodIntrinsicsKind(IntrinsicsKind.Fma)]
         private static void Exe2(
             ref v256 x,
             ref v256 y,
@@ -259,30 +259,99 @@ namespace Unity1Week
     
     [SingleLoopType(
         new[] { typeof(Position2D), typeof(Speed2D), typeof(AliveState) }, new[] { false, false, false }, "",
-        new[] { typeof(float), typeof(float), typeof(float), typeof(Random) }, new[] { true, true, true, false }, new[] { "MinInclusive", "MaxExclusive", "MaxSpeed", "Random" }
+        new[] { typeof(float), typeof(float), typeof(float) }, new[] { true, true, true }, new[] { "TwoMinInclusive_Minus_MaxExclusive", "MaxExclusive_Minus_MinInclusive", "MaxSpeed" },
+        new[] { typeof(v256) }, new[] { false }, new[] { "Random" }
     )]
     public static partial class RandomSpawn
     {
         [MethodIntrinsicsKind(IntrinsicsKind.Ordinal)]
-        private static void Exe(
+        private static unsafe void Exe(
             ref float4 positionX,
             ref float4 positionY,
             ref float4 speedX,
             ref float4 speedY,
             ref int4 alive,
-            ref float4 minInclusive,
-            ref float4 maxExclusive,
+            ref float4 twoMinInclusive_Minus_MaxExclusive,
+            ref float4 maxExclusive_Minus_MinInclusive,
             ref float4 speedMax,
-            ref Random random
+            void* randomPointer,
+            int randomPointerLength
         )
         {
-            var state = random.state;
-            positionX = new float4(state++, state++, state++, state++) - 100f;
-            positionY = new float4(state++, state++, state++, state++) - 100f;
-            speedX = new float4(-3, -1, 1, 3) * 5f;
-            speedY = new float4(3, -1, 1, -3) * 5f;
-            random.state = state;
+            var state = *(uint4*)randomPointer;
+            var constant = (uint4)0x3f800000U;
+            var constant2 = speedMax * 2;
+            var constant3 = speedMax * -3;
+            
+            state ^= state << 13;
+            state ^= state >> 17;
+            state ^= state << 5;
+            positionX = math.mad(math.asfloat((state >> 9) | constant), maxExclusive_Minus_MinInclusive, twoMinInclusive_Minus_MaxExclusive);
+            
+            state ^= state << 13;
+            state ^= state >> 17;
+            state ^= state << 5;
+            positionY = math.mad(math.asfloat((state >> 9) | constant), maxExclusive_Minus_MinInclusive, twoMinInclusive_Minus_MaxExclusive);
+            
+            state ^= state << 13;
+            state ^= state >> 17;
+            state ^= state << 5;
+            speedX = math.mad(math.asfloat((state >> 9) | constant), constant2, constant3);
+                                                                           
+            state ^= state << 13;                                          
+            state ^= state >> 17;                                          
+            state ^= state << 5;                                           
+            speedY = math.mad(math.asfloat((state >> 9) | constant), constant2, constant3);
+
+            *(uint4*)randomPointer = state;
+            
             alive = 0;
+        }
+        
+        [MethodIntrinsicsKind(IntrinsicsKind.Fma)]
+        private static unsafe void Exe2(
+            ref v256 positionX,
+            ref v256 positionY,
+            ref v256 speedX,
+            ref v256 speedY,
+            ref v256 alive,
+            ref v256 twoMinInclusive_Minus_MaxExclusive,
+            ref v256 maxExclusive_Minus_MinInclusive,
+            ref v256 speedMax,
+            void* randomPointer,
+            int randomPointerLength
+        )
+        {
+            if (!X86.Fma.IsFmaSupported) return;
+            
+            var state = *(v256*)randomPointer;
+            var constant = new v256(0x3f800000U, 0x3f800000U, 0x3f800000U, 0x3f800000U, 0x3f800000U, 0x3f800000U, 0x3f800000U, 0x3f800000U);
+            var constant2 = X86.Avx.mm256_mul_ps(speedMax, new v256(2f, 2f, 2f, 2f, 2f, 2f, 2f, 2f));
+            var constant3 = X86.Avx.mm256_mul_ps(speedMax, new v256(3f, 3f, 3f, 3f, 3f, 3f, 3f, 3f));
+            
+            state = X86.Avx2.mm256_xor_si256(state, X86.Avx2.mm256_slli_epi32(state, 13));
+            state = X86.Avx2.mm256_xor_si256(state, X86.Avx2.mm256_srli_epi32(state, 17));
+            state = X86.Avx2.mm256_xor_si256(state, X86.Avx2.mm256_slli_epi32(state, 5));
+            positionX = X86.Fma.mm256_fmadd_ps(X86.Avx2.mm256_or_si256(X86.Avx2.mm256_srli_epi32(state, 9), constant), maxExclusive_Minus_MinInclusive, twoMinInclusive_Minus_MaxExclusive);
+            
+            state = X86.Avx2.mm256_xor_si256(state, X86.Avx2.mm256_slli_epi32(state, 13));
+            state = X86.Avx2.mm256_xor_si256(state, X86.Avx2.mm256_srli_epi32(state, 17));
+            state = X86.Avx2.mm256_xor_si256(state, X86.Avx2.mm256_slli_epi32(state, 5));
+            positionY = X86.Fma.mm256_fmadd_ps(X86.Avx2.mm256_or_si256(X86.Avx2.mm256_srli_epi32(state, 9), constant), maxExclusive_Minus_MinInclusive, twoMinInclusive_Minus_MaxExclusive);
+            
+            state = X86.Avx2.mm256_xor_si256(state, X86.Avx2.mm256_slli_epi32(state, 13));
+            state = X86.Avx2.mm256_xor_si256(state, X86.Avx2.mm256_srli_epi32(state, 17));
+            state = X86.Avx2.mm256_xor_si256(state, X86.Avx2.mm256_slli_epi32(state, 5));
+            speedX = X86.Fma.mm256_fmsub_ps(X86.Avx2.mm256_or_si256(X86.Avx2.mm256_srli_epi32(state, 9), constant), constant2, constant3);
+            
+            state = X86.Avx2.mm256_xor_si256(state, X86.Avx2.mm256_slli_epi32(state, 13));
+            state = X86.Avx2.mm256_xor_si256(state, X86.Avx2.mm256_srli_epi32(state, 17));
+            state = X86.Avx2.mm256_xor_si256(state, X86.Avx2.mm256_slli_epi32(state, 5));
+            speedY = X86.Fma.mm256_fmsub_ps(X86.Avx2.mm256_or_si256(X86.Avx2.mm256_srli_epi32(state, 9), constant), constant2, constant3);
+
+            *(v256*)randomPointer = state;
+            
+            alive = default;
         }
     }
 }

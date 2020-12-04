@@ -1,6 +1,3 @@
-using System.Globalization;
-using System.Text;
-
 namespace ComponentTypes
 {
     partial struct AliveState
@@ -100,26 +97,6 @@ namespace ComponentTypes
                     temp[dstColumn] = temp2;
                     destination.Y = temp;
                 }
-            }
-
-            public override string ToString()
-            {
-                var builder = new StringBuilder();
-                builder.AppendLine("{");
-                for (var i = 0; i < 2; i++)
-                {
-                    for (var j = 0; j < 4; j++)
-                    {
-                        builder.Append("  (");
-                        builder.Append(X[i][j]);
-                        builder.Append(',');
-                        builder.Append(Y[i][j]);
-                        builder.AppendLine("),");
-                    }
-                }
-                builder.Append('}');
-                
-                return builder.ToString();
             }
         }
     }
@@ -824,8 +801,11 @@ namespace Unity1Week.Hit
             [global::Unity.Collections.ReadOnly] public global::Unity.Collections.NativeArray<ComponentTypes.AliveState.Eight> EnemyAliveState;
             public float CollisionRadiusSquare;
             public float CurrentTime;
+            [global::Unity.Collections.LowLevel.Unsafe.NativeDisableContainerSafetyRestrictionAttribute] 
             public global::Unity.Collections.NativeArray<int> FireCount;
+            [global::Unity.Collections.LowLevel.Unsafe.NativeDisableContainerSafetyRestrictionAttribute] 
             public global::Unity.Collections.NativeArray<ComponentTypes.Position2D.Eight> FirePositionArray;
+            [global::Unity.Collections.LowLevel.Unsafe.NativeDisableContainerSafetyRestrictionAttribute] 
             public global::Unity.Collections.NativeArray<ComponentTypes.FireStartTime.Eight> FireStartTimeArray;
 
             public void Execute()
@@ -1011,6 +991,7 @@ namespace Unity1Week.Hit
             public global::Unity.Collections.NativeArray<ComponentTypes.AliveState.Eight> EnemyAliveState;
             public float CollisionRadiusSquare;
             public float FireDeadTime;
+            [global::Unity.Collections.LowLevel.Unsafe.NativeDisableContainerSafetyRestrictionAttribute] 
             public global::Unity.Collections.NativeArray<int> EnemyKillCount;
 
             public void Execute()
@@ -1183,9 +1164,13 @@ namespace Unity1Week
             public float PlayerPositionX;
             public float PlayerPositionY;
             public float Speed;
+            [global::Unity.Collections.LowLevel.Unsafe.NativeDisableContainerSafetyRestrictionAttribute] 
             public global::Unity.Collections.NativeArray<int> SnowCount;
+            [global::Unity.Collections.LowLevel.Unsafe.NativeDisableContainerSafetyRestrictionAttribute] 
             public global::Unity.Collections.NativeArray<ComponentTypes.Position2D.Eight> SnowPosition;
+            [global::Unity.Collections.LowLevel.Unsafe.NativeDisableContainerSafetyRestrictionAttribute] 
             public global::Unity.Collections.NativeArray<ComponentTypes.Speed2D.Eight> SnowSpeed;
+            [global::Unity.Collections.LowLevel.Unsafe.NativeDisableContainerSafetyRestrictionAttribute] 
             public global::Unity.Collections.NativeArray<ComponentTypes.AliveState.Eight> SnowAliveState;
 
             public void Execute()
@@ -1253,6 +1238,7 @@ namespace Unity1Week.Hit
             public float PlayerPositionX;
             public float PlayerPositionY;
             public float CollisionRadiusSquare;
+            [global::Unity.Collections.LowLevel.Unsafe.NativeDisableContainerSafetyRestrictionAttribute] 
             public global::Unity.Collections.NativeArray<int> CollisionCount;
 
             public void Execute()
@@ -1319,6 +1305,7 @@ namespace Unity1Week.Hit
             public float PlayerPositionX;
             public float PlayerPositionY;
             public float CollisionRadiusSquare;
+            [global::Unity.Collections.LowLevel.Unsafe.NativeDisableContainerSafetyRestrictionAttribute] 
             public global::Unity.Collections.NativeArray<int> CollisionCount;
 
             public void Execute()
@@ -1441,8 +1428,10 @@ namespace Unity1Week
             public int CellWidthCount;
             public int CellCountAdjustment;
             public int MaxCellCountInclusive;
-            [global::Unity.Collections.ReadOnly] public global::Unity.Collections.NativeArray<float> SpeedSetting;
-            [global::Unity.Collections.ReadOnly] public global::Unity.Collections.NativeArray<int> ChipKind;
+            [global::Unity.Collections.ReadOnly] 
+            public global::Unity.Collections.NativeArray<float> SpeedSetting;
+            [global::Unity.Collections.ReadOnly] 
+            public global::Unity.Collections.NativeArray<int> ChipKind;
 
             public void Execute()
             {
@@ -1556,6 +1545,7 @@ namespace Unity1Week
         public unsafe partial struct Job : global::Unity.Jobs.IJob
         {
             public global::Unity.Collections.NativeArray<ComponentTypes.Destination2D.Eight> Destination2D;
+            [global::Unity.Collections.LowLevel.Unsafe.NativeDisableContainerSafetyRestrictionAttribute] 
             public global::Unity.Collections.NativeArray<Unity.Mathematics.Random> RandomArray;
             public float TwoMinInclusiveMinusMaxExclusive;
             public float MaxExclusiveMinusMinInclusive;
@@ -1621,6 +1611,30 @@ namespace Unity1Week
 
             public void Execute()
             {
+                if (global::Unity.Burst.Intrinsics.X86.Fma.IsFmaSupported)
+                {
+                    var other0 = new global::Unity.Burst.Intrinsics.v256(MinInclusive, MinInclusive, MinInclusive, MinInclusive, MinInclusive, MinInclusive, MinInclusive, MinInclusive);
+                    var other1 = new global::Unity.Burst.Intrinsics.v256(MaxExclusive, MaxExclusive, MaxExclusive, MaxExclusive, MaxExclusive, MaxExclusive, MaxExclusive, MaxExclusive);
+                    var outerPointer0 = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(Position2D);
+                    var outerPointer1 = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(AliveState);
+
+                    for (
+                        var outerIndex = 0;
+                        outerIndex < Position2D.Length;
+                        ++outerIndex,
+                        outerPointer0 += sizeof(ComponentTypes.Position2D.Eight),
+                        outerPointer1 += sizeof(ComponentTypes.AliveState.Eight)
+                    )
+                    {
+                        var outer0_X = global::Unity.Burst.Intrinsics.X86.Avx.mm256_load_ps(outerPointer0 + (0 << 5));
+                        var outer0_Y = global::Unity.Burst.Intrinsics.X86.Avx.mm256_load_ps(outerPointer0 + (1 << 5));
+                        var outer1_Value = global::Unity.Burst.Intrinsics.X86.Avx.mm256_load_ps(outerPointer1 + (0 << 5));
+                        Exe2(ref outer0_X, ref outer0_Y, ref outer1_Value, ref other0, ref other1);
+                        global::Unity.Burst.Intrinsics.X86.Avx.mm256_store_ps(outerPointer1 + (0 << 5), outer1_Value);
+                    }
+                    return;
+                }
+
                 {
                     var other0 = new global::Unity.Mathematics.float4(MinInclusive, MinInclusive, MinInclusive, MinInclusive);
                     var other1 = new global::Unity.Mathematics.float4(MaxExclusive, MaxExclusive, MaxExclusive, MaxExclusive);
@@ -1649,34 +1663,67 @@ namespace Unity1Week
             public global::Unity.Collections.NativeArray<ComponentTypes.Position2D.Eight> Position2D;
             public global::Unity.Collections.NativeArray<ComponentTypes.Speed2D.Eight> Speed2D;
             public global::Unity.Collections.NativeArray<ComponentTypes.AliveState.Eight> AliveState;
-            public float MinInclusive;
-            public float MaxExclusive;
+            public float TwoMinInclusive_Minus_MaxExclusive;
+            public float MaxExclusive_Minus_MinInclusive;
             public float MaxSpeed;
-            public global::Unity.Collections.NativeArray<Unity.Mathematics.Random> Random;
+            [global::Unity.Collections.LowLevel.Unsafe.NativeDisableContainerSafetyRestrictionAttribute] 
+            public global::Unity.Collections.NativeArray<Unity.Burst.Intrinsics.v256> Random;
 
             public void Execute()
             {
+                var tablePointer0 = global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(Random);
+                if (global::Unity.Burst.Intrinsics.X86.Fma.IsFmaSupported)
                 {
-                    var other0 = new global::Unity.Mathematics.float4(MinInclusive, MinInclusive, MinInclusive, MinInclusive);
-                    var other1 = new global::Unity.Mathematics.float4(MaxExclusive, MaxExclusive, MaxExclusive, MaxExclusive);
+                    var other0 = new global::Unity.Burst.Intrinsics.v256(TwoMinInclusive_Minus_MaxExclusive, TwoMinInclusive_Minus_MaxExclusive, TwoMinInclusive_Minus_MaxExclusive, TwoMinInclusive_Minus_MaxExclusive, TwoMinInclusive_Minus_MaxExclusive, TwoMinInclusive_Minus_MaxExclusive, TwoMinInclusive_Minus_MaxExclusive, TwoMinInclusive_Minus_MaxExclusive);
+                    var other1 = new global::Unity.Burst.Intrinsics.v256(MaxExclusive_Minus_MinInclusive, MaxExclusive_Minus_MinInclusive, MaxExclusive_Minus_MinInclusive, MaxExclusive_Minus_MinInclusive, MaxExclusive_Minus_MinInclusive, MaxExclusive_Minus_MinInclusive, MaxExclusive_Minus_MinInclusive, MaxExclusive_Minus_MinInclusive);
+                    var other2 = new global::Unity.Burst.Intrinsics.v256(MaxSpeed, MaxSpeed, MaxSpeed, MaxSpeed, MaxSpeed, MaxSpeed, MaxSpeed, MaxSpeed);
+                    var outerPointer0 = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(Position2D);
+                    var outerPointer1 = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(Speed2D);
+                    var outerPointer2 = (byte*)global::Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(AliveState);
+
+                    for (
+                        var outerIndex = 0;
+                        outerIndex < Position2D.Length;
+                        ++outerIndex,
+                        outerPointer0 += sizeof(ComponentTypes.Position2D.Eight),
+                        outerPointer1 += sizeof(ComponentTypes.Speed2D.Eight),
+                        outerPointer2 += sizeof(ComponentTypes.AliveState.Eight)
+                    )
+                    {
+                        var outer0_X = global::Unity.Burst.Intrinsics.X86.Avx.mm256_load_ps(outerPointer0 + (0 << 5));
+                        var outer0_Y = global::Unity.Burst.Intrinsics.X86.Avx.mm256_load_ps(outerPointer0 + (1 << 5));
+                        var outer1_X = global::Unity.Burst.Intrinsics.X86.Avx.mm256_load_ps(outerPointer1 + (0 << 5));
+                        var outer1_Y = global::Unity.Burst.Intrinsics.X86.Avx.mm256_load_ps(outerPointer1 + (1 << 5));
+                        var outer2_Value = global::Unity.Burst.Intrinsics.X86.Avx.mm256_load_ps(outerPointer2 + (0 << 5));
+                        Exe2(ref outer0_X, ref outer0_Y, ref outer1_X, ref outer1_Y, ref outer2_Value, ref other0, ref other1, ref other2, tablePointer0, Random.Length);
+                        global::Unity.Burst.Intrinsics.X86.Avx.mm256_store_ps(outerPointer0 + (0 << 5), outer0_X);
+                        global::Unity.Burst.Intrinsics.X86.Avx.mm256_store_ps(outerPointer0 + (1 << 5), outer0_Y);
+                        global::Unity.Burst.Intrinsics.X86.Avx.mm256_store_ps(outerPointer1 + (0 << 5), outer1_X);
+                        global::Unity.Burst.Intrinsics.X86.Avx.mm256_store_ps(outerPointer1 + (1 << 5), outer1_Y);
+                        global::Unity.Burst.Intrinsics.X86.Avx.mm256_store_ps(outerPointer2 + (0 << 5), outer2_Value);
+                    }
+                    return;
+                }
+
+                {
+                    var other0 = new global::Unity.Mathematics.float4(TwoMinInclusive_Minus_MaxExclusive, TwoMinInclusive_Minus_MaxExclusive, TwoMinInclusive_Minus_MaxExclusive, TwoMinInclusive_Minus_MaxExclusive);
+                    var other1 = new global::Unity.Mathematics.float4(MaxExclusive_Minus_MinInclusive, MaxExclusive_Minus_MinInclusive, MaxExclusive_Minus_MinInclusive, MaxExclusive_Minus_MinInclusive);
                     var other2 = new global::Unity.Mathematics.float4(MaxSpeed, MaxSpeed, MaxSpeed, MaxSpeed);
-                    var other3 = Random[0];
 
                     for (var outerIndex = 0; outerIndex < Position2D.Length; ++outerIndex)
                     {
                         var outer0 = Position2D[outerIndex];
                         var outer1 = Speed2D[outerIndex];
                         var outer2 = AliveState[outerIndex];
-                        Exe(ref outer0.X.c0, ref outer0.Y.c0, ref outer1.X.c0, ref outer1.Y.c0, ref outer2.Value.c0, ref other0, ref other1, ref other2, ref other3);
-                        Exe(ref outer0.X.c1, ref outer0.Y.c1, ref outer1.X.c1, ref outer1.Y.c1, ref outer2.Value.c1, ref other0, ref other1, ref other2, ref other3);
+                        Exe(ref outer0.X.c0, ref outer0.Y.c0, ref outer1.X.c0, ref outer1.Y.c0, ref outer2.Value.c0, ref other0, ref other1, ref other2, tablePointer0, Random.Length);
+                        Exe(ref outer0.X.c1, ref outer0.Y.c1, ref outer1.X.c1, ref outer1.Y.c1, ref outer2.Value.c1, ref other0, ref other1, ref other2, tablePointer0, Random.Length);
                         Position2D[outerIndex] = outer0;
                         Speed2D[outerIndex] = outer1;
                         AliveState[outerIndex] = outer2;
                     }
-
-                    Random[0] = other3;
                 }
             }
         }
     }
 }
+

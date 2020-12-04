@@ -40,11 +40,8 @@
 
             v2f vert (appdata v, const uint id : SV_INSTANCEID)
             {
-                const uint big_id = id >> 3 << 4;
-                const uint small_id = id & 7;
-                v.vertex.xy *= 10;
-                v.vertex.x += positions[big_id + small_id];
-                v.vertex.y += positions[big_id + small_id + 8];
+                const uint index = (id >> 3 << 4) | (id & 7);
+                v.vertex.xy = mad(v.vertex.xy, 40.0, float2(positions[index], positions[index + 8u]));
                 
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);

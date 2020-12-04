@@ -1,8 +1,10 @@
 ﻿using System;
 using ComponentTypes;
+using Unity.Burst.Intrinsics;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 using Unity.Jobs;
+using Unity.Jobs.LowLevel.Unsafe;
 using Unity.Mathematics;
 using Unity1Week;
 using Unity1Week.ScriptableObjects;
@@ -24,7 +26,7 @@ namespace MyFolder.Scripts.Example
         public int ShiftCount;
 
         private NativeArray<int> chipKindArray;
-        private NativeArray<Random> randoms;
+        private NativeArray<v256> randoms;
         private JobHandle? handle;
 
         private OriginalInputAction.PlayerActions inputAction;
@@ -42,7 +44,7 @@ namespace MyFolder.Scripts.Example
             private KillOutOfBounds.Job killJob;
             private readonly Material material;
 
-            public unsafe EnemyDisplayable(int capacity, Material material, float minInclusive, float maxExclusive)
+            public EnemyDisplayable(int capacity, Material material, float minInclusive, float maxExclusive)
             {
                 Sort = new Enemy.SortJob
                 {
@@ -60,7 +62,7 @@ namespace MyFolder.Scripts.Example
                 };
             }
             
-            public bool DrawAndScheduleJob(JobHandle? oldJobHandle, EnemyDisplay display, Bounds bounds, float deltaTime, out JobHandle job, string name)
+            public bool DrawAndScheduleJob(JobHandle? oldJobHandle, EnemyDisplay display, Bounds bounds, float deltaTime, out JobHandle job)
             {
                 var chunkCount = Sort.This.ChunkCount;
                 if (chunkCount == 0)
@@ -78,7 +80,6 @@ namespace MyFolder.Scripts.Example
                 var position2D = Sort.This.PositionArray.GetSubArray(0, chunkCount);
                 buffer.SetData(position2D, 0, 0, position2D.Length);
                 var count = Sort.This.Count[0];
-                Debug.Log(name+ " -> " + count + ", chunk count : " + chunkCount + "\n" + position2D[0]);
                 Graphics.DrawMeshInstancedProcedural(display.EnemyMesh, 0, material, bounds, count, null, ShadowCastingMode.Off, false);
 
                 job = new MultiMove.Job
@@ -112,34 +113,37 @@ namespace MyFolder.Scripts.Example
             MapSetting.Initialize(ShiftCount);
             
             mainCameraTransform = Camera.main != null ? Camera.main.transform : default;
-            randoms = new NativeArray<Random>(1, Allocator.Persistent) { [0] = new Random(1) };
-
-            normal = new EnemyDisplayable(1024, Display.EnemyNormalMaterial, MapSetting.MinInclusive, MapSetting.MaxExclusive);
-            leader = new EnemyDisplayable(1024, Display.EnemyLeaderMaterial, MapSetting.MinInclusive, MapSetting.MaxExclusive);
-            boss = new EnemyDisplayable(1024, Display.EnemyBossMaterial, MapSetting.MinInclusive, MapSetting.MaxExclusive);
-            normal.Sort.This.Count[0] = 32;
-            unsafe
+            randoms = new NativeArray<Guid>(6, Allocator.Persistent)
             {
-                var positionPointer = (Position2D.Eight*)normal.Sort.This.PositionArray.GetUnsafePtr();
-                positionPointer->X.c0 = default;
-                positionPointer->Y.c0 = default;
-                positionPointer->X.c1 = default;
-                positionPointer->Y.c1 = default;
-                UnsafeUtility.MemCpyReplicate(positionPointer + 1, positionPointer, sizeof(Position2D.Eight), 3);
-                var speedPointer = (Speed2D.Eight*)normal.Sort.This.SpeedArray.GetUnsafePtr();
-                for (var i = 0; i < 4; i++, speedPointer++)
-                {
-                    speedPointer->X.c0 = new float4(10, 0, -10, 0) * (2 + i);
-                    speedPointer->Y.c0 = new float4(0, 10, 0, -10) * (2 + i);
-                    speedPointer->X.c1 = new float4(6, 6, -6, -6) * (2 + i);
-                    speedPointer->Y.c1 = new float4(6, -6, 6, -6) * (2 + i);    
-                }
-                
-                UnsafeUtility.MemClear(normal.Sort.This.IsAliveArray.GetUnsafePtr(), sizeof(AliveState.Eight) * 4);
-            }
-            
+                [0] = Guid.NewGuid(),
+                [1] = Guid.NewGuid(),
+                [2] = Guid.NewGuid(),
+                [3] = Guid.NewGuid(),
+                [4] = Guid.NewGuid(),
+                [5] = Guid.NewGuid(),
+            }.Reinterpret<v256>(16);
+
+            normal = new EnemyDisplayable(10240, Display.EnemyNormalMaterial, MapSetting.MinInclusive, MapSetting.MaxExclusive);
+            leader = new EnemyDisplayable(10240, Display.EnemyLeaderMaterial, MapSetting.MinInclusive, MapSetting.MaxExclusive);
+            boss = new EnemyDisplayable(10240, Display.EnemyBossMaterial, MapSetting.MinInclusive, MapSetting.MaxExclusive);
+            handle = JobHandle.CombineDependencies(Initialize(ref normal, 0), Initialize(ref leader, 1), Initialize(ref boss, 2));
             chipKindArray = new NativeArray<int>(MapSetting.ChipCount, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
             for (var i = 0; i < chipKindArray.Length; i++) chipKindArray[i] = i % 6;
+        }
+
+        private JobHandle Initialize(ref EnemyDisplayable displayable, int index)
+        {
+            displayable.Sort.This.Count[0] = displayable.Sort.This.Capacity << 3;
+            return new RandomSpawn.Job
+            {
+                Random = randoms.GetSubArray(index, 1),
+                AliveState = displayable.Sort.This.IsAliveArray,
+                Position2D = displayable.Sort.This.PositionArray,
+                Speed2D = displayable.Sort.This.SpeedArray,
+                MaxExclusive_Minus_MinInclusive = MapSetting.MaxExclusive - MapSetting.MinInclusive,
+                TwoMinInclusive_Minus_MaxExclusive = 2 * MapSetting.MinInclusive - MapSetting.MaxExclusive,
+                MaxSpeed = 30f
+            }.Schedule();
         }
 
         private void Update()
@@ -150,9 +154,9 @@ namespace MyFolder.Scripts.Example
             Graphics.DrawMeshInstancedProcedural(mesh, 0, MapSetting.ChipMaterial, MapSetting.Bounds, MapSetting.ChipCount, castShadows: ShadowCastingMode.Off, receiveShadows: false);
 
             var deltaTime = Time.deltaTime;
-            var normalExists = normal.DrawAndScheduleJob(handle, Display, MapSetting.Bounds, deltaTime, out var normalJob, "normal");
-            var leaderExists = leader.DrawAndScheduleJob(handle, Display, MapSetting.Bounds, deltaTime, out var leaderJob, "leader");
-            var bossExists = boss.DrawAndScheduleJob(handle, Display, MapSetting.Bounds, deltaTime, out var bossJob, "boss");
+            var normalExists = normal.DrawAndScheduleJob(handle, Display, MapSetting.Bounds, deltaTime, out var normalJob);
+            var leaderExists = leader.DrawAndScheduleJob(handle, Display, MapSetting.Bounds, deltaTime, out var leaderJob);
+            var bossExists = boss.DrawAndScheduleJob(handle, Display, MapSetting.Bounds, deltaTime, out var bossJob);
 
             if (normalExists)
             {
